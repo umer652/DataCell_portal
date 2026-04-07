@@ -43,10 +43,16 @@ Route::post('/courses/import', [CourseController::class, 'import'])->name('cours
 
 
 // enrollment controller
-Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollment.index');
-Route::post('/enrollment/store', [EnrollmentController::class, 'store'])->name('enrollment.store');
-Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCourses'])
-    ->name('enrollment.getOfferedCourses');
+Route::prefix('enrollments')->group(function () {
+    Route::get('/', [EnrollmentController::class, 'index'])->name('enrollment.index');
+    Route::post('/store', [EnrollmentController::class, 'store'])->name('enrollment.store');
+    Route::get('/{id}/edit', [EnrollmentController::class, 'edit'])->name('enrollments.edit');
+    Route::put('/{id}', [EnrollmentController::class, 'update'])->name('enrollments.update');
+    Route::delete('/{id}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
+});
+
+// Helper route for getting offered courses (outside the prefix or inside)
+Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCourses'])->name('enrollment.getOfferedCourses');
 
 
 //Allocation Controller

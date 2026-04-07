@@ -372,6 +372,16 @@ tbody tr:hover {
     font-size: 14px;
 }
 
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
 </style>
 @endsection
 
@@ -403,10 +413,10 @@ tbody tr:hover {
             </thead>
             <tbody>
                 <tr class="loading">
-                    <td colspan="9">Loading allocations...<\/td>
+                    <td colspan="9">Loading allocations...</td>
                 </tr>
             </tbody>
-        月末
+        </table>
     </div>
 
 </div>
@@ -523,54 +533,54 @@ document.addEventListener('DOMContentLoaded', function() {
 // Load all allocations
 function loadAllocations() {
     const tbody = document.querySelector('#allocationsTable tbody');
-    tbody.innerHTML = '<tr class="loading"><td colspan="9">Loading allocations...<\/td><\/tr>';
+    tbody.innerHTML = '<tr class="loading"><td colspan="9">Loading allocations...</td></tr>';
     
     fetch('/allocations/data', {
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return res.json();
-        })
-        .then(response => {
-            if (!response.data || response.data.length === 0) {
-                tbody.innerHTML = '<tr class="empty-state"><td colspan="9">No allocations found. Click "New Allocation" to add.<\/td><\/tr>';
-                showToast('No allocations found', 'info');
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            
-            response.data.forEach(allocation => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${allocation.serial}<\/td>
-                        <td>${escapeHtml(allocation.program)}<\/td>
-                        <td>${escapeHtml(allocation.scheme)}<\/td>
-                        <td>${escapeHtml(allocation.course)}<\/td>
-                        <td>${escapeHtml(allocation.teacher)}<\/td>
-                        <td>${escapeHtml(allocation.session)}<\/td>
-                        <td>${escapeHtml(allocation.section)}<\/td>
-                        <td>Semester ${allocation.semester}<\/td>
-                        <td class="action-buttons">
-                            <button onclick="editAllocation(${allocation.id})" class="edit-btn">Edit</button>
-                            <button onclick="deleteAllocation(${allocation.id})" class="delete-btn">Delete</button>
-                        <\/td>
-                    <\/tr>
-                `;
-            });
-            
-            showToast(`${response.data.length} allocation(s) loaded successfully`, 'success');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            tbody.innerHTML = '<tr class="empty-state"><td colspan="9">Error loading allocations. Please refresh the page.<\/td><\/tr>';
-            showToast('Failed to load allocations: ' + error.message, 'error');
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+    })
+    .then(response => {
+        if (!response.data || response.data.length === 0) {
+            tbody.innerHTML = '<tr class="empty-state"><td colspan="9">No allocations found. Click "New Allocation" to add.</td></tr>';
+            showToast('No allocations found', 'info');
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        response.data.forEach(allocation => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${allocation.serial}</td>
+                    <td>${escapeHtml(allocation.program)}</td>
+                    <td>${escapeHtml(allocation.scheme)}</td>
+                    <td>${escapeHtml(allocation.course)}</td>
+                    <td>${escapeHtml(allocation.teacher)}</td>
+                    <td>${escapeHtml(allocation.session)}</td>
+                    <td>${escapeHtml(allocation.section)}</td>
+                    <td>Semester ${allocation.semester}</td>
+                    <td class="action-buttons">
+                        <button onclick="editAllocation(${allocation.id})" class="edit-btn">Edit</button>
+                        <button onclick="deleteAllocation(${allocation.id})" class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            `;
         });
+        
+        showToast(`${response.data.length} allocation(s) loaded successfully`, 'success');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        tbody.innerHTML = '<tr class="empty-state"><td colspan="9">Error loading allocations. Please refresh the page.</td></tr>';
+        showToast('Failed to load allocations: ' + error.message, 'error');
+    });
 }
 
 // Handle program change - load courses and schemes
@@ -901,22 +911,6 @@ function showToast(message, type = 'success') {
             }
         }, 300);
     }, 3000);
-    
-    // Add slide out animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
 }
 
 // Escape HTML

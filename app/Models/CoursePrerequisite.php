@@ -26,6 +26,7 @@ class CoursePrerequisite extends Model
     {
         return $this->belongsTo(Course::class, 'prerequisite_course_id', 'id');
     }
+    
 
     public function sos()
     {

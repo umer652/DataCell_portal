@@ -15,13 +15,16 @@
     background: #fff;
     padding: 20px;
     border-radius: 12px;
-    overflow-y: auto;
+    overflow-y: hidden; /* Changed from 'auto' to 'hidden' - page won't scroll */
+    display: flex;
+    flex-direction: column;
 }
 
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0; /* Prevents top bar from shrinking */
 }
 
 .add-btn {
@@ -40,6 +43,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
+    flex-shrink: 0; /* Prevents filter bar from shrinking */
 }
 
 .filters-left {
@@ -66,6 +70,14 @@ select, input {
     border: none;
 }
 
+/* TABLE CONTAINER - SCROLLABLE */
+.table-container {
+    flex: 1; /* Takes remaining space */
+    overflow-y: auto; /* Makes only this container scrollable */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
 /* TABLE */
 table {
     width: 100%;
@@ -75,6 +87,9 @@ table {
 thead {
     background: #0f1b5c;
     color: white;
+    position: sticky; /* Makes header sticky while scrolling */
+    top: 0;
+    z-index: 10;
 }
 
 td, th {
@@ -90,6 +105,7 @@ td, th {
     background: rgba(0,0,0,0.5);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
@@ -164,34 +180,36 @@ td, th {
 
     </div>
 
-    <!-- TABLE -->
-    <table>
-        <thead>
-        <tr>
-            <th>Student</th>
-            <th>Course</th>
-            <th>Program</th>
-            <th>Session</th>
-            <th>Semester</th>
-            <th>Section</th>
-            <th>Date</th>
-        </tr>
-        </thead>
+    <!-- SCROLLABLE TABLE CONTAINER -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Program</th>
+                    <th>Session</th>
+                    <th>Semester</th>
+                    <th>Section</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
 
-        <tbody id="enrollmentBody">
-        @foreach($enrollments as $e)
-            <tr>
-                <td>{{ $e->student->name }}</td>
-                <td>{{ $e->offeredCourse->course->course_title ?? '-' }}</td>
-                <td>{{ $e->program->name }}</td>
-                <td>{{ $e->session->name }}</td>
-                <td>{{ $e->semester }}</td>
-                <td>{{ $e->section->name }}</td>
-                <td>{{ $e->enrollment_date }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+            <tbody id="enrollmentBody">
+            @foreach($enrollments as $e)
+                <tr>
+                    <td>{{ $e->student->name }}</td>
+                    <td>{{ $e->offeredCourse->course->course_title ?? '-' }}</td>
+                    <td>{{ $e->program->name }}</td>
+                    <td>{{ $e->session->name }}</td>
+                    <td>{{ $e->semester }}</td>
+                    <td>{{ $e->section->name }}</td>
+                    <td>{{ $e->enrollment_date }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
 </div>
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Allocation extends Model
 {
-    protected $table = 'allocations';
+    protected $table = 'allocation';
 
     protected $primaryKey = 'id';
 

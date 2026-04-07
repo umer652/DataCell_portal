@@ -50,21 +50,21 @@ Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCour
 
 
 //Allocation Controller
-Route::get('/allocation', [AllocationController::class, 'index'])
-    ->name('allocation.index');
+Route::prefix('allocations')->group(function () {
+    Route::get('/index',[AllocationController::class,'index'])->name('allocation.index');
+    Route::get('/data', [AllocationController::class, 'getData'])->name('allocations.data');
+    Route::post('/store', [AllocationController::class, 'store'])->name('allocations.store');
+    Route::get('/{id}/edit', [AllocationController::class, 'edit'])->name('allocations.edit');
+    Route::put('/{id}', [AllocationController::class, 'update'])->name('allocations.update');
+    Route::delete('/{id}', [AllocationController::class, 'destroy'])->name('allocations.destroy');
+    Route::post('/bulk-delete', [AllocationController::class, 'bulkDelete'])->name('allocations.bulk-delete');
+});
 
-
-Route::get('/get-courses/{program_id}', 
-    [AllocationController::class, 'getCoursesByProgram']
-);
-
-Route::get('/get-active-scheme/{program_id}', 
-    [AllocationController::class, 'getActiveSchemeByProgram']
-);
-
-Route::get('/get-schemes/{program_id}', 
-    [AllocationController::class, 'getSchemesByProgram']
-);
+// Helper routes (already in your controller)
+Route::get('/get-courses/{program_id}', [AllocationController::class, 'getCoursesByProgram']);
+Route::get('/get-active-scheme/{program_id}', [AllocationController::class, 'getActiveSchemeByProgram']);
+Route::get('/get-schemes/{program_id}', [AllocationController::class, 'getSchemesByProgram']);
+Route::get('/get-teachers-by-course/{course_id}', [AllocationController::class, 'getTeachersByCourse']);
 
 
 //Teacher Controller

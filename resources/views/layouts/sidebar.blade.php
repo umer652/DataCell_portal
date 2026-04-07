@@ -49,7 +49,7 @@
         </li>
         <li>
             <a href="{{ route('allocation.index') }}"
-                class="flex items-center p-2 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('allocation.*') ? 'bg-blue-500 text-white font-bold' : 'text-gray-700' }}">
+                class="flex items-center p-2 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('allocation.*') ? '!bg-white !text-[#0f1b5c] font-bold' : 'text-gray-700' }}">
                 <i class="fas fa-tasks mr-2"></i> Allocation Management
             </a>
         </li>

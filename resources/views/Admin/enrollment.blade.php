@@ -203,16 +203,68 @@ tbody tr:hover {
     color: #000;
 }
 
-/* ALERT MESSAGES */
-.alert {
+/* TOAST MESSAGES */
+.toast-container {
     position: fixed;
     top: 20px;
     right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 300px;
     padding: 12px 20px;
     border-radius: 8px;
-    z-index: 10000;
     animation: slideIn 0.3s ease;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.toast-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.toast-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.toast-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.toast-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.toast-message {
+    flex: 1;
+    font-size: 14px;
+}
+
+.toast-close {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.toast-close:hover {
+    opacity: 1;
 }
 
 @keyframes slideIn {
@@ -226,18 +278,147 @@ tbody tr:hover {
     }
 }
 
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 }
 
-.alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+/* CUSTOM CONFIRM DIALOG */
+.custom-confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+    animation: fadeIn 0.2s ease;
 }
 
+.confirm-dialog-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.confirm-dialog-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    padding: 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.confirm-dialog-header {
+    padding: 20px 24px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.confirm-dialog-icon {
+    width: 40px;
+    height: 40px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc3545;
+}
+
+.confirm-dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.confirm-dialog-body {
+    padding: 16px 24px;
+}
+
+.confirm-dialog-message {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.confirm-dialog-detail {
+    font-size: 13px;
+    color: #888;
+    margin-top: 8px;
+}
+
+.confirm-dialog-footer {
+    padding: 16px 24px 24px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #eee;
+}
+
+.confirm-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.confirm-btn-cancel {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.confirm-btn-cancel:hover {
+    background: #dee2e6;
+}
+
+.confirm-btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.confirm-btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
 </style>
 @endsection
 
@@ -299,7 +480,7 @@ tbody tr:hover {
             </thead>
             <tbody id="enrollmentBody">
             @foreach($enrollments as $e)
-                <tr>
+                <tr data-student-name="{{ $e->student->name }}">
                     <td>{{ $e->student->name }}</td>
                     <td>{{ $e->offeredCourse->course->course_title ?? '-' }}</td>
                     <td>{{ $e->program->name }}</td>
@@ -309,7 +490,7 @@ tbody tr:hover {
                     <td>{{ $e->enrollment_date }}</td>
                     <td class="action-buttons">
                         <button onclick="editEnrollment({{ $e->id }})" class="edit-btn">Edit</button>
-                        <button onclick="deleteEnrollment({{ $e->id }})" class="delete-btn">Delete</button>
+                        <button onclick="deleteEnrollment({{ $e->id }}, this)" class="delete-btn">Delete</button>
                     </td>
                 </tr>
             @endforeach
@@ -398,6 +579,9 @@ tbody tr:hover {
 </div>
 </div>
 
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
 // Store current enrollment ID for editing
 let currentEnrollmentId = null;
@@ -428,6 +612,106 @@ document.addEventListener('DOMContentLoaded', function() {
     if (programFilter) programFilter.addEventListener('change', fetchData);
 });
 
+// TOAST MESSAGES SYSTEM
+function showToast(message, type = 'success', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span class="toast-message">${message}</span>
+        <span class="toast-close">&times;</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Add close button functionality
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', () => {
+        removeToast(toast);
+    });
+    
+    // Auto remove after duration
+    setTimeout(() => {
+        removeToast(toast);
+    }, duration);
+}
+
+function removeToast(toast) {
+    toast.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 300);
+}
+
+// CUSTOM CONFIRM DIALOG
+function showConfirmDialog({ title, message, detail, onConfirm, onCancel }) {
+    // Remove existing dialog if any
+    const existingDialog = document.querySelector('.custom-confirm-dialog');
+    if (existingDialog) {
+        existingDialog.remove();
+    }
+    
+    // Create dialog element
+    const dialog = document.createElement('div');
+    dialog.className = 'custom-confirm-dialog';
+    dialog.innerHTML = `
+        <div class="confirm-dialog-overlay"></div>
+        <div class="confirm-dialog-content">
+            <div class="confirm-dialog-header">
+                <div class="confirm-dialog-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 8V12M12 16H12.01M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="confirm-dialog-title">${title}</h3>
+            </div>
+            <div class="confirm-dialog-body">
+                <div class="confirm-dialog-message">${message}</div>
+                ${detail ? `<div class="confirm-dialog-detail">${detail}</div>` : ''}
+            </div>
+            <div class="confirm-dialog-footer">
+                <button class="confirm-btn confirm-btn-cancel">Cancel</button>
+                <button class="confirm-btn confirm-btn-delete">Delete</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // Add event listeners
+    const overlay = dialog.querySelector('.confirm-dialog-overlay');
+    const cancelBtn = dialog.querySelector('.confirm-btn-cancel');
+    const deleteBtn = dialog.querySelector('.confirm-btn-delete');
+    
+    const closeDialog = () => {
+        dialog.style.animation = 'fadeOut 0.2s ease';
+        setTimeout(() => {
+            if (dialog.parentNode) {
+                dialog.remove();
+            }
+        }, 200);
+    };
+    
+    overlay.addEventListener('click', () => {
+        closeDialog();
+        if (onCancel) onCancel();
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        closeDialog();
+        if (onCancel) onCancel();
+    });
+    
+    deleteBtn.addEventListener('click', () => {
+        closeDialog();
+        if (onConfirm) onConfirm();
+    });
+}
+
 // FILTER FUNCTION
 function fetchData() {
     fetch(`?search=${searchInput.value}&session_id=${sessionFilter.value}&semester=${semesterFilter.value}&program_id=${programFilter.value}`, {
@@ -443,6 +727,7 @@ function resetFilters() {
     if (semesterFilter) semesterFilter.value = '';
     if (programFilter) programFilter.value = '';
     fetchData();
+    showToast('Filters reset successfully', 'info', 2000);
 }
 
 // COURSE LOAD FUNCTION
@@ -476,6 +761,7 @@ function loadCourses() {
         .catch(error => {
             console.error('Error:', error);
             dropdown.innerHTML = '<option value="">Error loading courses</option>';
+            showToast('Failed to load courses', 'error', 3000);
         });
 }
 
@@ -492,7 +778,7 @@ function handleFormSubmit(e) {
     const selectedOptions = Array.from(courseSelect.selectedOptions);
     
     if (selectedOptions.length === 0) {
-        showMessage('Please select at least one course', 'error');
+        showToast('Please select at least one course', 'error', 3000);
         return;
     }
     
@@ -509,6 +795,7 @@ function handleFormSubmit(e) {
     
     const saveBtn = form.querySelector('button[type="submit"]');
     saveBtn.disabled = true;
+    const originalText = saveBtn.textContent;
     saveBtn.textContent = 'Saving...';
     
     fetch(url, {
@@ -523,31 +810,33 @@ function handleFormSubmit(e) {
     .then(res => res.json())
     .then(response => {
         if (response.success) {
-            showMessage(response.message, 'success');
+            showToast(response.message, 'success', 3000);
             closeModal();
             fetchData();
             resetForm();
         } else {
-            showMessage(response.message || 'Error saving enrollment', 'error');
+            showToast(response.message || 'Error saving enrollment', 'error', 4000);
             if (response.errors) {
                 for (let key in response.errors) {
-                    showMessage(`${key}: ${response.errors[key].join(', ')}`, 'error');
+                    showToast(`${key}: ${response.errors[key].join(', ')}`, 'error', 4000);
                 }
             }
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showMessage('An error occurred while saving', 'error');
+        showToast('An error occurred while saving', 'error', 4000);
     })
     .finally(() => {
         saveBtn.disabled = false;
-        saveBtn.textContent = isEditMode ? 'Update Enrollment' : 'Save Enrollment';
+        saveBtn.textContent = originalText;
     });
 }
 
 // Edit enrollment - Load student and their enrolled courses
 function editEnrollment(id) {
+    showToast('Loading enrollment details...', 'info', 2000);
+    
     fetch(`/enrollments/${id}/edit`, {
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -609,42 +898,79 @@ function editEnrollment(id) {
             submitBtn.textContent = 'Update Enrollment';
             
             openModal();
-            showMessage('Enrollment loaded successfully. You can add or remove courses.', 'success');
+            showToast('Enrollment loaded. You can add or remove courses.', 'success', 3000);
         } else {
-            showMessage(response.message || 'Failed to load enrollment', 'error');
+            showToast(response.message || 'Failed to load enrollment', 'error', 4000);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showMessage('Failed to load enrollment details', 'error');
+        showToast('Failed to load enrollment details', 'error', 4000);
     });
 }
 
-// Delete enrollment
-function deleteEnrollment(id) {
-    if (confirm('⚠️ Are you sure you want to delete this enrollment?\n\nThis action cannot be undone!')) {
-        fetch(`/enrollments/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
+// Delete enrollment with confirmation dialog
+function deleteEnrollment(id, buttonElement) {
+    // Get student name from the table row
+    const row = buttonElement.closest('tr');
+    const studentName = row ? row.cells[0].innerText : 'this enrollment';
+    
+    // Show custom confirmation dialog
+    showConfirmDialog({
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to delete enrollment for ${studentName}?`,
+        detail: '⚠️ This action cannot be undone and will remove all associated course enrollments from the system.',
+        onConfirm: () => {
+            performDelete(id);
+        },
+        onCancel: () => {
+            showToast('Deletion cancelled', 'info', 2000);
+        }
+    });
+}
+
+// Function to perform the actual delete
+function performDelete(id) {
+    // Show loading toast
+    showToast('Deleting enrollment...', 'info', 2000);
+    
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                  document.querySelector('input[name="_token"]')?.value;
+    
+    fetch(`/enrollments/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(async response => {
+        if (!response.ok) {
+            const text = await response.text();
+            try {
+                const error = JSON.parse(text);
+                throw new Error(error.message || 'Server error');
+            } catch(e) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-        })
-        .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-                showMessage(response.message, 'success');
-                fetchData();
-            } else {
-                showMessage(response.message || 'Error deleting enrollment', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showMessage('An error occurred while deleting', 'error');
-        });
-    }
+        }
+        return response.json();
+    })
+    .then(response => {
+        if (response.success) {
+            showToast(response.message || '✅ Enrollment deleted successfully!', 'success', 3000);
+            fetchData(); // Refresh the table
+        } else {
+            showToast(response.message || 'Error deleting enrollment', 'error', 4000);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast(error.message || 'An error occurred while deleting', 'error', 4000);
+    });
 }
 
 // Open modal
@@ -680,23 +1006,6 @@ function resetForm() {
     if (helpText) {
         helpText.textContent = 'Hold Ctrl/Cmd to select multiple courses';
     }
-}
-
-// Show message
-function showMessage(message, type = 'success') {
-    const existingAlerts = document.querySelectorAll('.alert');
-    existingAlerts.forEach(alert => alert.remove());
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `alert alert-${type}`;
-    messageDiv.innerHTML = message;
-    document.body.appendChild(messageDiv);
-    
-    setTimeout(() => {
-        if (messageDiv.parentNode) {
-            messageDiv.remove();
-        }
-    }, 3000);
 }
 
 // Close modal when clicking outside

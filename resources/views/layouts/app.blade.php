@@ -28,30 +28,23 @@
             top: 10px;
             height: 60px;
             width: 50px;
-
             left: 260px;
-
             font-size: 20px;
             color: #fff;
             cursor: pointer;
             z-index: 1001;
-
             background: #0f1b5c;
             border-radius: 10px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             transition: left 0.3s ease;
         }
 
-        /* Move when collapsed */
         body.sidebar-collapsed .hamburger {
             left: 20px !important;
         }
 
-        /* Hide when sidebar open */
         body:not(.sidebar-collapsed) .hamburger {
             display: none;
         }
@@ -75,7 +68,6 @@
             left: 0;
         }
 
-        /* CLOSE BUTTON */
         .sidebar .close-btn {
             display: flex;
             justify-content: flex-end;
@@ -123,11 +115,6 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a i {
-            margin-right: 12px;
-            width: 20px;
-        }
-
         .sidebar ul li a:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateX(5px);
@@ -165,6 +152,18 @@
             left: 100px !important;
         }
 
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
         .topbar .profile {
             display: flex;
             align-items: center;
@@ -180,31 +179,19 @@
         .back-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
-
+            gap: 6px;
             background: transparent;
             color: #fff;
-
             border: 1px solid #fff;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 8px;
-
             cursor: pointer;
-            font-weight: 500;
-
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
-        /* Hover Effect */
         .back-btn:hover {
             background: #fff;
             color: #0f1b5c;
-            transform: translateX(-4px);
-        }
-
-        /* Icon styling */
-        .back-btn i {
-            font-size: 14px;
         }
     </style>
 
@@ -213,7 +200,7 @@
 
 <body>
 
-    <!-- HAMBURGER (ONLY FOR OPENING) -->
+    <!-- HAMBURGER -->
     <i class="fas fa-bars hamburger" id="hamburger"></i>
 
     <!-- SIDEBAR -->
@@ -221,24 +208,28 @@
 
     <!-- TOPBAR -->
     <div class="topbar">
-        <button class="back-btn" onclick="window.history.back()">
-            <i class="fas fa-chevron-left"></i>
-            {{-- <span>Back</span> --}}
 
-        </button>
+        <!-- LEFT -->
+        <div class="topbar-left">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-        <div class="font-semibold text-lg">
-            <span>@yield('title')</span>
+            <div class="topbar-title">
+                @yield('title')
+            </div>
         </div>
 
+        <!-- RIGHT -->
         <div class="profile">
             <span>{{ Auth::user()->name ?? 'User' }}</span>
             <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name ?? 'User' }}">
         </div>
+
     </div>
 
     <!-- CONTENT -->
-    <div class="content">
+    <div class="content" id="main-content">
         @yield('content')
     </div>
 
@@ -261,29 +252,40 @@
 
             setLayout(isSidebarOpen);
 
-            // CLOSE BUTTON INSIDE SIDEBAR
             const closeSidebar = document.getElementById('closeSidebar');
 
             if (closeSidebar) {
-                closeSidebar.addEventListener('click', function(e) {
+                closeSidebar.addEventListener('click', function (e) {
                     e.stopPropagation();
-
                     sidebar.classList.remove('active');
                     localStorage.setItem('sidebarOpen', false);
-
                     setLayout(false);
                 });
             }
         });
 
-        // HAMBURGER → ONLY OPENS SIDEBAR
         hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
-
             sidebar.classList.add('active');
             localStorage.setItem('sidebarOpen', true);
-
             setLayout(true);
+        });
+
+        // OPTIONAL: AJAX Navigation (for SPA feel)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('.ajax-link');
+            if (link) {
+                e.preventDefault();
+
+                fetch(link.href, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('main-content').innerHTML = html;
+                    window.history.pushState({}, '', link.href);
+                });
+            }
         });
     </script>
 

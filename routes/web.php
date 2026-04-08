@@ -37,9 +37,17 @@ Route::post('/students/import-excel', [StudentController::class, 'importExcel'])
 Route::get('/students/download-template', [StudentController::class, 'downloadTemplate'])->name('students.download.template');
 
 //course Controller
-Route::get('/courses',[CourseController::class,'index'])->name('add-courses');
-Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-Route::post('/courses/import', [CourseController::class, 'import'])->name('courses.import');
+Route::get('/courses', [CourseController::class, 'index'])
+    ->name('add-courses');
+Route::post('/courses', [CourseController::class, 'store'])
+    ->name('courses.store');
+Route::put('/courses/{id}', [CourseController::class, 'update'])
+    ->name('courses.update');
+Route::delete('/courses/{id}', [CourseController::class, 'destroy'])
+    ->name('courses.destroy');
+Route::post('/courses/import', [CourseController::class, 'import'])
+    ->name('courses.import');
+
 
 
 // enrollment controller

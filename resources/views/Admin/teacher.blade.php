@@ -46,7 +46,15 @@ body.sidebar-collapsed .main-container {
 .top-bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
+}
+
+.top-bar h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0f1b5c;
+    margin: 0;
 }
 
 /* TABLE CONTAINER */
@@ -70,7 +78,6 @@ thead th {
     z-index: 100;
     background: #0f1b5c;
     color: #fff;
-
     text-align: left;
     vertical-align: middle;
 }
@@ -98,12 +105,19 @@ tbody td {
 }
 
 /* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
 td button {
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
     font-size: 13px;
+    transition: all 0.2s ease;
 }
 
 td button:first-child {
@@ -111,9 +125,19 @@ td button:first-child {
     color: #fff;
 }
 
+td button:first-child:hover {
+    background: #16256e;
+    transform: translateY(-1px);
+}
+
 td button:last-child {
     background: #b30000;
     color: #fff;
+}
+
+td button:last-child:hover {
+    background: #cc0000;
+    transform: translateY(-1px);
 }
 
 /* SCROLLBAR */
@@ -139,6 +163,12 @@ td button:last-child {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-content {
@@ -150,14 +180,32 @@ td button:last-child {
     border-radius: 10px;
     padding: 25px;
     position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .close {
     position: absolute;
     right: 20px;
     top: 15px;
-    font-size: 22px;
+    font-size: 28px;
     cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+
+.close:hover {
+    color: #0f1b5c;
 }
 
 /* FORM GRID */
@@ -175,27 +223,45 @@ td button:last-child {
 label {
     margin-bottom: 5px;
     font-weight: 600;
+    color: #333;
 }
 
-input {
+input, select {
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0f1b5c;
+    box-shadow: 0 0 0 2px rgba(15,27,92,0.1);
 }
 
 .full-width {
     grid-column: 1 / -1;
     display: flex;
     justify-content: center;
+    gap: 15px;
 }
 
-button {
+.full-width button {
     background-color: #0f1b5c;
     color: #fff;
     padding: 12px 25px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.full-width button:hover {
+    background-color: #16256e;
+    transform: translateY(-1px);
 }
 
 /* ERROR BOX */
@@ -207,6 +273,40 @@ button {
     margin-bottom: 10px;
     border-radius: 6px;
     font-size: 14px;
+    border-left: 4px solid #b30000;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 16px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main-container {
+        left: 0 !important;
+        width: 100% !important;
+        top: 60px;
+        border-radius: 0;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
 }
 
 </style>
@@ -221,40 +321,47 @@ button {
 
     <!-- TOP BAR -->
     <div class="top-bar">
-        <h2>Teachers</h2>
-        <button class="add-btn" onclick="openModal()">+ Add Teacher</button>
+        <h2>Teachers Management</h2>
+        <button class="add-btn" onclick="openModal()">+ Add New Teacher</button>
     </div>
 
     <!-- TABLE -->
     <div class="table-container">
+        @if(count($teachers) > 0)
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Designation</th>
-                    <th>Department</th>
-                    <th>Action</th>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 20%">Name</th>
+                    <th style="width: 25%">Email</th>
+                    <th style="width: 15%">Designation</th>
+                    <th style="width: 20%">Department</th>
+                    <th style="width: 15%">Action</th>
                 </tr>
             </thead>
-
             <tbody>
-                @foreach($teachers as $t)
+                @foreach($teachers as $index => $t)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $t->user->name }}</td>
                     <td>{{ $t->user->email }}</td>
-                    <td>{{ $t->user->designation }}</td>
-                    <td>{{ $t->user->department }}</td>
+                    <td>{{ $t->user->designation ?? 'N/A' }}</td>
+                    <td>{{ $t->user->department ?? 'N/A' }}</td>
                     <td>
-                        <button onclick="editTeacher({{ $t->id }})">Edit</button>
-                        <button onclick="deleteTeacher({{ $t->id }})">Delete</button>
+                        <div class="action-buttons">
+                            <button onclick="editTeacher({{ $t->id }})" title="Edit Teacher">✏️ Edit</button>
+                            <button onclick="deleteTeacher({{ $t->id }})" title="Delete Teacher">🗑️ Delete</button>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        @else
+        <div class="empty-state">
+            <p>No teachers found. Click "Add New Teacher" to get started.</p>
+        </div>
+        @endif
     </div>
 
 </div>
@@ -262,162 +369,286 @@ button {
 <!-- MODAL -->
 <div class="modal" id="teacherModal">
     <div class="modal-content">
-
         <span class="close" onclick="closeModal()">&times;</span>
-
-        <h2>Teacher Form</h2>
-
+        <h2 id="modalTitle">Add New Teacher</h2>
         <div id="formError"></div>
-
         <input type="hidden" id="teacher_id">
-
+        
         <div class="form-grid">
-
             <div>
-                <label>Name</label>
-                <input type="text" id="name">
+                <label>Full Name *</label>
+                <input type="text" id="name" placeholder="Enter teacher's full name">
             </div>
-
             <div>
-                <label>Email</label>
-                <input type="email" id="email">
+                <label>Email Address *</label>
+                <input type="email" id="email" placeholder="teacher@example.com">
             </div>
-
             <div>
-                <label>Password</label>
-                <input type="password" id="password">
+                <label>Password *</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <small style="color: #666; font-size: 12px; margin-top: 4px;">Leave blank to keep unchanged when editing</small>
             </div>
-
             <div>
                 <label>Designation</label>
-                <input type="text" id="designation">
+                <input type="text" id="designation" placeholder="e.g., Senior Teacher">
             </div>
-
             <div class="full-width">
                 <label>Department</label>
-                <input type="text" id="department">
+                <input type="text" id="department" placeholder="e.g., Computer Science">
             </div>
-
         </div>
-
+        
         <br>
-
+        
         <div class="full-width">
-            <button onclick="saveTeacher()">Save</button>
-            <button onclick="updateTeacher()" id="updateBtn" style="display:none;">Update</button>
+            <button onclick="saveTeacher()" id="saveBtn">💾 Save Teacher</button>
+            <button onclick="updateTeacher()" id="updateBtn" style="display:none;">🔄 Update Teacher</button>
+            <button onclick="closeModal()" style="background: #6c757d;">❌ Cancel</button>
         </div>
-
     </div>
 </div>
 
 <script>
 
-/* MODAL */
+// Make sure CSRF token is set for all AJAX requests
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}"
+    }
+});
+
+/* MODAL FUNCTIONS */
 function openModal() {
     resetForm();
-    $('#teacherModal').show();
+    $('#modalTitle').text('Add New Teacher');
+    $('#teacherModal').fadeIn(200);
 }
 
 function closeModal() {
-    $('#teacherModal').hide();
+    $('#teacherModal').fadeOut(200);
+    resetForm();
 }
 
-/* RESET */
+/* RESET FORM */
 function resetForm() {
     $('#teacher_id').val('');
     $('#name, #email, #password, #designation, #department').val('');
+    $('#saveBtn').show();
     $('#updateBtn').hide();
     $('#formError').hide().html('');
+    $('#modalTitle').text('Add New Teacher');
 }
 
-/* ERROR */
+/* SHOW ERROR */
 function showError(msg) {
-    $('#formError').html(msg).show();
+    $('#formError').html(msg).fadeIn();
+    setTimeout(() => {
+        $('#formError').fadeOut();
+    }, 5000);
 }
 
-/* CREATE */
+/* VALIDATE FORM */
+function validateForm() {
+    let name = $('#name').val().trim();
+    let email = $('#email').val().trim();
+    let password = $('#password').val();
+    let isEdit = $('#teacher_id').val() !== '';
+    
+    if (!name) {
+        showError('Please enter teacher name');
+        return false;
+    }
+    if (!email) {
+        showError('Please enter email address');
+        return false;
+    }
+    if (!isEdit && !password) {
+        showError('Please enter password for new teacher');
+        return false;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('Please enter a valid email address');
+        return false;
+    }
+    return true;
+}
+
+/* CREATE TEACHER */
 function saveTeacher() {
-    $.post("/teachers/store", {
-        _token: "{{ csrf_token() }}",
-        name: $('#name').val(),
-        email: $('#email').val(),
-        password: $('#password').val(),
-        designation: $('#designation').val(),
-        department: $('#department').val(),
-    })
-    .done(res => {
-        Swal.fire('Success', res.message, 'success');
-        location.reload();
-    })
-    .fail(xhr => {
-        handleError(xhr);
-    });
-}
-
-/* EDIT */
-function editTeacher(id) {
-    $.get("/teachers/edit/" + id, function(data) {
-        openModal();
-
-        $('#teacher_id').val(data.id);
-        $('#name').val(data.user.name);
-        $('#email').val(data.user.email);
-        $('#designation').val(data.user.designation);
-        $('#department').val(data.user.department);
-
-        $('#updateBtn').show();
-    });
-}
-
-/* UPDATE */
-function updateTeacher() {
-    let id = $('#teacher_id').val();
-
-    $.post("/teachers/update/" + id, {
-        _token: "{{ csrf_token() }}",
-        name: $('#name').val(),
-        email: $('#email').val(),
-        password: $('#password').val(),
-        designation: $('#designation').val(),
-        department: $('#department').val()
-    })
-    .done(res => {
-        Swal.fire('Updated', res.message, 'success');
-        location.reload();
-    })
-    .fail(xhr => {
-        handleError(xhr);
-    });
-}
-
-/* DELETE */
-function deleteTeacher(id) {
-    if (!confirm("Are you sure?")) return;
-
+    if (!validateForm()) return;
+    
+    let submitBtn = $('#saveBtn');
+    submitBtn.prop('disabled', true).text('Saving...');
+    
     $.ajax({
-        url: "/teachers/delete/" + id,
-        type: "DELETE",
-        data: { _token: "{{ csrf_token() }}" },
+        url: "{{ route('teachers.store') }}",
+        method: "POST",
+        data: {
+            name: $('#name').val().trim(),
+            email: $('#email').val().trim(),
+            password: $('#password').val(),
+            designation: $('#designation').val().trim(),
+            department: $('#department').val().trim(),
+            _token: "{{ csrf_token() }}"
+        },
         success: function(res) {
-            Swal.fire('Deleted', res.message, 'success');
-            location.reload();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: res.message || 'Teacher added successfully',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        },
+        error: function(xhr) {
+            handleError(xhr);
+            submitBtn.prop('disabled', false).text('💾 Save Teacher');
+        }
+    });
+}
+
+/* EDIT TEACHER */
+function editTeacher(id) {
+    $.ajax({
+        url: "/teachers/edit/" + id,
+        method: "GET",
+        success: function(data) {
+            openModal();
+            $('#modalTitle').text('Edit Teacher');
+            $('#teacher_id').val(data.id);
+            $('#name').val(data.user.name);
+            $('#email').val(data.user.email);
+            $('#designation').val(data.user.designation || '');
+            $('#department').val(data.user.department || '');
+            $('#password').val('');
+            $('#saveBtn').hide();
+            $('#updateBtn').show();
+        },
+        error: function() {
+            Swal.fire('Error', 'Could not fetch teacher details', 'error');
+        }
+    });
+}
+
+/* UPDATE TEACHER */
+function updateTeacher() {
+    if (!validateForm()) return;
+    
+    let id = $('#teacher_id').val();
+    let updateBtn = $('#updateBtn');
+    updateBtn.prop('disabled', true).text('Updating...');
+    
+    $.ajax({
+        url: "/teachers/update/" + id,
+        method: "POST",
+        data: {
+            name: $('#name').val().trim(),
+            email: $('#email').val().trim(),
+            password: $('#password').val(),
+            designation: $('#designation').val().trim(),
+            department: $('#department').val().trim(),
+            _token: "{{ csrf_token() }}",
+            _method: "PUT"
+        },
+        success: function(res) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: res.message || 'Teacher updated successfully',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        },
+        error: function(xhr) {
+            handleError(xhr);
+            updateBtn.prop('disabled', false).text('🔄 Update Teacher');
+        }
+    });
+}
+
+/* DELETE TEACHER */
+function deleteTeacher(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#b30000',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/teachers/delete/" + id,
+                method: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: res.message || 'Teacher deleted successfully',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function() {
+                    Swal.fire('Error', 'Could not delete teacher', 'error');
+                }
+            });
         }
     });
 }
 
 /* ERROR HANDLER */
 function handleError(xhr) {
-    let msg = 'Something went wrong';
-
+    let msg = 'Something went wrong. Please try again.';
+    
     if (xhr.status === 422) {
+        let errors = xhr.responseJSON.errors;
         msg = '';
-        $.each(xhr.responseJSON.errors, function(k, v) {
-            msg += v[0] + '<br>';
+        $.each(errors, function(key, value) {
+            msg += '• ' + value[0] + '<br>';
         });
+    } else if (xhr.status === 409) {
+        msg = xhr.responseJSON.message || 'Email already exists!';
+    } else if (xhr.status === 500) {
+        msg = 'Server error. Please check your connection.';
     }
-
+    
     showError(msg);
 }
+
+// Close modal when clicking outside
+$(document).ready(function() {
+    $(window).click(function(event) {
+        if ($(event.target).hasClass('modal')) {
+            closeModal();
+        }
+    });
+    
+    // Enter key submit
+    $('#teacherModal input').keypress(function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            if ($('#saveBtn').is(':visible')) {
+                saveTeacher();
+            } else if ($('#updateBtn').is(':visible')) {
+                updateTeacher();
+            }
+        }
+    });
+});
 
 </script>
 

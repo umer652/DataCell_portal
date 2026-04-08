@@ -26,6 +26,13 @@
     flex-shrink: 0;
 }
 
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f1b5c;
+    margin-bottom: 10px;
+}
+
 .add-btn {
     background: #0f1b5c;
     color: white;
@@ -428,7 +435,7 @@ tbody tr:hover {
 
     <!-- TOP -->
     <div class="top-bar">
-        <h2>Enrollment</h2>
+        <h2 class="page-title">Enrollment Management</h2>
         <button class="add-btn" onclick="openModal()">+ Add Enrollment</button>
     </div>
 

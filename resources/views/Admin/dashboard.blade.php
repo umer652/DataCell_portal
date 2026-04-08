@@ -44,6 +44,12 @@ body.sidebar-collapsed .main-container {
     align-items: center;
     margin-bottom: 25px;
 }
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f1b5c;
+    margin-bottom: 10px;
+}
 
 .dropdown-wrapper {
     position: absolute;
@@ -433,6 +439,8 @@ input, select {
             </ul>
         </div>
     @endif
+
+     <h2 class="page-title">Student Management</h2>
 
     <!-- Excel Upload Section -->
     <div class="upload-section">

@@ -44,6 +44,13 @@ body.sidebar-collapsed .main-container {
     margin-bottom: 20px;
 }
 
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f1b5c;
+    margin-bottom: 10px;
+}
+
 /* BUTTON */
 .add-btn {
     background: #0f1b5c;

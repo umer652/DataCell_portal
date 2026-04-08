@@ -75,11 +75,11 @@
     }
     
     .page-title {
-        font-size: 22px;
-        font-weight: 600;
-        color: #1e293b;
-        margin: 0;
-    }
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f1b5c;
+    margin-bottom: 10px;
+}
     
     .btn-primary {
         background: #0f1b5c;

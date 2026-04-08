@@ -195,47 +195,6 @@ input, select {
 .edit-icon { color: #0f1b5c; cursor: pointer; }
 .delete-icon { color: #d33; cursor: pointer; }
 
-/* Alert Messages */
-.alert {
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    position: relative;
-    animation: slideDown 0.3s ease;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-}
-
-.close-alert {
-    float: right;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    color: inherit;
-}
-
 /* Excel Upload Styles */
 .upload-section {
     background: #f8f9fa;
@@ -388,15 +347,18 @@ input, select {
     background: #f9f9f9;
 }
 
-@keyframes slideDown {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+/* SweetAlert Custom Styles */
+.swal2-popup {
+    font-size: 14px !important;
+}
+
+.swal2-title {
+    font-size: 22px !important;
+}
+
+.swal2-html-container {
+    font-size: 14px !important;
+    text-align: left !important;
 }
 
 </style>
@@ -404,43 +366,13 @@ input, select {
 
 @section('content')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <div class="main-container">
 
-    <!-- Display Success/Error Messages -->
-    @if(session('success'))
-        <div class="alert alert-success">
-            <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-error">
-            <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if(session('warning'))
-        <div class="alert alert-warning">
-            <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
-            {{ session('warning') }}
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <span class="close-alert" onclick="this.parentElement.style.display='none';">&times;</span>
-            <strong>Validation Errors:</strong>
-            <ul style="margin-top: 10px; margin-bottom: 0;">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-     <h2 class="page-title">Student Management</h2>
+    <h2 class="page-title">Student Management</h2>
 
     <!-- Excel Upload Section -->
     <div class="upload-section">
@@ -465,7 +397,7 @@ input, select {
                     <input type="file" name="excel_file" id="excel_file" accept=".xlsx,.xls,.csv" required onchange="displayFileName()">
                 </div>
                 <span id="fileName" class="selected-file">No file chosen</span>
-                <button type="submit" class="btn-excel" onclick="showProgress()">
+                <button type="submit" class="btn-excel">
                     <i class="fa-solid fa-cloud-upload-alt"></i> Import Students
                 </button>
             </div>
@@ -484,7 +416,7 @@ input, select {
 
     <div class="top-bar">
         <div class="dropdown-wrapper">
-            <form method="GET" action="{{ route('dashboard') }}">
+            <form method="GET" action="{{ url()->current() }}" id="sessionFilterForm">
                 <select name="session_filter" onchange="this.form.submit()" class="session-dropdown">
                     <option value="">All Sessions</option>
                     @foreach($sessions as $session)
@@ -563,9 +495,10 @@ input, select {
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="form-title">Student Registration Form</div>
 
-        <form method="POST" id="studentForm" onsubmit="return validateForm()">
+        <form method="POST" id="studentForm">
             @csrf
             <input type="hidden" name="_method" id="formMethod" value="POST">
+            <input type="hidden" name="student_id" id="student_id">
 
             <div class="form-grid">
                 <div class="form-group">
@@ -671,14 +604,14 @@ input, select {
                 </div>
 
                 <div class="full-width">
-                    <button type="submit" class="submit-btn" id="submitBtn">Save Student</button>
+                    <button type="button" class="submit-btn" id="submitBtn" onclick="saveStudent()">Save Student</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-{{-- Error Modal --}}
+{{-- Error Modal for Excel Import Errors --}}
 <div id="errorModal" class="error-modal">
     <div class="error-modal-content">
         <span class="close" onclick="closeErrorModal()" style="float: right; font-size: 28px; cursor: pointer;">&times;</span>
@@ -700,18 +633,32 @@ function openModal() {
     const passwordField = document.getElementById('password');
     const passwordRequired = document.getElementById('passwordRequired');
     const passwordHelp = document.getElementById('passwordHelp');
+    const studentId = document.getElementById('student_id');
     
     form.reset();
-    form.action = "{{ route('students.store') }}";
     formMethod.value = "POST";
+    studentId.value = '';
     
     passwordField.required = true;
+    passwordField.placeholder = "Enter password";
     passwordRequired.style.display = 'inline';
     passwordHelp.style.display = 'none';
     
+    // Clear any previous values
     document.getElementById('name').value = '';
     document.getElementById('email').value = '';
     document.getElementById('department').value = '';
+    document.getElementById('gender').value = '';
+    document.getElementById('father_name').value = '';
+    document.getElementById('roll_no').value = '';
+    document.getElementById('app_no').value = '';
+    document.getElementById('semester').value = '';
+    document.getElementById('program_id').value = '';
+    document.getElementById('session_id').value = '';
+    document.getElementById('section_id').value = '';
+    document.getElementById('enrollment_date').value = '';
+    document.getElementById('new_student').value = '1';
+    document.getElementById('designation').value = 'student';
     
     modal.style.display = 'block';
 }
@@ -722,16 +669,17 @@ function closeModal() {
 
 function editStudent(student) {
     const modal = document.getElementById('studentModal');
-    const form = document.getElementById('studentForm');
     const formMethod = document.getElementById('formMethod');
     const passwordField = document.getElementById('password');
     const passwordRequired = document.getElementById('passwordRequired');
     const passwordHelp = document.getElementById('passwordHelp');
+    const studentId = document.getElementById('student_id');
     
-    form.action = "/students/" + student.id;
     formMethod.value = "PUT";
+    studentId.value = student.id;
     
     passwordField.required = false;
+    passwordField.placeholder = "Leave blank to keep current password";
     passwordRequired.style.display = 'none';
     passwordHelp.style.display = 'block';
     passwordField.value = '';
@@ -754,46 +702,176 @@ function editStudent(student) {
     modal.style.display = 'block';
 }
 
-function deleteStudent(id) {
-    if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
-        fetch("/students/" + id, {
-            method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error deleting student: ' + (data.message || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error deleting student. Please try again.');
-        });
-    }
-}
-
-function validateForm() {
+function saveStudent() {
     const formMethod = document.getElementById('formMethod').value;
+    const studentId = document.getElementById('student_id').value;
     const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Validation
+    if (!name || !email) {
+        Swal.fire('Validation Error', 'Name and Email are required fields.', 'error');
+        return;
+    }
     
     if (formMethod === 'POST' && (!password || password.length < 6)) {
-        alert('Password is required and must be at least 6 characters for new students.');
-        return false;
+        Swal.fire('Validation Error', 'Password is required and must be at least 6 characters for new students.', 'error');
+        return;
     }
     
     if (formMethod === 'PUT' && password && password.length < 6) {
-        alert('Password must be at least 6 characters if provided.');
-        return false;
+        Swal.fire('Validation Error', 'Password must be at least 6 characters if provided.', 'error');
+        return;
     }
     
-    return true;
+    // Prepare form data
+    let formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('department', document.getElementById('department').value);
+    formData.append('designation', document.getElementById('designation').value);
+    formData.append('gender', document.getElementById('gender').value);
+    formData.append('father_name', document.getElementById('father_name').value);
+    formData.append('roll_no', document.getElementById('roll_no').value);
+    formData.append('app_no', document.getElementById('app_no').value);
+    formData.append('semester', document.getElementById('semester').value);
+    formData.append('program_id', document.getElementById('program_id').value);
+    formData.append('session_id', document.getElementById('session_id').value);
+    formData.append('section_id', document.getElementById('section_id').value);
+    formData.append('enrollment_date', document.getElementById('enrollment_date').value);
+    formData.append('new_student', document.getElementById('new_student').value);
+    
+    if (password) {
+        formData.append('password', password);
+    }
+    
+    let url = '';
+    if (formMethod === 'POST') {
+        url = '{{ route("students.store") }}';
+    } else {
+        url = '/students/' + studentId;
+        formData.append('_method', 'PUT');
+    }
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+    
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message || 'Student saved successfully.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Save Student';
+                
+                let errorHtml = '<ul style="text-align: left;">';
+                if (response.errors) {
+                    for (let field in response.errors) {
+                        errorHtml += `<li><strong>${field}:</strong> ${response.errors[field].join(', ')}</li>`;
+                    }
+                } else {
+                    errorHtml += `<li>${response.message || 'An error occurred'}</li>`;
+                }
+                errorHtml += '</ul>';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    html: errorHtml,
+                    icon: 'error',
+                    confirmButtonColor: '#0f1b5c'
+                });
+            }
+        },
+        error: function(xhr) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Save Student';
+            
+            console.log('Error response:', xhr);
+            
+            let errorMsg = 'An error occurred. Please try again.';
+            
+            if (xhr.status === 422) {
+                // Validation errors
+                let errors = xhr.responseJSON?.errors;
+                if (errors) {
+                    let errorHtml = '<ul style="text-align: left;">';
+                    for (let field in errors) {
+                        errorHtml += `<li><strong>${field}:</strong> ${errors[field].join(', ')}</li>`;
+                    }
+                    errorHtml += '</ul>';
+                    
+                    Swal.fire({
+                        title: 'Validation Error!',
+                        html: errorHtml,
+                        icon: 'error',
+                        confirmButtonColor: '#0f1b5c'
+                    });
+                    return;
+                }
+            } else if (xhr.status === 409) {
+                errorMsg = xhr.responseJSON?.message || 'Email already exists!';
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            
+            Swal.fire('Error!', errorMsg, 'error');
+        }
+    });
+}
+
+function deleteStudent(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/students/" + id,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire('Deleted!', response.message || 'Student has been deleted.', 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error!', response.message || 'Could not delete student.', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Network error. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error!', errorMsg, 'error');
+                }
+            });
+        }
+    });
 }
 
 // ==================== EXCEL UPLOAD FUNCTIONS ====================
@@ -806,59 +884,40 @@ function displayFileName() {
         fileName.textContent = input.files[0].name;
         
         if (input.files[0].size > 5 * 1024 * 1024) {
-            alert('File size exceeds 5MB. Please choose a smaller file.');
+            Swal.fire('Error', 'File size exceeds 5MB. Please choose a smaller file.', 'error');
             input.value = '';
             fileName.textContent = 'No file chosen';
+            return;
         }
         
         const allowedExtensions = ['.xlsx', '.xls', '.csv'];
         const fileExt = input.files[0].name.substring(input.files[0].name.lastIndexOf('.')).toLowerCase();
         if (!allowedExtensions.includes(fileExt)) {
-            alert('Invalid file type. Please upload .xlsx, .xls, or .csv files only.');
+            Swal.fire('Error', 'Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
             input.value = '';
             fileName.textContent = 'No file chosen';
         }
     }
 }
 
-function showProgress() {
+$('#excelUploadForm').on('submit', function(e) {
+    e.preventDefault();
+    
     const fileInput = document.getElementById('excel_file');
     if (!fileInput.files || !fileInput.files[0]) {
-        alert('Please select a file first.');
-        return false;
+        Swal.fire('Error', 'Please select a file first.', 'error');
+        return;
     }
-    
-    const progressBar = document.getElementById('progressBar');
-    const progress = document.getElementById('progress');
-    
-    progressBar.style.display = 'block';
-    progress.style.width = '0%';
-    progress.textContent = '0%';
-    
-    let width = 0;
-    const interval = setInterval(function() {
-        if (width >= 90) {
-            clearInterval(interval);
-        } else {
-            width += 10;
-            progress.style.width = width + '%';
-            progress.textContent = width + '%';
-        }
-    }, 200);
-    
-    return true;
-}
-
-document.getElementById('excelUploadForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
     
     const formData = new FormData(this);
     const progressBar = document.getElementById('progressBar');
     const progress = document.getElementById('progress');
+    const submitBtn = $(this).find('button[type="submit"]');
     
     progressBar.style.display = 'block';
     progress.style.width = '0%';
     progress.textContent = '0%';
+    submitBtn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Uploading...');
     
     let width = 0;
     const interval = setInterval(function() {
@@ -871,37 +930,44 @@ document.getElementById('excelUploadForm')?.addEventListener('submit', function(
         }
     }, 200);
     
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        clearInterval(interval);
-        progress.style.width = '100%';
-        progress.textContent = '100%';
-        
-        setTimeout(() => {
-            if (data.success) {
-                location.reload();
-            } else {
-                progressBar.style.display = 'none';
-                if (data.errors) {
-                    displayErrors(data.errors);
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            clearInterval(interval);
+            progress.style.width = '100%';
+            progress.textContent = '100%';
+            submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
+            
+            setTimeout(() => {
+                if (data.success) {
+                    Swal.fire('Success!', data.message || 'Students imported successfully.', 'success').then(() => {
+                        location.reload();
+                    });
                 } else {
-                    alert(data.message || 'Error uploading file');
+                    progressBar.style.display = 'none';
+                    if (data.errors && data.errors.length > 0) {
+                        displayErrors(data.errors);
+                    } else {
+                        Swal.fire('Error!', data.message || 'Error uploading file', 'error');
+                    }
                 }
+            }, 500);
+        },
+        error: function(xhr) {
+            clearInterval(interval);
+            progressBar.style.display = 'none';
+            submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
+            
+            let errorMsg = 'Network error. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
             }
-        }, 500);
-    })
-    .catch(error => {
-        clearInterval(interval);
-        progressBar.style.display = 'none';
-        console.error('Error:', error);
-        alert('Error uploading file. Please try again.');
+            Swal.fire('Error!', errorMsg, 'error');
+        }
     });
 });
 
@@ -919,10 +985,10 @@ function displayErrors(errors) {
     
     errors.forEach(error => {
         html += '<tr>';
-        html += `<td>${error.row}</td>`;
-        html += `<td>${error.attribute}</td>`;
-        html += `<td>${error.errors.join(', ')}</td>`;
-        html += `<td><pre style="margin:0; font-size:12px;">${JSON.stringify(error.values, null, 2)}</pre></td>`;
+        html += `<td>${error.row || 'N/A'}</td>`;
+        html += `<td>${error.attribute || 'General'}</td>`;
+        html += `<td>${error.errors ? error.errors.join(', ') : error.message}</td>`;
+        html += `<td><pre style="margin:0; font-size:12px;">${error.values ? JSON.stringify(error.values, null, 2) : 'N/A'}</pre></td>`;
         html += '</tr>';
     });
     
@@ -949,22 +1015,23 @@ window.onclick = function(event) {
     }
 }
 
-// Auto-hide alerts after 5 seconds
-setTimeout(function() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        alert.style.opacity = '0';
-        setTimeout(function() {
-            alert.style.display = 'none';
-        }, 300);
+// Display session messages in SweetAlert
+@if(session('success'))
+    Swal.fire({
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        icon: 'success',
+        timer: 3000,
+        showConfirmButton: true
     });
-}, 5000);
+@endif
 
-// Display import errors from server if any
-@if(session('import_errors'))
-    document.addEventListener('DOMContentLoaded', function() {
-        const errors = @json(session('import_errors'));
-        displayErrors(errors);
+@if(session('error'))
+    Swal.fire({
+        title: 'Error!',
+        text: '{{ session('error') }}',
+        icon: 'error',
+        confirmButtonColor: '#d33'
     });
 @endif
 

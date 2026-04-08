@@ -34,22 +34,22 @@ class StudentController extends Controller
     
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'gender' => 'required',
-            'father_name' => 'required',
-            'roll_no' => 'required|unique:student,roll_no',
-            'app_no' => 'required|unique:student,app_no',
-            'semester' => 'required|integer',
-            'program_id' => 'required|exists:programs,id',
-            'session_id' => 'required|exists:sessions,id',
-            'section_id' => 'required|exists:sections,id',
-            'department' => 'required',
-        ]);
-        
         try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'gender' => 'required',
+                'father_name' => 'required',
+                'roll_no' => 'required|unique:student,roll_no',
+                'app_no' => 'required|unique:student,app_no',
+                'semester' => 'required|integer',
+                'program_id' => 'required|exists:program,id',
+                'session_id' => 'required|exists:sessions,id',
+                'section_id' => 'required|exists:sections,id',
+                'department' => 'required',
+            ]);
+            
             DB::beginTransaction();
             
             // Create User first
@@ -64,6 +64,7 @@ class StudentController extends Controller
             // Create Student linked to User
             $student = Student::create([
                 'user_id' => $user->id,
+                'name' => $request->name,
                 'gender' => $request->gender,
                 'father_name' => $request->father_name,
                 'roll_no' => $request->roll_no,
@@ -78,33 +79,63 @@ class StudentController extends Controller
             
             DB::commit();
             
+            // Check if request expects JSON (AJAX request)
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Student created successfully!',
+                    'data' => $student
+                ]);
+            }
+            
             return redirect()->route('dashboard')->with('success', 'Student created successfully!');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                    'message' => 'Validation failed'
+                ], 422);
+            }
+            
+            return back()->withErrors($e->errors())->withInput();
             
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error creating student: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return back()->with('error', 'Error creating student: ' . $e->getMessage());
         }
     }
     
     public function update(Request $request, $id)
     {
-        $student = Student::with('user')->findOrFail($id);
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $student->user_id,
-            'gender' => 'required',
-            'father_name' => 'required',
-            'roll_no' => 'required|unique:student,roll_no,' . $id,
-            'app_no' => 'required|unique:student,app_no,' . $id,
-            'semester' => 'required|integer',
-            'program_id' => 'required|exists:program,id',
-            'session_id' => 'required|exists:sessions,id',
-            'section_id' => 'required|exists:sections,id',
-            'department' => 'required',
-        ]);
-        
         try {
+            $student = Student::with('user')->findOrFail($id);
+            
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $student->user_id,
+                'gender' => 'required',
+                'father_name' => 'required',
+                'roll_no' => 'required|unique:student,roll_no,' . $id,
+                'app_no' => 'required|unique:student,app_no,' . $id,
+                'semester' => 'required|integer',
+                'program_id' => 'required|exists:program,id',
+                'session_id' => 'required|exists:sessions,id',
+                'section_id' => 'required|exists:sections,id',
+                'department' => 'required',
+            ]);
+            
             DB::beginTransaction();
             
             // Update User
@@ -137,10 +168,40 @@ class StudentController extends Controller
             
             DB::commit();
             
+            // Check if request expects JSON (AJAX request)
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Student updated successfully!',
+                    'data' => $student
+                ]);
+            }
+            
             return redirect()->route('dashboard')->with('success', 'Student updated successfully!');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                    'message' => 'Validation failed'
+                ], 422);
+            }
+            
+            return back()->withErrors($e->errors())->withInput();
             
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating student: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return back()->with('error', 'Error updating student: ' . $e->getMessage());
         }
     }
@@ -156,36 +217,62 @@ class StudentController extends Controller
             // Optional: Delete the associated user as well
             // User::find($userId)->delete();
             
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'message' => 'Student deleted successfully!']);
             
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
     
-    // Excel Import Method
     // Excel Import Method - FIXED FOR AJAX
-public function importExcel(Request $request)
-{
-    try {
-        // Validate the request
-        $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
-        ]);
-        
-        \Log::info('Excel import started', [
-            'file_name' => $request->file('excel_file')->getClientOriginalName()
-        ]);
-        
-        $import = new StudentsImport();
-        Excel::import($import, $request->file('excel_file'));
-        
-        $successCount = $import->getSuccessCount();
-        $failedCount = $import->getFailedCount();
-        $failures = $import->failures();
-        
-        if ($failedCount > 0) {
+    public function importExcel(Request $request)
+    {
+        try {
+            // Validate the request
+            $request->validate([
+                'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            ]);
+            
+            \Log::info('Excel import started', [
+                'file_name' => $request->file('excel_file')->getClientOriginalName()
+            ]);
+            
+            $import = new StudentsImport();
+            Excel::import($import, $request->file('excel_file'));
+            
+            $successCount = $import->getSuccessCount();
+            $failedCount = $import->getFailedCount();
+            $failures = $import->failures();
+            
+            if ($failedCount > 0) {
+                $errorDetails = [];
+                foreach ($failures as $failure) {
+                    $errorDetails[] = [
+                        'row' => $failure->row(),
+                        'attribute' => $failure->attribute(),
+                        'errors' => $failure->errors(),
+                        'values' => $failure->values()
+                    ];
+                }
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => "Imported: {$successCount} students. Failed: {$failedCount}",
+                    'errors' => $errorDetails
+                ]);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully imported {$successCount} students"
+            ]);
+            
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            \Log::error('Excel validation error: ' . $e->getMessage());
+            
+            $failures = $e->failures();
             $errorDetails = [];
+            
             foreach ($failures as $failure) {
                 $errorDetails[] = [
                     'row' => $failure->row(),
@@ -195,51 +282,23 @@ public function importExcel(Request $request)
                 ];
             }
             
-            // Return JSON response for AJAX
             return response()->json([
                 'success' => false,
-                'message' => "Imported: {$successCount} students. Failed: {$failedCount}",
+                'message' => 'Validation errors in Excel file. Please check the file and try again.',
                 'errors' => $errorDetails
-            ]);
+            ], 422);
+            
+        } catch (\Exception $e) {
+            \Log::error('Excel import error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error importing file: ' . $e->getMessage()
+            ], 500);
         }
-        
-        // Return JSON response for AJAX
-        return response()->json([
-            'success' => true,
-            'message' => "Successfully imported {$successCount} students"
-        ]);
-        
-    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-        \Log::error('Excel validation error: ' . $e->getMessage());
-        
-        $failures = $e->failures();
-        $errorDetails = [];
-        
-        foreach ($failures as $failure) {
-            $errorDetails[] = [
-                'row' => $failure->row(),
-                'attribute' => $failure->attribute(),
-                'errors' => $failure->errors(),
-                'values' => $failure->values()
-            ];
-        }
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation errors in Excel file. Please check the file and try again.',
-            'errors' => $errorDetails
-        ]);
-        
-    } catch (\Exception $e) {
-        \Log::error('Excel import error: ' . $e->getMessage());
-        \Log::error($e->getTraceAsString());
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Error importing file: ' . $e->getMessage()
-        ], 500);
     }
-}
+    
     // Download Template
     public function downloadTemplate()
     {

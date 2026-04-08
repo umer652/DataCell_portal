@@ -197,7 +197,7 @@ Swal.fire({
 Swal.fire({
     icon: 'error',
     title: 'Import Stopped',
-    text: '{{ session('error') }}',
+    text: "{{ session('error') }}",
     toast: true,
     position: 'top',
     timer: 4000,

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -59,14 +60,14 @@
         .sidebar {
             width: 250px;
             height: 100vh;
-            background:#0f1b5c;
+            background: #0f1b5c;
             position: fixed;
             top: 0;
             left: -250px;
             transition: 0.3s ease;
             padding: 20px 0;
             overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
 
@@ -128,7 +129,7 @@
         }
 
         .sidebar ul li a:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             transform: translateX(5px);
         }
 
@@ -177,41 +178,39 @@
         }
 
         .back-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
 
-    background: transparent;
-    color: #fff;
+            background: transparent;
+            color: #fff;
 
-    border: 1px solid #fff;
-    padding: 6px 14px;
-    border-radius: 8px;
+            border: 1px solid #fff;
+            padding: 6px 14px;
+            border-radius: 8px;
 
-    cursor: pointer;
-    font-weight: 500;
+            cursor: pointer;
+            font-weight: 500;
 
-    transition: all 0.3s ease;
-}
+            transition: all 0.3s ease;
+        }
 
-/* Hover Effect */
-.back-btn:hover {
-    background: #fff;
-    color: #0f1b5c;
-    transform: translateX(-4px);
-}
+        /* Hover Effect */
+        .back-btn:hover {
+            background: #fff;
+            color: #0f1b5c;
+            transform: translateX(-4px);
+        }
 
-/* Icon styling */
-.back-btn i {
-    font-size: 14px;
-}
-
-
-
+        /* Icon styling */
+        .back-btn i {
+            font-size: 14px;
+        }
     </style>
 
     @yield('styles')
 </head>
+
 <body>
 
     <!-- HAMBURGER (ONLY FOR OPENING) -->
@@ -223,11 +222,14 @@
     <!-- TOPBAR -->
     <div class="topbar">
         <button class="back-btn" onclick="window.history.back()">
-    <i class="fas fa-chevron-left"></i>
-    {{-- <span>Back</span> --}}
-</button>
+            <i class="fas fa-chevron-left"></i>
+            {{-- <span>Back</span> --}}
 
+        </button>
 
+        <div class="font-semibold text-lg">
+            <span>@yield('title')</span>
+        </div>
 
         <div class="profile">
             <span>{{ Auth::user()->name ?? 'User' }}</span>
@@ -240,52 +242,53 @@
         @yield('content')
     </div>
 
-<script>
-const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
 
-function setLayout(isOpen) {
-    document.body.classList.toggle('sidebar-collapsed', !isOpen);
-}
+        function setLayout(isOpen) {
+            document.body.classList.toggle('sidebar-collapsed', !isOpen);
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const isSidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
+        document.addEventListener('DOMContentLoaded', () => {
+            const isSidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
 
-    if (isSidebarOpen) {
-        sidebar.classList.add('active');
-    } else {
-        sidebar.classList.remove('active');
-    }
+            if (isSidebarOpen) {
+                sidebar.classList.add('active');
+            } else {
+                sidebar.classList.remove('active');
+            }
 
-    setLayout(isSidebarOpen);
+            setLayout(isSidebarOpen);
 
-    // CLOSE BUTTON INSIDE SIDEBAR
-    const closeSidebar = document.getElementById('closeSidebar');
+            // CLOSE BUTTON INSIDE SIDEBAR
+            const closeSidebar = document.getElementById('closeSidebar');
 
-    if (closeSidebar) {
-        closeSidebar.addEventListener('click', function (e) {
+            if (closeSidebar) {
+                closeSidebar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+
+                    sidebar.classList.remove('active');
+                    localStorage.setItem('sidebarOpen', false);
+
+                    setLayout(false);
+                });
+            }
+        });
+
+        // HAMBURGER → ONLY OPENS SIDEBAR
+        hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
 
-            sidebar.classList.remove('active');
-            localStorage.setItem('sidebarOpen', false);
+            sidebar.classList.add('active');
+            localStorage.setItem('sidebarOpen', true);
 
-            setLayout(false);
+            setLayout(true);
         });
-    }
-});
+    </script>
 
-// HAMBURGER → ONLY OPENS SIDEBAR
-hamburger.addEventListener('click', (e) => {
-    e.stopPropagation();
-
-    sidebar.classList.add('active');
-    localStorage.setItem('sidebarOpen', true);
-
-    setLayout(true);
-});
-</script>
-
-@yield('scripts')
+    @yield('scripts')
 
 </body>
+
 </html>

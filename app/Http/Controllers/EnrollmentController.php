@@ -64,7 +64,7 @@ class EnrollmentController extends Controller
                     <td>' . ($e->program->name ?? '-') . '</td>
                     <td>' . ($e->session->name ?? '-') . '</td>
                     <td>' . ($e->semester ?? '-') . '</td>
-                    <td>' . ($e->section->name ?? '-') . '</td>
+                    <td>' . ($e->section ?? '-') . '</td>
                     <td>' . ($e->enrollment_date ?? '-') . '</td>
                     <td class="action-buttons">
                         <button onclick="editEnrollment(' . $e->id . ')" class="edit-btn">Edit</button>

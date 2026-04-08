@@ -62,7 +62,7 @@
     
     .scheme-select:focus {
         outline: none;
-        ring: 2px solid #3b82f6;
+        outline: 2px solid #3b82f6;
     }
     
     /* Top Bar */

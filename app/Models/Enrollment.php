@@ -11,20 +11,20 @@ class Enrollment extends Model
 
     protected $table = 'enrollment';
 
-    public $timestamps=false;
+    public $timestamps = false;
 
     protected $fillable = [
         'student_id',
         'session_id',
         'program_id',
         'offered_course_id',
-        'section_id',
+        'section',
         'semester',
         'enrollment_date',
         'grade',
     ];
 
-    
+
 
     // RELATIONSHIPS
 
@@ -49,8 +49,7 @@ class Enrollment extends Model
     }
 
     public function offeredCourse()
-{
-    return $this->belongsTo(OfferedCourse::class, 'offered_course_id');
-}
-
+    {
+        return $this->belongsTo(OfferedCourse::class, 'offered_course_id');
+    }
 }

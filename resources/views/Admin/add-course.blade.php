@@ -5,9 +5,43 @@
 @section('styles')
 <style>
 
-/* ICON */
-.add-btn i {
-    margin-right: 6px;
+/* ===== MAIN CSS ===== */
+
+.add-btn {
+    background: #0f1b5c;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #1a2a7a;
+    transform: translateY(-2px);
+}
+
+.main-container {
+    position: fixed;
+    top: 80px;
+    left: 270px;
+    width: calc(100% - 290px);
+    bottom: 20px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
+body.sidebar-collapsed .main-container {
+    left: 100px;
+    width: calc(100% - 120px);
 }
 
 /* TOP BAR */
@@ -20,10 +54,9 @@
 
 /* PAGE TITLE */
 .page-title {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #0f1b5c;
-    margin: 0;
 }
 
 /* BUTTON GROUP */
@@ -31,24 +64,6 @@
     display: flex;
     gap: 10px;
     align-items: center;
-}
-
-/* BUTTONS */
-.add-btn {
-    background: #0f1b5c;
-    color: #fff;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.add-btn:hover {
-    background: #16256e;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(15,27,92,0.2);
 }
 
 .import-btn {
@@ -59,34 +74,13 @@
     background: #157347;
 }
 
-/* MAIN CONTAINER */
-.main-container {
-    position: fixed;
-    top: 80px;
-    left: 270px;
-    width: calc(100% - 290px);
-    bottom: 20px;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: left 0.3s ease, width 0.3s ease;
-}
-
-/* SIDEBAR COLLAPSED */
-body.sidebar-collapsed .main-container {
-    left: 100px;
-    width: calc(100% - 120px);
-}
-
 /* TABLE */
 .table-container {
     flex: 1;
-    overflow: auto;
-    border-radius: 8px;
+    margin-top: 15px;
+    border-radius: 10px;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 table {
@@ -97,21 +91,38 @@ table {
 thead th {
     position: sticky;
     top: 0;
+    z-index: 100;
     background: #0f1b5c;
     color: #fff;
-    padding: 12px;
-    text-align: left;
+    padding: 14px 20px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
+thead th:nth-child(1) { width: 15%; min-width: 120px; }
+thead th:nth-child(2) { width: 25%; min-width: 200px; }
+thead th:nth-child(3) { width: 45%; min-width: 350px; }
+thead th:nth-child(4) { width: 15%; min-width: 100px; }
+
 tbody td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
 }
 
 tbody tr:hover {
-    background: #f8f9fa;
+    background-color: #f5f7fb;
 }
+
+tbody td:nth-child(1) { white-space: nowrap; }
+tbody td:nth-child(2) { white-space: nowrap; }
+tbody td:nth-child(3) { 
+    white-space: normal; 
+    word-wrap: break-word; 
+    word-break: break-word; 
+    line-height: 1.6;
+}
+tbody td:nth-child(4) { white-space: nowrap; }
 
 /* ACTION ICONS */
 .action-icons {
@@ -119,31 +130,32 @@ tbody tr:hover {
     gap: 12px;
 }
 
-.edit-icon {
-    color: #0f1b5c;
-    cursor: pointer;
+.edit-icon { 
+    color: #0f1b5c; 
+    cursor: pointer; 
     font-size: 18px;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .edit-icon:hover {
-    color: #16256e;
+    color: #1a2a7a;
     transform: scale(1.1);
 }
 
-.delete-icon {
-    color: #d33;
-    cursor: pointer;
+.delete-icon { 
+    color: #dc3545; 
+    cursor: pointer; 
     font-size: 18px;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .delete-icon:hover {
-    color: #b30000;
+    color: #c82333;
     transform: scale(1.1);
 }
 
-/* MODAL */
+/* ================= MODAL STYLES ================= */
+
 .modal {
     display: none;
     position: fixed;
@@ -152,44 +164,31 @@ tbody tr:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
     background: #fff;
-    margin: 5% auto;
     width: 55%;
-    border-radius: 12px;
-    padding: 25px;
+    max-width: 700px;
+    padding: 30px;
+    border-radius: 16px;
     position: relative;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    animation: slideDown 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .import-modal-content {
     background: #fff;
-    margin: 8% auto;
     width: 450px;
-    border-radius: 12px;
-    padding: 25px;
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    padding: 30px;
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 /* CLOSE BUTTON */
@@ -198,46 +197,92 @@ tbody tr:hover {
     right: 20px;
     top: 15px;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 26px;
+    transition: color 0.2s;
     color: #999;
-    transition: color 0.2s ease;
 }
 
 .close:hover {
-    color: #0f1b5c;
+    color: #d33;
 }
 
-/* FORM */
+/* FORM TITLE */
+.form-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #0f1b5c;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* IMPORT MODAL TITLE */
+.import-modal-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #0f1b5c;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* FORM GRID */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 18px;
+    margin-top: 10px;
 }
 
+/* FULL WIDTH */
 .full-width {
     grid-column: 1 / -1;
 }
 
+/* LABELS */
 label {
-    font-weight: 600;
-    margin-bottom: 5px;
     display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
     color: #333;
+    font-size: 13px;
 }
 
+/* INPUTS */
 input, textarea {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #d0d0d0;
+    outline: none;
+    transition: 0.2s;
     font-size: 14px;
-    transition: border-color 0.2s ease;
 }
 
 input:focus, textarea:focus {
-    outline: none;
     border-color: #0f1b5c;
-    box-shadow: 0 0 0 2px rgba(15,27,92,0.1);
+    box-shadow: 0 0 0 2px rgba(15, 27, 92, 0.1);
+}
+
+input.error, textarea.error {
+    border-color: #dc3545;
+    background-color: #fff8f8;
+}
+
+/* FIELD ERROR */
+.field-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* HELP TEXT */
+.help-text {
+    color: #666;
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
 }
 
 textarea {
@@ -245,64 +290,111 @@ textarea {
     min-height: 100px;
 }
 
-button[type="submit"] {
+/* BUTTON GROUP */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.submit-btn {
     background: #0f1b5c;
     color: #fff;
-    padding: 12px 20px;
+    padding: 12px 30px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
     transition: all 0.3s ease;
 }
 
-button[type="submit"]:hover {
-    background: #16256e;
+.submit-btn:hover {
+    background: #1a2a7a;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
     transform: translateY(-2px);
 }
 
 /* IMPORT MODAL STYLES */
-#importModal h3 {
-    color: #0f1b5c;
-    margin-bottom: 20px;
+.import-modal-content p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
-#importModal input[type="file"] {
-    border: 1px solid #ccc;
-    padding: 8px;
+.import-modal-content input[type="file"] {
+    border: 1px solid #d0d0d0;
+    padding: 10px;
     border-radius: 6px;
     width: 100%;
 }
 
-#importModal button {
-    background: #198754;
+.import-modal-content .submit-btn {
     width: 100%;
-}
-
-#importModal button:hover {
-    background: #157347;
+    margin-top: 15px;
 }
 
 /* EMPTY STATE */
 .empty-state {
     text-align: center;
-    padding: 50px;
+    padding: 60px;
     color: #999;
     font-size: 16px;
 }
 
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
 /* SCROLLBAR */
 .table-container::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
+
 .table-container::-webkit-scrollbar-thumb {
     background: #0f1b5c;
     border-radius: 10px;
 }
+
 .table-container::-webkit-scrollbar-track {
     background: #f1f1f1;
+}
+
+/* Loading Spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* RESPONSIVE */
@@ -332,10 +424,6 @@ button[type="submit"]:hover {
         width: 100%;
         justify-content: space-between;
     }
-    
-    .page-title {
-        font-size: 20px;
-    }
 }
 
 </style>
@@ -343,52 +431,45 @@ button[type="submit"]:hover {
 
 @section('content')
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-<!-- Fallback for Font Awesome if kit not available -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="main-container">
 
-    <!-- HEADER WITH TITLE -->
+    <h2 class="page-title">Course Management</h2>
+
     <div class="top-bar">
-        <h2 class="page-title">Course Management</h2>
+        <div></div>
         <div class="button-group">
-            <button class="add-btn" onclick="openModal()">
+            <button class="add-btn" id="addCourseBtn">
                 <i class="fas fa-plus"></i> Add Course
             </button>
-            <button class="add-btn import-btn" onclick="openImportModal()">
+            <button class="add-btn import-btn" id="importCourseBtn">
                 <i class="fas fa-upload"></i> Upload Excel
             </button>
         </div>
     </div>
 
-    <!-- TABLE -->
     <div class="table-container">
         @if(isset($courses) && count($courses) > 0)
         <table>
             <thead>
                 <tr>
-                    <th style="width: 15%">Course Code</th>
-                    <th style="width: 25%">Course Title</th>
-                    <th style="width: 45%">Description</th>
-                    <th style="width: 15%">Action</th>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Description</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="coursesTableBody">
                 @foreach($courses as $course)
-                <tr>
-                    <td>{{ $course->course_code }}</td>
+                <tr id="course-row-{{ $course->id }}">
+                    <td><strong>{{ $course->course_code }}</strong></td>
                     <td>{{ $course->course_title }}</td>
                     <td>{{ $course->description ?? 'No description provided' }}</td>
                     <td>
                         <div class="action-icons">
-                            <i class="fas fa-pen-to-square edit-icon"
-                               title="Edit Course"
-                               onclick='editCourse(@json($course))'></i>
-                            <i class="fas fa-trash-alt delete-icon"
-                               title="Delete Course"
-                               onclick="deleteCourse({{ $course->id }})"></i>
+                            <i class="fa-solid fa-pen-to-square edit-icon" data-id="{{ $course->id }}" style="cursor: pointer;"></i>
+                            <i class="fa-solid fa-trash delete-icon" data-id="{{ $course->id }}" style="cursor: pointer;"></i>
                         </div>
                     </td>
                 </tr>
@@ -397,7 +478,7 @@ button[type="submit"]:hover {
         </table>
         @else
         <div class="empty-state">
-            <i class="fas fa-book-open" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+            <i class="fas fa-book-open"></i>
             <p>No courses found. Click "Add Course" to get started or upload courses via Excel.</p>
         </div>
         @endif
@@ -408,232 +489,453 @@ button[type="submit"]:hover {
 <!-- ADD / EDIT MODAL -->
 <div class="modal" id="courseModal">
     <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <div class="form-title" id="modalTitle">Add Course</div>
 
-        <span class="close" onclick="closeModal()">&times;</span>
-
-        <h2 id="modalTitle">Add Course</h2>
-
-        <form method="POST" id="courseForm">
+        <form id="courseForm">
             @csrf
             <input type="hidden" name="_method" id="formMethod" value="POST">
+            <input type="hidden" name="course_id" id="course_id">
 
             <div class="form-grid">
-
-                <div>
+                <div class="form-group">
                     <label>Course Code *</label>
-                    <input type="text" name="course_code" id="course_code"
-                           pattern="[A-Za-z0-9]{3,10}"
-                           placeholder="e.g., CS101 or CSC-301"
-                           oninput="this.value=this.value.toUpperCase()" required>
-                    <small style="color: #666; font-size: 12px;">Format: 3-10 characters (letters/numbers/hyphen)</small>
+                    <input type="text" name="course_code" id="course_code" placeholder="e.g., CSC-101">
+                    <small class="help-text">Format: 3 letters, hyphen, 3 digits (e.g., CSC-101)</small>
+                    <span class="field-error" id="course_codeError"></span>
                 </div>
 
-                <div>
+                <div class="form-group">
                     <label>Course Title *</label>
-                    <input type="text" name="course_title" id="course_title" 
-                           placeholder="e.g., Introduction to Programming" required>
+                    <input type="text" name="course_title" id="course_title" placeholder="e.g., Introduction to Programming">
+                    <span class="field-error" id="course_titleError"></span>
                 </div>
 
-                <div class="full-width">
-                    <label>Description</label>
-                    <textarea name="description" id="description" 
-                              placeholder="Enter course description here..."></textarea>
+                <div class="form-group full-width">
+                    <label>Description (Optional)</label>
+                    <textarea name="description" id="description" placeholder="Enter course description here..." rows="4"></textarea>
+                    <span class="field-error" id="descriptionError"></span>
                 </div>
+            </div>
 
-                <div class="full-width">
-                    <button type="submit">
-                        <i class="fas fa-save"></i> Save Course
-                    </button>
-                </div>
-
+            <div class="button-group">
+                <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                <button type="button" class="submit-btn" id="saveCourseBtn">Save Course</button>
             </div>
         </form>
-
     </div>
 </div>
 
 <!-- IMPORT MODAL -->
 <div class="modal" id="importModal">
     <div class="import-modal-content">
-
-        <span class="close" onclick="closeImportModal()">&times;</span>
-
+        <span class="close" id="closeImportBtn">&times;</span>
         <h3><i class="fas fa-file-excel"></i> Upload Excel File</h3>
         
-        <p style="color: #666; margin-bottom: 15px; font-size: 13px;">
-            Upload an Excel file (.xlsx, .xls) with columns: course_code, course_title, description
+        <p>
+            Upload an Excel file (.xlsx, .xls, .csv) with columns:<br>
+            <strong>course_code, course_title, description</strong>
         </p>
 
-        <form method="POST" action="{{ route('courses.import') }}" enctype="multipart/form-data" id="importForm">
+        <form id="importForm" enctype="multipart/form-data">
             @csrf
-            <input type="file" name="file" accept=".xlsx,.xls,.csv" required>
-            <br><br>
-            <button type="submit">
+            <input type="file" name="file" id="importFile" accept=".xlsx,.xls,.csv" required>
+            <button type="submit" class="submit-btn" id="importSubmitBtn">
                 <i class="fas fa-upload"></i> Upload File
             </button>
         </form>
-
     </div>
 </div>
 
-<script>
+@endsection
 
-// CSRF Token for AJAX
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+@section('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// CSRF Token setup
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// Get elements
+const courseModal = document.getElementById('courseModal');
+const importModal = document.getElementById('importModal');
+const addBtn = document.getElementById('addCourseBtn');
+const importBtn = document.getElementById('importCourseBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const closeImportBtn = document.getElementById('closeImportBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const saveCourseBtn = document.getElementById('saveCourseBtn');
+const modalTitle = document.getElementById('modalTitle');
+const courseForm = document.getElementById('courseForm');
+const formMethod = document.getElementById('formMethod');
+const courseId = document.getElementById('course_id');
+const courseCode = document.getElementById('course_code');
+const courseTitle = document.getElementById('course_title');
+const description = document.getElementById('description');
+
+// ==================== CLEAR VALIDATION ====================
+
+function clearValidationMessages() {
+    document.querySelectorAll('.field-error').forEach(el => {
+        el.style.display = 'none';
+        el.textContent = '';
+    });
+    document.querySelectorAll('input, textarea').forEach(el => {
+        el.classList.remove('error');
+    });
+}
+
+function showFieldError(field, message) {
+    const errorSpan = document.getElementById(field + 'Error');
+    const inputField = document.getElementById(field);
+    if (errorSpan) {
+        errorSpan.textContent = message;
+        errorSpan.style.display = 'block';
     }
+    if (inputField) {
+        inputField.classList.add('error');
+    }
+}
+
+// ==================== VALIDATE FORM ====================
+
+function validateForm() {
+    let isValid = true;
+    clearValidationMessages();
+    
+    const code = courseCode.value.trim();
+    const title = courseTitle.value.trim();
+    
+    if (!code) {
+        showFieldError('course_code', 'Course code is required');
+        isValid = false;
+    } else if (!/^[A-Za-z]{3}-[0-9]{3}$/.test(code)) {
+        showFieldError('course_code', 'Course code must be in format: ABC-123 (3 letters, hyphen, 3 digits)');
+        isValid = false;
+    }
+    
+    if (!title) {
+        showFieldError('course_title', 'Course title is required');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+// ==================== MODAL FUNCTIONS ====================
+
+function openModal() {
+    courseForm.reset();
+    formMethod.value = "POST";
+    modalTitle.textContent = "Add Course";
+    courseId.value = '';
+    clearValidationMessages();
+    courseModal.style.display = 'flex';
+}
+
+function closeModal() {
+    courseModal.style.display = 'none';
+    clearValidationMessages();
+}
+
+function openImportModal() {
+    importModal.style.display = 'flex';
+}
+
+function closeImportModal() {
+    importModal.style.display = 'none';
+    document.getElementById('importForm').reset();
+}
+
+// Event listeners
+addBtn.addEventListener('click', openModal);
+importBtn.addEventListener('click', openImportModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelBtn.addEventListener('click', closeModal);
+closeImportBtn.addEventListener('click', closeImportModal);
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target === courseModal) closeModal();
+    if (event.target === importModal) closeImportModal();
 });
 
-// OPEN ADD MODAL
-function openModal() {
-    document.getElementById('modalTitle').innerText = "Add Course";
-    document.getElementById('courseForm').action = "{{ route('courses.store') }}";
-    document.getElementById('formMethod').value = "POST";
-    document.getElementById('course_code').value = "";
-    document.getElementById('course_title').value = "";
-    document.getElementById('description').value = "";
-    document.getElementById('course_code').removeAttribute('readonly');
-    document.getElementById('courseModal').style.display = 'block';
+// ==================== SAVE COURSE ====================
+
+async function saveCourse() {
+    if (!validateForm()) return;
+    
+    const method = formMethod.value;
+    const id = courseId.value;
+    
+    const formData = new FormData();
+    formData.append('_token', csrfToken);
+    formData.append('course_code', courseCode.value.trim().toUpperCase());
+    formData.append('course_title', courseTitle.value.trim());
+    formData.append('description', description.value.trim());
+    
+    let url = "{{ route('courses.store') }}";
+    
+    if (method === 'PUT' && id) {
+        formData.append('_method', 'PUT');
+        url = "/courses/" + id;
+    }
+    
+    saveCourseBtn.disabled = true;
+    saveCourseBtn.innerHTML = '<span class="spinner"></span> Saving...';
+    
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message || 'Course saved successfully',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            closeModal();
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            if (data.errors) {
+                clearValidationMessages();
+                for (let field in data.errors) {
+                    showFieldError(field, data.errors[field][0]);
+                }
+            } else {
+                Swal.fire('Error!', data.message || 'Error saving course', 'error');
+            }
+            saveCourseBtn.disabled = false;
+            saveCourseBtn.innerHTML = 'Save Course';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error!', 'Network error. Please try again.', 'error');
+        saveCourseBtn.disabled = false;
+        saveCourseBtn.innerHTML = 'Save Course';
+    }
 }
 
-// EDIT COURSE
-function editCourse(course) {
-    document.getElementById('modalTitle').innerText = "Edit Course";
-    document.getElementById('courseForm').action = "/courses/" + course.id;
-    document.getElementById('formMethod').value = "PUT";
-    document.getElementById('course_code').value = course.course_code;
-    document.getElementById('course_title').value = course.course_title;
-    document.getElementById('description').value = course.description ?? '';
-    document.getElementById('courseModal').style.display = 'block';
-}
+saveCourseBtn.addEventListener('click', saveCourse);
 
-// DELETE COURSE
-function deleteCourse(id) {
+// ==================== EDIT COURSE ====================
+
+async function editCourse(id) {
     Swal.fire({
+        title: 'Loading...',
+        text: 'Please wait while we fetch course details',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    try {
+        const response = await fetch("/courses/" + id + "/edit", {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        Swal.close();
+        
+        if (response.ok && data.success !== false) {
+            modalTitle.textContent = "Edit Course";
+            formMethod.value = "PUT";
+            courseId.value = data.id;
+            courseCode.value = data.course_code;
+            courseTitle.value = data.course_title;
+            description.value = data.description || '';
+            clearValidationMessages();
+            courseModal.style.display = 'flex';
+        } else {
+            Swal.fire('Error', data.message || 'Could not fetch course details', 'error');
+        }
+    } catch (error) {
+        Swal.close();
+        console.error('Error:', error);
+        Swal.fire('Error', 'Network error. Could not fetch course details.', 'error');
+    }
+}
+
+// ==================== DELETE COURSE ====================
+
+async function deleteCourse(id) {
+    const result = await Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
+        confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch("/courses/" + id, {
-                method: "DELETE",
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch("/courses/" + id, {
+                method: 'DELETE',
                 headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Course has been deleted successfully.',
-                        'success'
-                    ).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
-                }
-            })
-            .catch(error => {
-                Swal.fire('Error!', 'Could not delete the course.', 'error');
             });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                const row = document.getElementById('course-row-' + id);
+                if (row) row.remove();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: data.message || 'Course has been deleted',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire('Error!', data.message || 'Could not delete course', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error!', 'Network error. Please try again.', 'error');
         }
+    }
+}
+
+// ==================== IMPORT EXCEL ====================
+
+document.getElementById('importForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById('importFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        Swal.fire('Error', 'Please select a file to upload', 'error');
+        return;
+    }
+    
+    const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+    const fileExt = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    
+    if (!allowedExtensions.includes(fileExt)) {
+        Swal.fire('Error', 'Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('_token', csrfToken);
+    formData.append('file', file);
+    
+    const submitBtn = document.getElementById('importSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+    
+    try {
+        const response = await fetch("{{ route('courses.import') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message || 'Courses imported successfully',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            closeImportModal();
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            Swal.fire('Error!', data.message || 'Error uploading file', 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error!', 'Network error. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+    }
+});
+
+// ==================== ATTACH EDIT/DELETE EVENTS ====================
+
+function attachIconEvents() {
+    document.querySelectorAll('.edit-icon').forEach(icon => {
+        icon.removeEventListener('click', icon.clickHandler);
+        const id = icon.getAttribute('data-id');
+        icon.clickHandler = (e) => {
+            e.stopPropagation();
+            editCourse(id);
+        };
+        icon.addEventListener('click', icon.clickHandler);
+    });
+    
+    document.querySelectorAll('.delete-icon').forEach(icon => {
+        icon.removeEventListener('click', icon.clickHandler);
+        const id = icon.getAttribute('data-id');
+        icon.clickHandler = (e) => {
+            e.stopPropagation();
+            deleteCourse(id);
+        };
+        icon.addEventListener('click', icon.clickHandler);
     });
 }
 
-// CLOSE MODALS
-function closeModal() {
-    document.getElementById('courseModal').style.display = 'none';
-}
+attachIconEvents();
 
-function openImportModal() {
-    document.getElementById('importModal').style.display = 'block';
-}
-
-function closeImportModal() {
-    document.getElementById('importModal').style.display = 'none';
-}
-
-// Handle Import Form Submission
-document.getElementById('importForm')?.addEventListener('submit', function(e) {
-    const fileInput = this.querySelector('input[type="file"]');
-    if (!fileInput.files.length) {
+// Enter key submit
+courseForm.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.target.matches('textarea')) {
         e.preventDefault();
-        Swal.fire('Error', 'Please select a file to upload', 'error');
+        saveCourse();
     }
 });
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const courseModal = document.getElementById('courseModal');
-    const importModal = document.getElementById('importModal');
-    if (event.target === courseModal) {
-        closeModal();
-    }
-    if (event.target === importModal) {
-        closeImportModal();
-    }
-}
-
-// Form validation before submit
-document.getElementById('courseForm')?.addEventListener('submit', function(e) {
-    const courseCode = document.getElementById('course_code').value.trim();
-    const courseTitle = document.getElementById('course_title').value.trim();
-    
-    if (!courseCode) {
-        e.preventDefault();
-        Swal.fire('Error', 'Course code is required', 'error');
-        return false;
-    }
-    
-    if (!courseTitle) {
-        e.preventDefault();
-        Swal.fire('Error', 'Course title is required', 'error');
-        return false;
-    }
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-    submitBtn.disabled = true;
-});
-
-// Display success/error messages from session
+// Display session messages
 @if(session('success'))
-Swal.fire({
-    icon: 'success',
-    title: 'Success!',
-    text: '{{ session('success') }}',
-    timer: 3000,
-    showConfirmButton: false
-});
+    Swal.fire({
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        icon: 'success',
+        timer: 3000,
+        showConfirmButton: true
+    });
 @endif
 
 @if(session('error'))
-Swal.fire({
-    icon: 'error',
-    title: 'Error!',
-    text: '{{ session('error') }}',
-    timer: 3000,
-    showConfirmButton: false
-});
-@endif
-
-@if($errors->any())
-Swal.fire({
-    icon: 'error',
-    title: 'Validation Error',
-    html: '{!! implode('<br>', $errors->all()) !!}',
-    confirmButtonColor: '#0f1b5c'
-});
+    Swal.fire({
+        title: 'Error!',
+        text: '{{ session('error') }}',
+        icon: 'error',
+        confirmButtonColor: '#d33'
+    });
 @endif
 
 </script>

@@ -14,6 +14,12 @@
     border-radius: 8px;
     cursor: pointer;
     margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #1a2a7a;
+    transform: translateY(-2px);
 }
 
 /* MAIN CONTAINER */
@@ -51,7 +57,7 @@ body.sidebar-collapsed .main-container {
 }
 
 .top-bar h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #0f1b5c;
     margin: 0;
@@ -68,7 +74,6 @@ body.sidebar-collapsed .main-container {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
 }
 
 /* HEADER */
@@ -80,13 +85,20 @@ thead th {
     color: #fff;
     text-align: left;
     vertical-align: middle;
+    padding: 14px 16px;
+    font-weight: 600;
 }
 
 /* BODY CELLS */
 tbody td {
     text-align: left;
     vertical-align: middle;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 16px;
+}
+
+tbody tr:hover {
+    background-color: #f5f7fb;
 }
 
 /* LAST COLUMN (ACTIONS) CENTER */
@@ -95,48 +107,43 @@ tbody td:last-child {
     text-align: center;
 }
 
-/* PADDING */
-thead th,
-tbody td {
-    padding: 12px 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* ACTION BUTTONS */
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     justify-content: center;
 }
 
-td button {
+.edit-btn, .delete-btn {
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
     font-size: 13px;
+    font-weight: 500;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-td button:first-child {
+.edit-btn {
     background: #0f1b5c;
     color: #fff;
 }
 
-td button:first-child:hover {
-    background: #16256e;
+.edit-btn:hover {
+    background: #1a2a7a;
     transform: translateY(-1px);
 }
 
-td button:last-child {
-    background: #b30000;
+.delete-btn {
+    background: #dc3545;
     color: #fff;
 }
 
-td button:last-child:hover {
-    background: #cc0000;
+.delete-btn:hover {
+    background: #c82333;
     transform: translateY(-1px);
 }
 
@@ -153,7 +160,7 @@ td button:last-child:hover {
     background: #f1f1f1;
 }
 
-/* MODAL */
+/* ================= MODAL STYLES ================= */
 .modal {
     display: none;
     position: fixed;
@@ -162,124 +169,152 @@ td button:last-child:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
     background: #fff;
-    margin: 3% auto;
-    width: 60%;
-    max-height: 85vh;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 25px;
+    width: 55%;
+    max-width: 700px;
+    padding: 30px;
+    border-radius: 16px;
     position: relative;
-    animation: slideDown 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
-@keyframes slideDown {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
+/* CLOSE BUTTON */
 .close {
     position: absolute;
     right: 20px;
     top: 15px;
-    font-size: 28px;
     cursor: pointer;
-    color: #999;
-    transition: color 0.2s ease;
+    font-size: 26px;
+    transition: color 0.2s;
 }
 
 .close:hover {
+    color: #d33;
+}
+
+/* FORM TITLE */
+.form-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
     color: #0f1b5c;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
 }
 
 /* FORM GRID */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 18px;
+    margin-top: 10px;
 }
 
-.form-grid div {
-    display: flex;
-    flex-direction: column;
+/* FULL WIDTH */
+.full-width {
+    grid-column: 1 / -1;
 }
 
+/* LABELS */
 label {
-    margin-bottom: 5px;
+    display: block;
+    margin-bottom: 6px;
     font-weight: 600;
     color: #333;
+    font-size: 13px;
 }
 
+/* INPUTS */
 input, select {
-    padding: 10px;
+    width: 100%;
+    padding: 10px 12px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #d0d0d0;
+    outline: none;
+    transition: 0.2s;
     font-size: 14px;
-    transition: border-color 0.2s ease;
 }
 
 input:focus, select:focus {
-    outline: none;
     border-color: #0f1b5c;
-    box-shadow: 0 0 0 2px rgba(15,27,92,0.1);
+    box-shadow: 0 0 0 2px rgba(15, 27, 92, 0.1);
 }
 
-.full-width {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+/* HELP TEXT */
+.help-text {
+    color: #666;
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
 }
 
-.full-width button {
-    background-color: #0f1b5c;
+/* SUBMIT BUTTON */
+.submit-btn {
+    background: #0f1b5c;
     color: #fff;
-    padding: 12px 25px;
+    padding: 12px 30px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-.full-width button:hover {
-    background-color: #16256e;
-    transform: translateY(-1px);
+.submit-btn:hover {
+    background: #1a2a7a;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 /* ERROR BOX */
 #formError {
     display: none;
-    background: #ffe5e5;
-    color: #b30000;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
     font-size: 14px;
-    border-left: 4px solid #b30000;
+    border-left: 4px solid #dc3545;
 }
 
 /* EMPTY STATE */
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 60px;
     color: #999;
     font-size: 16px;
 }
@@ -314,15 +349,14 @@ input:focus, select:focus {
 
 @section('content')
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="main-container">
 
     <!-- TOP BAR -->
     <div class="top-bar">
         <h2>Teachers Management</h2>
-        <button class="add-btn" onclick="openModal()">+ Add New Teacher</button>
+        <button class="add-btn" id="addTeacherBtn">+ Add New Teacher</button>
     </div>
 
     <!-- TABLE -->
@@ -341,7 +375,7 @@ input:focus, select:focus {
             </thead>
             <tbody>
                 @foreach($teachers as $index => $t)
-                <tr>
+                <tr id="teacher-row-{{ $t->id }}">
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $t->user->name }}</td>
                     <td>{{ $t->user->email }}</td>
@@ -349,8 +383,12 @@ input:focus, select:focus {
                     <td>{{ $t->user->department ?? 'N/A' }}</td>
                     <td>
                         <div class="action-buttons">
-                            <button onclick="editTeacher({{ $t->id }})" title="Edit Teacher">✏️ Edit</button>
-                            <button onclick="deleteTeacher({{ $t->id }})" title="Delete Teacher">🗑️ Delete</button>
+                            <button class="edit-btn" data-id="{{ $t->id }}">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button class="delete-btn" data-id="{{ $t->id }}">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -359,6 +397,7 @@ input:focus, select:focus {
         </table>
         @else
         <div class="empty-state">
+            <i class="fa-solid fa-chalkboard-user" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
             <p>No teachers found. Click "Add New Teacher" to get started.</p>
         </div>
         @endif
@@ -369,8 +408,9 @@ input:focus, select:focus {
 <!-- MODAL -->
 <div class="modal" id="teacherModal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle">Add New Teacher</h2>
+        <span class="close" id="closeModalBtn">&times;</span>
+        <div class="form-title" id="modalTitle">Add New Teacher</div>
+        
         <div id="formError"></div>
         <input type="hidden" id="teacher_id">
         
@@ -384,9 +424,10 @@ input:focus, select:focus {
                 <input type="email" id="email" placeholder="teacher@example.com">
             </div>
             <div>
-                <label>Password *</label>
+                <label>Password <span id="passwordRequired">*</span></label>
                 <input type="password" id="password" placeholder="Enter password">
-                <small style="color: #666; font-size: 12px; margin-top: 4px;">Leave blank to keep unchanged when editing</small>
+                <small class="help-text" id="passwordHelp" style="display: none;">Leave blank to keep unchanged when editing</small>
+                <small class="help-text" id="passwordRequiredText">Required for new teacher</small>
             </div>
             <div>
                 <label>Designation</label>
@@ -398,256 +439,368 @@ input:focus, select:focus {
             </div>
         </div>
         
-        <br>
-        
-        <div class="full-width">
-            <button onclick="saveTeacher()" id="saveBtn">💾 Save Teacher</button>
-            <button onclick="updateTeacher()" id="updateBtn" style="display:none;">🔄 Update Teacher</button>
-            <button onclick="closeModal()" style="background: #6c757d;">❌ Cancel</button>
+        <div class="button-group">
+            <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+            <button type="button" class="submit-btn" id="saveBtn">Save Teacher</button>
+            <button type="button" class="submit-btn" id="updateBtn" style="display:none;">Update Teacher</button>
         </div>
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+
 <script>
+// CSRF Token setup
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-// Make sure CSRF token is set for all AJAX requests
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}"
-    }
-});
+// Get elements
+const modal = document.getElementById('teacherModal');
+const addBtn = document.getElementById('addTeacherBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const saveBtn = document.getElementById('saveBtn');
+const updateBtn = document.getElementById('updateBtn');
+const modalTitle = document.getElementById('modalTitle');
+const teacherId = document.getElementById('teacher_id');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const designationInput = document.getElementById('designation');
+const departmentInput = document.getElementById('department');
+const passwordRequired = document.getElementById('passwordRequired');
+const passwordHelp = document.getElementById('passwordHelp');
+const passwordRequiredText = document.getElementById('passwordRequiredText');
 
-/* MODAL FUNCTIONS */
+// ==================== MODAL FUNCTIONS ====================
+
 function openModal() {
     resetForm();
-    $('#modalTitle').text('Add New Teacher');
-    $('#teacherModal').fadeIn(200);
+    modalTitle.textContent = "Add New Teacher";
+    passwordRequired.style.display = 'inline';
+    passwordHelp.style.display = 'none';
+    passwordRequiredText.style.display = 'inline';
+    passwordInput.required = true;
+    modal.style.display = 'flex';
 }
 
 function closeModal() {
-    $('#teacherModal').fadeOut(200);
+    modal.style.display = 'none';
     resetForm();
 }
 
-/* RESET FORM */
 function resetForm() {
-    $('#teacher_id').val('');
-    $('#name, #email, #password, #designation, #department').val('');
-    $('#saveBtn').show();
-    $('#updateBtn').hide();
-    $('#formError').hide().html('');
-    $('#modalTitle').text('Add New Teacher');
+    teacherId.value = '';
+    nameInput.value = '';
+    emailInput.value = '';
+    passwordInput.value = '';
+    designationInput.value = '';
+    departmentInput.value = '';
+    saveBtn.style.display = 'inline-block';
+    updateBtn.style.display = 'none';
+    document.getElementById('formError').style.display = 'none';
+    document.getElementById('formError').innerHTML = '';
 }
 
-/* SHOW ERROR */
+// Open modal on add button click
+addBtn.addEventListener('click', openModal);
+
+// Close modal on close button click
+closeModalBtn.addEventListener('click', closeModal);
+cancelBtn.addEventListener('click', closeModal);
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// ==================== SHOW ERROR ====================
+
 function showError(msg) {
-    $('#formError').html(msg).fadeIn();
+    const errorDiv = document.getElementById('formError');
+    errorDiv.innerHTML = msg;
+    errorDiv.style.display = 'block';
     setTimeout(() => {
-        $('#formError').fadeOut();
+        errorDiv.style.display = 'none';
     }, 5000);
 }
 
-/* VALIDATE FORM */
-function validateForm() {
-    let name = $('#name').val().trim();
-    let email = $('#email').val().trim();
-    let password = $('#password').val();
-    let isEdit = $('#teacher_id').val() !== '';
+// ==================== VALIDATE FORM ====================
+
+function validateForm(isEdit = false) {
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
     
     if (!name) {
         showError('Please enter teacher name');
+        nameInput.focus();
         return false;
     }
     if (!email) {
         showError('Please enter email address');
+        emailInput.focus();
         return false;
     }
     if (!isEdit && !password) {
         showError('Please enter password for new teacher');
+        passwordInput.focus();
         return false;
     }
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         showError('Please enter a valid email address');
+        emailInput.focus();
+        return false;
+    }
+    if (password && password.length < 6) {
+        showError('Password must be at least 6 characters');
+        passwordInput.focus();
         return false;
     }
     return true;
 }
 
-/* CREATE TEACHER */
-function saveTeacher() {
-    if (!validateForm()) return;
+// ==================== CREATE TEACHER ====================
+
+async function saveTeacher() {
+    if (!validateForm(false)) return;
     
-    let submitBtn = $('#saveBtn');
-    submitBtn.prop('disabled', true).text('Saving...');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
     
-    $.ajax({
-        url: "{{ route('teachers.store') }}",
-        method: "POST",
-        data: {
-            name: $('#name').val().trim(),
-            email: $('#email').val().trim(),
-            password: $('#password').val(),
-            designation: $('#designation').val().trim(),
-            department: $('#department').val().trim(),
-            _token: "{{ csrf_token() }}"
-        },
-        success: function(res) {
+    try {
+        const response = await fetch("{{ route('teachers.store') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                name: nameInput.value.trim(),
+                email: emailInput.value.trim(),
+                password: passwordInput.value,
+                designation: designationInput.value.trim(),
+                department: departmentInput.value.trim()
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
-                text: res.message || 'Teacher added successfully',
+                text: data.message || 'Teacher added successfully',
                 timer: 2000,
                 showConfirmButton: false
             });
             setTimeout(() => {
-                location.reload();
+                window.location.reload();
             }, 2000);
-        },
-        error: function(xhr) {
-            handleError(xhr);
-            submitBtn.prop('disabled', false).text('💾 Save Teacher');
+        } else {
+            if (data.errors) {
+                let errorMsg = '';
+                for (let field in data.errors) {
+                    errorMsg += data.errors[field].join(', ') + '<br>';
+                }
+                showError(errorMsg);
+            } else {
+                showError(data.message || 'Error saving teacher');
+            }
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Teacher';
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error saving teacher. Please try again.');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Teacher';
+    }
 }
 
-/* EDIT TEACHER */
-function editTeacher(id) {
-    $.ajax({
-        url: "/teachers/edit/" + id,
-        method: "GET",
-        success: function(data) {
-            openModal();
-            $('#modalTitle').text('Edit Teacher');
-            $('#teacher_id').val(data.id);
-            $('#name').val(data.user.name);
-            $('#email').val(data.user.email);
-            $('#designation').val(data.user.designation || '');
-            $('#department').val(data.user.department || '');
-            $('#password').val('');
-            $('#saveBtn').hide();
-            $('#updateBtn').show();
-        },
-        error: function() {
+// ==================== EDIT TEACHER ====================
+
+async function editTeacher(id) {
+    try {
+        const response = await fetch("/teachers/edit/" + id, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            modalTitle.textContent = "Edit Teacher";
+            teacherId.value = data.id;
+            nameInput.value = data.user.name;
+            emailInput.value = data.user.email;
+            designationInput.value = data.user.designation || '';
+            departmentInput.value = data.user.department || '';
+            passwordInput.value = '';
+            
+            passwordRequired.style.display = 'none';
+            passwordHelp.style.display = 'inline';
+            passwordRequiredText.style.display = 'none';
+            passwordInput.required = false;
+            
+            saveBtn.style.display = 'none';
+            updateBtn.style.display = 'inline-block';
+            modal.style.display = 'flex';
+        } else {
             Swal.fire('Error', 'Could not fetch teacher details', 'error');
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Could not fetch teacher details', 'error');
+    }
 }
 
-/* UPDATE TEACHER */
-function updateTeacher() {
-    if (!validateForm()) return;
+// ==================== UPDATE TEACHER ====================
+
+async function updateTeacher() {
+    if (!validateForm(true)) return;
     
-    let id = $('#teacher_id').val();
-    let updateBtn = $('#updateBtn');
-    updateBtn.prop('disabled', true).text('Updating...');
+    const id = teacherId.value;
+    updateBtn.disabled = true;
+    updateBtn.textContent = 'Updating...';
     
-    $.ajax({
-        url: "/teachers/update/" + id,
-        method: "POST",
-        data: {
-            name: $('#name').val().trim(),
-            email: $('#email').val().trim(),
-            password: $('#password').val(),
-            designation: $('#designation').val().trim(),
-            department: $('#department').val().trim(),
-            _token: "{{ csrf_token() }}",
-            _method: "PUT"
-        },
-        success: function(res) {
+    try {
+        const response = await fetch("/teachers/update/" + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                name: nameInput.value.trim(),
+                email: emailInput.value.trim(),
+                password: passwordInput.value,
+                designation: designationInput.value.trim(),
+                department: departmentInput.value.trim()
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             Swal.fire({
                 icon: 'success',
                 title: 'Updated!',
-                text: res.message || 'Teacher updated successfully',
+                text: data.message || 'Teacher updated successfully',
                 timer: 2000,
                 showConfirmButton: false
             });
             setTimeout(() => {
-                location.reload();
+                window.location.reload();
             }, 2000);
-        },
-        error: function(xhr) {
-            handleError(xhr);
-            updateBtn.prop('disabled', false).text('🔄 Update Teacher');
+        } else {
+            if (data.errors) {
+                let errorMsg = '';
+                for (let field in data.errors) {
+                    errorMsg += data.errors[field].join(', ') + '<br>';
+                }
+                showError(errorMsg);
+            } else {
+                showError(data.message || 'Error updating teacher');
+            }
+            updateBtn.disabled = false;
+            updateBtn.textContent = 'Update Teacher';
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error updating teacher. Please try again.');
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Update Teacher';
+    }
 }
 
-/* DELETE TEACHER */
-function deleteTeacher(id) {
-    Swal.fire({
+// ==================== DELETE TEACHER ====================
+
+async function deleteTeacher(id) {
+    const result = await Swal.fire({
         title: 'Are you sure?',
         text: "This action cannot be undone!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#b30000',
+        confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "/teachers/delete/" + id,
-                method: "DELETE",
-                data: {
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(res) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: res.message || 'Teacher deleted successfully',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
-                },
-                error: function() {
-                    Swal.fire('Error', 'Could not delete teacher', 'error');
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch("/teachers/delete/" + id, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             });
-        }
-    });
-}
-
-/* ERROR HANDLER */
-function handleError(xhr) {
-    let msg = 'Something went wrong. Please try again.';
-    
-    if (xhr.status === 422) {
-        let errors = xhr.responseJSON.errors;
-        msg = '';
-        $.each(errors, function(key, value) {
-            msg += '• ' + value[0] + '<br>';
-        });
-    } else if (xhr.status === 409) {
-        msg = xhr.responseJSON.message || 'Email already exists!';
-    } else if (xhr.status === 500) {
-        msg = 'Server error. Please check your connection.';
-    }
-    
-    showError(msg);
-}
-
-// Close modal when clicking outside
-$(document).ready(function() {
-    $(window).click(function(event) {
-        if ($(event.target).hasClass('modal')) {
-            closeModal();
-        }
-    });
-    
-    // Enter key submit
-    $('#teacherModal input').keypress(function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            if ($('#saveBtn').is(':visible')) {
-                saveTeacher();
-            } else if ($('#updateBtn').is(':visible')) {
-                updateTeacher();
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: data.message || 'Teacher deleted successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                Swal.fire('Error', data.message || 'Could not delete teacher', 'error');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Could not delete teacher', 'error');
         }
+    }
+}
+
+// ==================== ATTACH EVENTS ====================
+
+// Save button click
+saveBtn.addEventListener('click', saveTeacher);
+updateBtn.addEventListener('click', updateTeacher);
+
+// Attach edit/delete events to buttons
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        editTeacher(id);
     });
+});
+
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        deleteTeacher(id);
+    });
+});
+
+// Enter key submit
+document.getElementById('teacherModal').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (saveBtn.style.display !== 'none' && saveBtn.offsetParent !== null) {
+            saveTeacher();
+        } else if (updateBtn.style.display !== 'none' && updateBtn.offsetParent !== null) {
+            updateTeacher();
+        }
+    }
 });
 
 </script>

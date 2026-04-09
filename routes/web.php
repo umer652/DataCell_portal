@@ -24,9 +24,11 @@ Route::post('/login', [AuthController::class, 'webLogin'])->name('webLogin');
 Route::get('/register',[AuthController::class,'register'])->name('register');
 
 
-// scheme of study controller
 Route::get('/sos', [SchemeOfStudyController::class, 'index'])->name('scheme_of_study');
 Route::post('/sos-create', [SchemeOfStudyController::class, 'store'])->name('scheme.store');
+Route::put('/sos-update/{id}', [SchemeOfStudyController::class, 'update'])->name('scheme.update');
+Route::delete('/sos-delete/{id}', [SchemeOfStudyController::class, 'destroy'])->name('scheme.destroy');
+Route::get('/sos-edit/{id}', [SchemeOfStudyController::class, 'edit'])->name('scheme.edit');
 
 // student controller
 Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');
@@ -35,6 +37,7 @@ Route::put('/students/{id}', [StudentController::class, 'update'])->name('studen
 Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
 Route::post('/students/import-excel', [StudentController::class, 'importExcel'])->name('students.import.excel');
 Route::get('/students/download-template', [StudentController::class, 'downloadTemplate'])->name('students.download.template');
+Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 
 //course Controller
 Route::get('/courses', [CourseController::class, 'index'])
@@ -47,6 +50,7 @@ Route::delete('/courses/{id}', [CourseController::class, 'destroy'])
     ->name('courses.destroy');
 Route::post('/courses/import', [CourseController::class, 'import'])
     ->name('courses.import');
+Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
 
 
 

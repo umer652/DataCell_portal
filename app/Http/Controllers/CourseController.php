@@ -9,95 +9,177 @@ use App\Imports\CoursesImport;
 
 class CourseController extends Controller
 {
-    // ==================== READ ====================
     public function index()
     {
         $courses = Course::all();
         return view('Admin.add-course', compact('courses'));
     }
 
-    // ==================== CREATE ====================
+    // EDIT METHOD - ADD THIS
+    public function edit($id)
+    {
+        try {
+            $course = Course::findOrFail($id);
+            
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'id' => $course->id,
+                    'course_code' => $course->course_code,
+                    'course_title' => $course->course_title,
+                    'description' => $course->description
+                ]);
+            }
+            
+            return response()->json($course);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+        }
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'course_code' => [
-                'required',
-                'regex:/^[A-Za-z]{3}-[0-9]{3}$/',
-                'unique:course,course_code'
-            ],
-            'course_title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ], [
-            'course_code.regex' => 'Format must be ABC-123',
-            'course_code.unique' => 'Record already exists!',
-        ]);
+        try {
+            $request->validate([
+                'course_code' => 'required|string|max:10|unique:course,course_code|regex:/^[A-Za-z]{3}-[0-9]{3}$/',
+                'course_title' => 'required|string|max:255',
+                'description' => 'nullable|string'
+            ]);
 
-        Course::create([
-            'course_code'   => $request->course_code,
-            'course_title'  => $request->course_title,
-            'description'   => $request->description,
-        ]);
+            $course = Course::create([
+                'course_code' => strtoupper($request->course_code),
+                'course_title' => $request->course_title,
+                'description' => $request->description
+            ]);
 
-        return back()->with('success', 'Course added successfully');
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Course created successfully!',
+                    'data' => $course
+                ]);
+            }
+
+            return redirect()->route('courses.index')->with('success', 'Course created successfully!');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                    'message' => 'Validation failed'
+                ], 422);
+            }
+            throw $e;
+            
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error creating course: ' . $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', 'Error creating course: ' . $e->getMessage());
+        }
     }
 
-    // ==================== UPDATE ====================
     public function update(Request $request, $id)
     {
-        $course = Course::findOrFail($id);
+        try {
+            $course = Course::findOrFail($id);
+            
+            $request->validate([
+                'course_code' => 'required|string|max:10|unique:course,course_code,' . $id . '|regex:/^[A-Za-z]{3}-[0-9]{3}$/',
+                'course_title' => 'required|string|max:255',
+                'description' => 'nullable|string'
+            ]);
 
-        $request->validate([
-            'course_code' => [
-                'required',
-                'regex:/^[A-Za-z]{3}-[0-9]{3}$/',
-                'unique:course,course_code,' . $id
-            ],
-            'course_title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ], [
-            'course_code.regex' => 'Format must be ABC-123',
-            'course_code.unique' => 'Record already exists!',
-        ]);
+            $course->update([
+                'course_code' => strtoupper($request->course_code),
+                'course_title' => $request->course_title,
+                'description' => $request->description
+            ]);
 
-        $course->update([
-            'course_code'   => $request->course_code,
-            'course_title'  => $request->course_title,
-            'description'   => $request->description,
-        ]);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Course updated successfully!',
+                    'data' => $course
+                ]);
+            }
 
-        return back()->with('success', 'Course updated successfully');
+            return redirect()->route('courses.index')->with('success', 'Course updated successfully!');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors(),
+                    'message' => 'Validation failed'
+                ], 422);
+            }
+            throw $e;
+            
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating course: ' . $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', 'Error updating course: ' . $e->getMessage());
+        }
     }
 
-    // ==================== DELETE ====================
     public function destroy($id)
     {
-        $course = Course::findOrFail($id);
-        $course->delete();
+        try {
+            $course = Course::findOrFail($id);
+            $course->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Course deleted successfully'
-        ]);
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Course deleted successfully!'
+                ]);
+            }
+
+            return redirect()->route('courses.index')->with('success', 'Course deleted successfully!');
+
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error deleting course: ' . $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', 'Error deleting course: ' . $e->getMessage());
+        }
     }
 
-    // ==================== IMPORT ====================
     public function import(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv'
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|file|mimes:xlsx,xls,csv'
+            ]);
 
-        $import = new CoursesImport;
+            Excel::import(new CoursesImport, $request->file('file'));
 
-        Excel::import($import, $request->file('file'));
+            return response()->json([
+                'success' => true,
+                'message' => 'Courses imported successfully!'
+            ]);
 
-        if ($import->errorMessage) {
-            return back()->with('error', $import->errorMessage);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error importing courses: ' . $e->getMessage()
+            ], 500);
         }
-
-        return back()->with([
-            'success' => 'Courses imported successfully',
-            'inserted' => $import->inserted
-        ]);
     }
 }

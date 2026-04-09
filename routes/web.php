@@ -23,14 +23,10 @@ Route::post('/login', [AuthController::class, 'webLogin'])->name('webLogin');
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 
-// Handle registration POST
 
 Route::get('/sos', [SchemeOfStudyController::class, 'index'])->name('scheme_of_study');
 Route::post('/sos-create', [SchemeOfStudyController::class, 'store'])->name('scheme.store');
 Route::get('/schemes-list', [SchemeOfStudyController::class, 'getSchemes'])->name('scheme.list');
-Route::put('/sos-update/{id}', [SchemeOfStudyController::class, 'update'])->name('scheme.update');
-Route::delete('/sos-delete/{id}', [SchemeOfStudyController::class, 'destroy'])->name('scheme.destroy');
-Route::get('/sos-edit/{id}', [SchemeOfStudyController::class, 'edit'])->name('scheme.edit');
 
 // student controller
 Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');

@@ -52,4 +52,10 @@ class SchemeOfStudyController extends Controller
             'data' => $scheme
         ]);
     }
+
+    public function getSchemes()
+    {
+        $schemes = SchemeOfStudy::all();
+        return response()->json($schemes);
+    }
 }

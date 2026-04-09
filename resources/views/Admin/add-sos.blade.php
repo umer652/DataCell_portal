@@ -132,7 +132,7 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(3px);
         align-items: center;
         justify-content: center;
@@ -147,7 +147,7 @@
         position: relative;
         max-height: 90vh;
         overflow-y: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
     /* CLOSE BUTTON */
@@ -197,7 +197,9 @@
     }
 
     /* INPUTS */
-    input, select, textarea {
+    input,
+    select,
+    textarea {
         width: 100%;
         padding: 10px 12px;
         border-radius: 6px;
@@ -207,13 +209,17 @@
         font-size: 14px;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
         border-color: #0f1b5c;
         box-shadow: 0 0 0 2px rgba(15, 27, 92, 0.1);
     }
 
     /* FIELD ERROR STYLES */
-    input.error, select.error, textarea.error {
+    input.error,
+    select.error,
+    textarea.error {
         border-color: #dc3545;
         background-color: #fff8f8;
     }
@@ -317,7 +323,9 @@
     }
 
     @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     @keyframes slideDown {
@@ -325,6 +333,7 @@
             transform: translateY(-20px);
             opacity: 0;
         }
+
         to {
             transform: translateY(0);
             opacity: 1;
@@ -426,157 +435,354 @@
 <script src="https://kit.fontawesome.com/your-kit.js"></script>
 
 <script>
+    $(document).ready(function() {
+        loadSchemes(); // call on page load
+    });
+
     function openModal() {
         document.getElementById('schemeModal').style.display = 'flex';
     }
 
+    // Get all elements
+    const modal = document.getElementById('schemeModal');
+    const addBtn = document.getElementById('addSchemeBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const saveSchemeBtn = document.getElementById('saveSchemeBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const schemeForm = document.getElementById('schemeForm');
+    const formMethod = document.getElementById('formMethod');
+    const schemeId = document.getElementById('schemeId');
+    const titleInput = document.getElementById('title');
+    const creditHrsInput = document.getElementById('credit_hrs');
+    const isActiveSelect = document.getElementById('is_active');
+    const descriptionTextarea = document.getElementById('description');
+
+    // ==================== CLEAR VALIDATION ====================
+
+    function clearValidation() {
+        document.querySelectorAll('.field-error').forEach(el => {
+            el.style.display = 'none';
+            el.textContent = '';
+        });
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.classList.remove('error');
+        });
+    }
+
+    function showFieldError(field, message) {
+        const errorSpan = document.getElementById(field + 'Error');
+        const inputField = document.getElementById(field);
+        if (errorSpan) {
+            errorSpan.textContent = message;
+            errorSpan.style.display = 'block';
+        }
+        if (inputField) {
+            inputField.classList.add('error');
+        }
+    }
+
+    // ==================== VALIDATE FORM ====================
+
+    function validateForm() {
+        let isValid = true;
+        clearValidation();
+
+        const title = titleInput.value.trim();
+        const creditHrs = creditHrsInput.value.trim();
+        const isActive = isActiveSelect.value;
+
+        if (!title) {
+            showFieldError('title', 'Title is required');
+            isValid = false;
+        }
+
+        if (!creditHrs) {
+            showFieldError('credit_hrs', 'Credit hours are required');
+            isValid = false;
+        } else if (creditHrs < 1 || creditHrs > 140) {
+            showFieldError('credit_hrs', 'Credit hours must be between 1 and 140');
+            isValid = false;
+        }
+
+        if (!isActive) {
+            showFieldError('is_active', 'Please select a status');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // ==================== MODAL FUNCTIONS ====================
+
+    function openModal() {
+        schemeForm.reset();
+        formMethod.value = "POST";
+        modalTitle.textContent = "Add Scheme of Study";
+        schemeId.value = '';
+        clearValidation();
+        modal.style.display = 'flex';
+    }
+
     function closeModal() {
-        document.getElementById('schemeModal').style.display = 'none';
+        modal.style.display = 'none';
+        clearValidation();
     }
-    if (inputField) {
-        inputField.classList.add('error');
-    }
-}
 
-// ==================== VALIDATE FORM ====================
+    // Open modal on add button click
+    addBtn.addEventListener('click', openModal);
 
-function validateForm() {
-    let isValid = true;
-    clearValidation();
-    
-    const title = titleInput.value.trim();
-    const creditHrs = creditHrsInput.value.trim();
-    const isActive = isActiveSelect.value;
-    
-    if (!title) {
-        showFieldError('title', 'Title is required');
-        isValid = false;
-    }
-    
-    if (!creditHrs) {
-        showFieldError('credit_hrs', 'Credit hours are required');
-        isValid = false;
-    } else if (creditHrs < 1 || creditHrs > 140) {
-        showFieldError('credit_hrs', 'Credit hours must be between 1 and 140');
-        isValid = false;
-    }
-    
-    if (!isActive) {
-        showFieldError('is_active', 'Please select a status');
-        isValid = false;
-    }
-    
-    return isValid;
-}
+    // Close modal on close button click
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
 
-// ==================== MODAL FUNCTIONS ====================
-
-function openModal() {
-    schemeForm.reset();
-    formMethod.value = "POST";
-    modalTitle.textContent = "Add Scheme of Study";
-    schemeId.value = '';
-    clearValidation();
-    modal.style.display = 'flex';
-}
-
-function closeModal() {
-    modal.style.display = 'none';
-    clearValidation();
-}
-
-// Open modal on add button click
-addBtn.addEventListener('click', openModal);
-
-// Close modal on close button click
-closeModalBtn.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-
-// Close modal when clicking outside
-window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
-// ==================== EDIT SCHEME ====================
-
-async function editScheme(id) {
-    Swal.fire({
-        title: 'Loading...',
-        text: 'Please wait while we fetch scheme details',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closeModal();
         }
     });
 
-    // CSRF
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    // ==================== APPEND SCHEME ROW ====================
 
     function appendSchemeRow(scheme) {
         let status = scheme.is_active ? 'Active' : 'Inactive';
 
         let row = `
-        <tr>
-            <td>${scheme.title}</td>
-            <td>${scheme.credit_hrs}</td>
-            <td>${scheme.description ?? ''}</td>
-            <td>${status}</td>
-        </tr>
-    `;
+            <tr id="scheme-row-${scheme.id}">
+                <td>${scheme.title}</td>
+                <td>${scheme.credit_hrs}</td>
+                <td>${scheme.description ?? ''}</td>
+                <td>${status}</td>
+                <td>
+                    <div class="action-icons">
+                        <i class="fas fa-edit edit-icon" data-id="${scheme.id}"></i>
+                        <i class="fas fa-trash delete-icon" data-id="${scheme.id}"></i>
+                    </div>
+                </td>
+            </tr>
+        `;
 
-        $('#schemeTableBody').prepend(row);
+        $('#schemeTableBody').append(row);
+        attachIconEvents();
     }
 
-    // FIXED EVENT
-    $(document).on('submit', '#schemeForm', function(e) {
-        e.preventDefault();
+    // ==================== EDIT SCHEME ====================
 
-        $.ajax({
-            url: "{{ route('scheme.store') }}",
-            method: "POST",
-            data: $(this).serialize(),
-
-            success: function(res) {
-                $('#message')
-                    .removeClass('error')
-                    .addClass('success')
-                    .html(res.message)
-                    .fadeIn();
-
-                appendSchemeRow(res.data);
-
-                $('#schemeForm')[0].reset();
-
-                setTimeout(() => {
-                    closeModal();
-                    $('#message').hide();
-                }, 1000);
-            },
-
-            error: function(err) {
-                let msg = 'Something went wrong';
-
-                if (err.status === 422) {
-                    let errors = err.responseJSON.errors;
-                    msg = Object.values(errors).join('<br>');
-                } else if (err.responseJSON?.message) {
-                    msg = err.responseJSON.message;
+    async function editScheme(id) {
+        try {
+            Swal.fire({
+                title: 'Loading...',
+                text: 'Please wait while we fetch scheme details',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
+            });
 
-                $('#message')
-                    .removeClass('success')
-                    .addClass('error')
-                    .html(msg)
-                    .fadeIn();
+            const response = await fetch("/sos-edit/" + id, {
+                method: "GET",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const data = await response.json();
+            Swal.close();
+
+            if (data.success) {
+                const scheme = data.data;
+                formMethod.value = "PUT";
+                modalTitle.textContent = "Edit Scheme of Study";
+                schemeId.value = scheme.id;
+                titleInput.value = scheme.title;
+                creditHrsInput.value = scheme.credit_hrs;
+                isActiveSelect.value = scheme.is_active;
+                descriptionTextarea.value = scheme.description || '';
+                clearValidation();
+                modal.style.display = 'flex';
+            } else {
+                Swal.fire('Error', data.message || 'Could not fetch scheme details', 'error');
+            }
+        } catch (error) {
+            Swal.close();
+            console.error('Error:', error);
+            Swal.fire('Error', 'Network error. Could not fetch scheme details.', 'error');
+        }
+    }
+
+    // ==================== DELETE SCHEME ====================
+
+    async function deleteScheme(id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch("/sos-delete/" + id, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const row = document.getElementById('scheme-row-' + id);
+                    if (row) row.remove();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Could not delete scheme', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Network error. Please try again.', 'error');
+            }
+        }
+    }
+
+    // ==================== SAVE SCHEME ====================
+
+    async function saveScheme() {
+        if (!validateForm()) return;
+
+        const method = formMethod.value;
+        const id = schemeId.value;
+
+        const formData = new FormData();
+        formData.append('_token', csrfToken);
+        formData.append('title', titleInput.value.trim());
+        formData.append('credit_hrs', creditHrsInput.value);
+        formData.append('is_active', isActiveSelect.value);
+        formData.append('description', descriptionTextarea.value);
+
+        let url = "{{ route('scheme.store') }}";
+
+        if (method === 'PUT' && id) {
+            formData.append('_method', 'PUT');
+            url = "/sos-update/" + id;
+        }
+
+        saveSchemeBtn.disabled = true;
+        saveSchemeBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                closeModal();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                if (data.errors) {
+                    clearValidation();
+                    for (let field in data.errors) {
+                        showFieldError(field, data.errors[field][0]);
+                    }
+                } else {
+                    Swal.fire('Error', data.message || 'Error saving scheme', 'error');
+                }
+                saveSchemeBtn.disabled = false;
+                saveSchemeBtn.innerHTML = 'Save Scheme';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Network error. Please try again.', 'error');
+            saveSchemeBtn.disabled = false;
+            saveSchemeBtn.innerHTML = 'Save Scheme';
+        }
+    }
+
+    // Save button click event
+    saveSchemeBtn.addEventListener('click', saveScheme);
+
+    // ==================== ATTACH EDIT/DELETE EVENTS ====================
+
+    function attachIconEvents() {
+        document.querySelectorAll('.edit-icon').forEach(icon => {
+            icon.removeEventListener('click', icon.clickHandler);
+            const id = icon.getAttribute('data-id');
+            icon.clickHandler = (e) => {
+                e.stopPropagation();
+                editScheme(id);
+            };
+            icon.addEventListener('click', icon.clickHandler);
+        });
+
+        document.querySelectorAll('.delete-icon').forEach(icon => {
+            icon.removeEventListener('click', icon.clickHandler);
+            const id = icon.getAttribute('data-id');
+            icon.clickHandler = (e) => {
+                e.stopPropagation();
+                deleteScheme(id);
+            };
+            icon.addEventListener('click', icon.clickHandler);
+        });
+    }
+
+    // Initial attachment of events
+    attachIconEvents();
+
+    // Enter key submit
+    schemeForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.target.matches('textarea')) {
+            e.preventDefault();
+            saveScheme();
+        }
+    });
+
+    function loadSchemes() {
+        $.ajax({
+            url: "{{ route('scheme.list') }}",
+            method: "GET",
+            success: function(data) {
+
+                $('#schemeTableBody').html(''); // clear table
+
+                data.forEach(function(scheme) {
+                    appendSchemeRow(scheme);
+                });
+
+            },
+            error: function(err) {
+                console.log('Error loading data', err);
             }
         });
-    });
+    }
 </script>
 
 @endsection

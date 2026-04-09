@@ -16,23 +16,6 @@
         margin-left: auto;
     }
 
-<<<<<<< HEAD
-.add-btn {
-    background: #0f1b5c;
-    color: #fff;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-left: auto;
-    transition: all 0.3s ease;
-}
-
-.add-btn:hover {
-    background: #1a2a7a;
-    transform: translateY(-2px);
-}
-=======
     .main-container {
         position: fixed;
         top: 80px;
@@ -48,7 +31,6 @@
         overflow: hidden;
         transition: left 0.3s ease, width 0.3s ease;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     body.sidebar-collapsed .main-container {
         left: 100px;
@@ -62,27 +44,12 @@
         margin-bottom: 25px;
     }
 
-<<<<<<< HEAD
-.top-bar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-}
-.page-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #0f1b5c;
-    margin:10px;
-}
-=======
     .page-title {
         font-size: 20px;
         font-weight: 600;
         color: #0f1b5c;
         margin-bottom: 10px;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .dropdown-wrapper {
         position: absolute;
@@ -137,26 +104,6 @@
         border-bottom: 1px solid #ddd;
     }
 
-<<<<<<< HEAD
-tbody tr:hover {
-    background-color: #f5f7fb;
-}
-
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(3px);
-    align-items: center;
-    justify-content: center;
-}
-=======
     /* MODAL */
     .modal {
         display: none;
@@ -169,7 +116,6 @@ tbody tr:hover {
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(3px);
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .modal-content {
         background: #fff;
@@ -183,20 +129,6 @@ tbody tr:hover {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
-<<<<<<< HEAD
-.close {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 26px;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.close:hover {
-    color: #d33;
-}
-=======
     .close {
         position: absolute;
         right: 20px;
@@ -204,7 +136,6 @@ tbody tr:hover {
         font-size: 26px;
         cursor: pointer;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     /* FORM */
     .form-title {
@@ -234,21 +165,6 @@ tbody tr:hover {
         color: #333;
     }
 
-<<<<<<< HEAD
-input, select {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #d0d0d0;
-    font-size: 14px;
-    transition: border-color 0.2s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #0f1b5c;
-    box-shadow: 0 0 0 2px rgba(15,27,92,0.1);
-}
-=======
     input,
     select {
         padding: 12px;
@@ -256,7 +172,6 @@ input:focus, select:focus {
         border: 1px solid #d0d0d0;
         font-size: 14px;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .full-width {
         grid-column: 1 / -1;
@@ -264,22 +179,6 @@ input:focus, select:focus {
         justify-content: flex-end;
     }
 
-<<<<<<< HEAD
-.submit-btn {
-    background: #0f1b5c;
-    color: white;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.submit-btn:hover {
-    background: #1a2a7a;
-    transform: translateY(-2px);
-}
-=======
     .submit-btn {
         background: #0f1b5c;
         color: white;
@@ -288,82 +187,16 @@ input:focus, select:focus {
         border-radius: 10px;
         cursor: pointer;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .action-icons {
         display: flex;
         gap: 12px;
     }
 
-<<<<<<< HEAD
-.edit-icon { 
-    color: #0f1b5c; 
-    cursor: pointer; 
-    font-size: 18px;
-    transition: transform 0.2s;
-}
-
-.edit-icon:hover {
-    transform: scale(1.1);
-}
-
-.delete-icon { 
-    color: #d33; 
-    cursor: pointer; 
-    font-size: 18px;
-    transition: transform 0.2s;
-}
-
-.delete-icon:hover {
-    transform: scale(1.1);
-}
-
-/* Alert Messages */
-.alert {
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    position: relative;
-    animation: slideDown 0.3s ease;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-}
-
-.close-alert {
-    float: right;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    color: inherit;
-}
-=======
     .edit-icon {
         color: #0f1b5c;
         cursor: pointer;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .delete-icon {
         color: #d33;
@@ -394,31 +227,6 @@ input:focus, select:focus {
         color: #0f1b5c;
     }
 
-<<<<<<< HEAD
-.btn-excel {
-    background: #28a745;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: opacity 0.2s;
-}
-
-.btn-template {
-    background: #17a2b8;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.2s;
-}
-=======
     .upload-buttons {
         display: flex;
         gap: 10px;
@@ -433,7 +241,6 @@ input:focus, select:focus {
         cursor: pointer;
         font-size: 14px;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .btn-template {
         background: #17a2b8;
@@ -457,29 +264,12 @@ input:focus, select:focus {
         display: inline-block;
     }
 
-<<<<<<< HEAD
-.file-label {
-    background: #0f1b5c;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    display: inline-block;
-    transition: background 0.2s;
-}
-
-.file-label:hover {
-    background: #1a2a7a;
-}
-=======
     .file-input-wrapper input {
         position: absolute;
         opacity: 0;
         width: 0;
         height: 0;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .file-label {
         background: #0f1b5c;
@@ -506,22 +296,6 @@ input:focus, select:focus {
         display: none;
     }
 
-<<<<<<< HEAD
-/* Error Modal Styles */
-.error-modal {
-    display: none;
-    position: fixed;
-    z-index: 2100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    align-items: center;
-    justify-content: center;
-}
-=======
     .progress {
         width: 0%;
         height: 30px;
@@ -532,7 +306,6 @@ input:focus, select:focus {
         line-height: 30px;
         transition: width 0.3s;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     /* Error Modal Styles */
     .error-modal {
@@ -579,42 +352,6 @@ input:focus, select:focus {
         top: 0;
     }
 
-<<<<<<< HEAD
-@keyframes slideDown {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Help Text */
-.help-text {
-    color: #666;
-    font-size: 11px;
-    margin-top: 4px;
-    display: block;
-}
-
-/* Loading Spinner */
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 0.6s linear infinite;
-    margin-right: 8px;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-=======
     .error-table tr:nth-child(even) {
         background: #f9f9f9;
     }
@@ -627,7 +364,6 @@ input:focus, select:focus {
     .swal2-title {
         font-size: 22px !important;
     }
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     .swal2-html-container {
         font-size: 14px !important;
@@ -638,20 +374,14 @@ input:focus, select:focus {
 
 @section('content')
 
-<<<<<<< HEAD
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<div class="main-container" id="mainContainer">
-=======
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <div class="main-container" id="main-container">
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     <!-- Display Success/Error Messages -->
     <div id="alertMessages"></div>
 
-     <h2 class="page-title">Student Management</h2>
+    <h2 class="page-title">Student Management</h2>
 
     <!-- Excel Upload Section -->
     <div class="upload-section">
@@ -665,13 +395,8 @@ input:focus, select:focus {
                 </a>
             </div>
         </div>
-<<<<<<< HEAD
-        
-        <form id="excelUploadForm" enctype="multipart/form-data">
-=======
 
         <form id="excelUploadForm" method="POST" action="{{ route('students.import.excel') }}" enctype="multipart/form-data">
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
             @csrf
             <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                 <div class="file-input-wrapper">
@@ -700,28 +425,17 @@ input:focus, select:focus {
 
     <div class="top-bar">
         <div class="dropdown-wrapper">
-<<<<<<< HEAD
-            <select name="session_filter" id="sessionFilter" class="session-dropdown">
-                <option value="">All Sessions</option>
-                @foreach($sessions as $session)
-=======
             <form id="sessionFilterForm">
                 <select name="session_filter" onchange="this.form.submit()" class="session-dropdown">
                     <option value="">All Sessions</option>
                     @foreach($sessions as $session)
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
                     <option value="{{ $session->id }}"
                         {{ request('session_filter') == $session->id ? 'selected' : '' }}>
                         {{ $session->name }}
                     </option>
-<<<<<<< HEAD
-                @endforeach
-            </select>
-=======
                     @endforeach
                 </select>
             </form>
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
         </div>
 
         <button class="add-btn" id="addStudentBtn">+ Add Student</button>
@@ -763,16 +477,10 @@ input:focus, select:focus {
                     <td>{{ $student->section->name ?? '' }}</td>
                     <td>
                         <div class="action-icons">
-<<<<<<< HEAD
-                            <i class="fa-solid fa-pen-to-square edit-icon" data-id="{{ $student->id }}" style="cursor: pointer;"></i>
-                            <i class="fa-solid fa-trash delete-icon" data-id="{{ $student->id }}" style="cursor: pointer;"></i>
-=======
                             <i class="fa-solid fa-pen-to-square edit-icon"
                                 onclick='editStudent(@json($student))'></i>
-
                             <i class="fa-solid fa-trash delete-icon"
                                 onclick="deleteStudent({{ $student->id }})"></i>
->>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
                         </div>
                     </td>
                 </tr>

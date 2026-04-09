@@ -273,7 +273,6 @@
             setLayout(true);
         });
 
-        // OPTIONAL: AJAX Navigation (for SPA feel)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('.ajax-link');
             if (link) {

@@ -285,8 +285,20 @@
                     })
                     .then(res => res.text())
                     .then(html => {
+
+                        // inject page
                         document.getElementById('main-content').innerHTML = html;
+
+                        // update URL
                         window.history.pushState({}, '', link.href);
+
+                        // IMPORTANT FIX
+                        if (link.href.includes('sos')) {
+                            if (typeof loadSchemes === "function") {
+                                loadSchemes();
+                            }
+                        }
+
                     });
             }
         });

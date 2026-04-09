@@ -967,20 +967,6 @@ input:focus, select:focus {
         document.getElementById('studentModal').style.display = 'none';
     }
 
-    window.loadPage = function(url) {
-        fetch(url)
-            .then(res => res.text())
-            .then(data => {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(data, 'text/html');
-
-                let newContent = doc.querySelector('#content').innerHTML;
-                document.querySelector('#content').innerHTML = newContent;
-
-                window.history.pushState({}, '', url);
-            });
-    }
-
     function editStudent(student) {
         const modal = document.getElementById('studentModal');
         const formMethod = document.getElementById('formMethod');
@@ -1089,7 +1075,7 @@ input:focus, select:focus {
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        loadPage(window.location.pathname);
+                        loadPage(window.location.href);
                     });
                 } else {
                     submitBtn.disabled = false;
@@ -1169,8 +1155,11 @@ input:focus, select:focus {
                     },
                     success: function(response) {
                         if (response.success) {
+
+                            $(`i[onclick="deleteStudent(${id})"]`).closest('tr').remove();
+
                             Swal.fire('Deleted!', response.message || 'Student has been deleted.', 'success').then(() => {
-                                loadPage(window.location.pathname);
+                                loadPage(window.location.href);
                             });
                         } else {
                             Swal.fire('Error!', response.message || 'Could not delete student.', 'error');
@@ -1259,7 +1248,7 @@ input:focus, select:focus {
                 setTimeout(() => {
                     if (data.success) {
                         Swal.fire('Success!', data.message || 'Students imported successfully.', 'success').then(() => {
-                            loadPage(window.location.pathname);
+                            loadPage(window.location.href);
                         });
                     } else {
                         progressBar.style.display = 'none';
@@ -1362,12 +1351,12 @@ input:focus, select:focus {
         loadPage(url, routeName);
     });
 
-    function loadPage(url, routeName) {
+    function loadPage(url, routeName = null) {
         $.ajax({
             url: url,
             success: function(res) {
                 document.getElementById('main-container').innerHTML = res;
-                if (routeName) setActiveSidebar(routeName); // sidebar highlight update
+                if (routeName) setActiveSidebar(routeName);
                 window.history.pushState({}, '', url);
             }
         });

@@ -21,11 +21,13 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 // Handle login POST
 Route::post('/login', [AuthController::class, 'webLogin'])->name('webLogin');
 
-Route::get('/register',[AuthController::class,'register'])->name('register');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
 
+// Handle registration POST
 
 Route::get('/sos', [SchemeOfStudyController::class, 'index'])->name('scheme_of_study');
 Route::post('/sos-create', [SchemeOfStudyController::class, 'store'])->name('scheme.store');
+Route::get('/schemes-list', [SchemeOfStudyController::class, 'getSchemes'])->name('scheme.list');
 Route::put('/sos-update/{id}', [SchemeOfStudyController::class, 'update'])->name('scheme.update');
 Route::delete('/sos-delete/{id}', [SchemeOfStudyController::class, 'destroy'])->name('scheme.destroy');
 Route::get('/sos-edit/{id}', [SchemeOfStudyController::class, 'edit'])->name('scheme.edit');
@@ -69,7 +71,7 @@ Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCour
 
 //Allocation Controller
 Route::prefix('allocations')->group(function () {
-    Route::get('/index',[AllocationController::class,'index'])->name('allocation.index');
+    Route::get('/index', [AllocationController::class, 'index'])->name('allocation.index');
     Route::get('/data', [AllocationController::class, 'getData'])->name('allocations.data');
     Route::post('/store', [AllocationController::class, 'store'])->name('allocations.store');
     Route::get('/{id}/edit', [AllocationController::class, 'edit'])->name('allocations.edit');

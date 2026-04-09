@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
         * {
@@ -255,7 +257,7 @@
             const closeSidebar = document.getElementById('closeSidebar');
 
             if (closeSidebar) {
-                closeSidebar.addEventListener('click', function (e) {
+                closeSidebar.addEventListener('click', function(e) {
                     e.stopPropagation();
                     sidebar.classList.remove('active');
                     localStorage.setItem('sidebarOpen', false);
@@ -271,21 +273,37 @@
             setLayout(true);
         });
 
-        // OPTIONAL: AJAX Navigation (for SPA feel)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('.ajax-link');
             if (link) {
                 e.preventDefault();
 
                 fetch(link.href, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById('main-content').innerHTML = html;
-                    window.history.pushState({}, '', link.href);
-                });
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('main-content').innerHTML = html;
+                        window.history.pushState({}, '', link.href);
+                    });
             }
+        });
+
+        function setActiveSidebar(routeName) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('!bg-white', '!text-[#0f1b5c]', 'font-bold');
+            });
+
+            const activeLink = document.querySelector(`.nav-link[data-route='${routeName}']`);
+            if (activeLink) {
+                activeLink.classList.add('!bg-white', '!text-[#0f1b5c]', 'font-bold');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setActiveSidebar('dashboard'); // default active page
         });
     </script>
 

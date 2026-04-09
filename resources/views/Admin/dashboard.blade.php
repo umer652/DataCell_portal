@@ -4,9 +4,19 @@
 
 @section('styles')
 <style>
+    /* ===== MAIN CSS ===== */
 
-/* ===== MAIN CSS ===== */
+    .add-btn {
+        background: #0f1b5c;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-left: auto;
+    }
 
+<<<<<<< HEAD
 .add-btn {
     background: #0f1b5c;
     color: #fff;
@@ -22,28 +32,37 @@
     background: #1a2a7a;
     transform: translateY(-2px);
 }
+=======
+    .main-container {
+        position: fixed;
+        top: 80px;
+        left: 270px;
+        width: calc(100% - 290px);
+        bottom: 20px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: left 0.3s ease, width 0.3s ease;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.main-container {
-    position: fixed;
-    top: 80px;
-    left: 270px;
-    width: calc(100% - 290px);
-    bottom: 20px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: left 0.3s ease, width 0.3s ease;
-}
+    body.sidebar-collapsed .main-container {
+        left: 100px;
+        width: calc(100% - 120px);
+    }
 
-body.sidebar-collapsed .main-container {
-    left: 100px;
-    width: calc(100% - 120px);
-}
+    .top-bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+    }
 
+<<<<<<< HEAD
 .top-bar {
     position: relative;
     display: flex;
@@ -56,60 +75,69 @@ body.sidebar-collapsed .main-container {
     color: #0f1b5c;
     margin:10px;
 }
+=======
+    .page-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f1b5c;
+        margin-bottom: 10px;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.dropdown-wrapper {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
+    .dropdown-wrapper {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 
-.session-dropdown {
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid #0f1b5c;
-    background-color: #0f1b5c;
-    color: #fff;
-    font-weight: 500;
-    cursor: pointer;
-}
+    .session-dropdown {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #0f1b5c;
+        background-color: #0f1b5c;
+        color: #fff;
+        font-weight: 500;
+        cursor: pointer;
+    }
 
-.session-dropdown option {
-    background: #fff;
-    color: #000;
-}
+    .session-dropdown option {
+        background: #fff;
+        color: #000;
+    }
 
-.table-container {
-    flex: 1;
-    margin-top: 15px;
-    border-radius: 10px;
-    overflow-x: auto;
-    overflow-y: auto;
-}
+    .table-container {
+        flex: 1;
+        margin-top: 15px;
+        border-radius: 10px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
 
-table {
-    width: max-content;
-    min-width: 1600px;
-    border-collapse: collapse;
-}
+    table {
+        width: max-content;
+        min-width: 1600px;
+        border-collapse: collapse;
+    }
 
-thead th,
-tbody td {
-    padding: 14px 20px;
-    white-space: nowrap;
-}
+    thead th,
+    tbody td {
+        padding: 14px 20px;
+        white-space: nowrap;
+    }
 
-thead th {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #0f1b5c;
-    color: #fff;
-}
+    thead th {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #0f1b5c;
+        color: #fff;
+    }
 
-tbody td {
-    border-bottom: 1px solid #ddd;
-}
+    tbody td {
+        border-bottom: 1px solid #ddd;
+    }
 
+<<<<<<< HEAD
 tbody tr:hover {
     background-color: #f5f7fb;
 }
@@ -128,19 +156,34 @@ tbody tr:hover {
     align-items: center;
     justify-content: center;
 }
+=======
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.modal-content {
-    background: #fff;
-    margin: 2% auto;
-    width: 75%;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 16px;
-    padding: 30px;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
+    .modal-content {
+        background: #fff;
+        margin: 2% auto;
+        width: 75%;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 16px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
 
+<<<<<<< HEAD
 .close {
     position: absolute;
     right: 20px;
@@ -153,35 +196,45 @@ tbody tr:hover {
 .close:hover {
     color: #d33;
 }
+=======
+    .close {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 26px;
+        cursor: pointer;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-/* FORM */
-.form-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: #0f1b5c;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-}
+    /* FORM */
+    .form-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #0f1b5c;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+    }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-}
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
 
-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #333;
-}
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+    }
 
+<<<<<<< HEAD
 input, select {
     padding: 12px;
     border-radius: 8px;
@@ -195,13 +248,23 @@ input:focus, select:focus {
     border-color: #0f1b5c;
     box-shadow: 0 0 0 2px rgba(15,27,92,0.1);
 }
+=======
+    input,
+    select {
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #d0d0d0;
+        font-size: 14px;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.full-width {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-}
+    .full-width {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+    }
 
+<<<<<<< HEAD
 .submit-btn {
     background: #0f1b5c;
     color: white;
@@ -216,12 +279,23 @@ input:focus, select:focus {
     background: #1a2a7a;
     transform: translateY(-2px);
 }
+=======
+    .submit-btn {
+        background: #0f1b5c;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.action-icons {
-    display: flex;
-    gap: 12px;
-}
+    .action-icons {
+        display: flex;
+        gap: 12px;
+    }
 
+<<<<<<< HEAD
 .edit-icon { 
     color: #0f1b5c; 
     cursor: pointer; 
@@ -284,36 +358,43 @@ input:focus, select:focus {
     cursor: pointer;
     color: inherit;
 }
+=======
+    .edit-icon {
+        color: #0f1b5c;
+        cursor: pointer;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-/* Excel Upload Styles */
-.upload-section {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px dashed #0f1b5c;
-}
+    .delete-icon {
+        color: #d33;
+        cursor: pointer;
+    }
 
-.upload-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+    /* Excel Upload Styles */
+    .upload-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px dashed #0f1b5c;
+    }
 
-.upload-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #0f1b5c;
-}
+    .upload-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
-.upload-buttons {
-    display: flex;
-    gap: 10px;
-}
+    .upload-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0f1b5c;
+    }
 
+<<<<<<< HEAD
 .btn-excel {
     background: #28a745;
     color: white;
@@ -337,23 +418,46 @@ input:focus, select:focus {
     display: inline-block;
     transition: opacity 0.2s;
 }
+=======
+    .upload-buttons {
+        display: flex;
+        gap: 10px;
+    }
 
-.btn-excel:hover, .btn-template:hover {
-    opacity: 0.9;
-}
+    .btn-excel {
+        background: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.file-input-wrapper {
-    position: relative;
-    display: inline-block;
-}
+    .btn-template {
+        background: #17a2b8;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+    }
 
-.file-input-wrapper input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+    .btn-excel:hover,
+    .btn-template:hover {
+        opacity: 0.9;
+    }
 
+    .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+<<<<<<< HEAD
 .file-label {
     background: #0f1b5c;
     color: white;
@@ -368,33 +472,41 @@ input:focus, select:focus {
 .file-label:hover {
     background: #1a2a7a;
 }
+=======
+    .file-input-wrapper input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.selected-file {
-    margin-left: 10px;
-    font-size: 14px;
-    color: #666;
-}
+    .file-label {
+        background: #0f1b5c;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        display: inline-block;
+    }
 
-/* Progress Bar */
-.progress-bar {
-    width: 100%;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    margin: 10px 0;
-    display: none;
-}
+    .selected-file {
+        margin-left: 10px;
+        font-size: 14px;
+        color: #666;
+    }
 
-.progress {
-    width: 0%;
-    height: 30px;
-    background-color: #0f1b5c;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    line-height: 30px;
-    transition: width 0.3s;
-}
+    /* Progress Bar */
+    .progress-bar {
+        width: 100%;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        margin: 10px 0;
+        display: none;
+    }
 
+<<<<<<< HEAD
 /* Error Modal Styles */
 .error-modal {
     display: none;
@@ -409,43 +521,65 @@ input:focus, select:focus {
     align-items: center;
     justify-content: center;
 }
+=======
+    .progress {
+        width: 0%;
+        height: 30px;
+        background-color: #0f1b5c;
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+        line-height: 30px;
+        transition: width 0.3s;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
-.error-modal-content {
-    background: #fff;
-    margin: 5% auto;
-    width: 80%;
-    max-height: 80vh;
-    overflow-y: auto;
-    border-radius: 16px;
-    padding: 30px;
-    position: relative;
-}
+    /* Error Modal Styles */
+    .error-modal {
+        display: none;
+        position: fixed;
+        z-index: 2100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+    }
 
-.error-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+    .error-modal-content {
+        background: #fff;
+        margin: 5% auto;
+        width: 80%;
+        max-height: 80vh;
+        overflow-y: auto;
+        border-radius: 16px;
+        padding: 30px;
+        position: relative;
+    }
 
-.error-table th,
-.error-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    vertical-align: top;
-}
+    .error-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-.error-table th {
-    background: #f44336;
-    color: white;
-    position: sticky;
-    top: 0;
-}
+    .error-table th,
+    .error-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+    }
 
-.error-table tr:nth-child(even) {
-    background: #f9f9f9;
-}
+    .error-table th {
+        background: #f44336;
+        color: white;
+        position: sticky;
+        top: 0;
+    }
 
+<<<<<<< HEAD
 @keyframes slideDown {
     from {
         transform: translateY(-20px);
@@ -480,15 +614,39 @@ input:focus, select:focus {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+=======
+    .error-table tr:nth-child(even) {
+        background: #f9f9f9;
+    }
 
+    /* SweetAlert Custom Styles */
+    .swal2-popup {
+        font-size: 14px !important;
+    }
+
+    .swal2-title {
+        font-size: 22px !important;
+    }
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
+
+    .swal2-html-container {
+        font-size: 14px !important;
+        text-align: left !important;
+    }
 </style>
 @endsection
 
 @section('content')
 
+<<<<<<< HEAD
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="main-container" id="mainContainer">
+=======
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="main-container" id="main-container">
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
 
     <!-- Display Success/Error Messages -->
     <div id="alertMessages"></div>
@@ -507,8 +665,13 @@ input:focus, select:focus {
                 </a>
             </div>
         </div>
+<<<<<<< HEAD
         
         <form id="excelUploadForm" enctype="multipart/form-data">
+=======
+
+        <form id="excelUploadForm" method="POST" action="{{ route('students.import.excel') }}" enctype="multipart/form-data">
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
             @csrf
             <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                 <div class="file-input-wrapper">
@@ -523,29 +686,42 @@ input:focus, select:focus {
                 </button>
             </div>
         </form>
-        
+
         <div class="progress-bar" id="progressBar">
             <div class="progress" id="progress">0%</div>
         </div>
-        
+
         <small style="color: #666; margin-top: 10px; display: block;">
-            <i class="fa-solid fa-info-circle"></i> 
-            Supported formats: .xlsx, .xls, .csv (Max 5MB). 
+            <i class="fa-solid fa-info-circle"></i>
+            Supported formats: .xlsx, .xls, .csv (Max 5MB).
             First download the template to see the required format.
         </small>
     </div>
 
     <div class="top-bar">
         <div class="dropdown-wrapper">
+<<<<<<< HEAD
             <select name="session_filter" id="sessionFilter" class="session-dropdown">
                 <option value="">All Sessions</option>
                 @foreach($sessions as $session)
+=======
+            <form id="sessionFilterForm">
+                <select name="session_filter" onchange="this.form.submit()" class="session-dropdown">
+                    <option value="">All Sessions</option>
+                    @foreach($sessions as $session)
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
                     <option value="{{ $session->id }}"
                         {{ request('session_filter') == $session->id ? 'selected' : '' }}>
                         {{ $session->name }}
                     </option>
+<<<<<<< HEAD
                 @endforeach
             </select>
+=======
+                    @endforeach
+                </select>
+            </form>
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
         </div>
 
         <button class="add-btn" id="addStudentBtn">+ Add Student</button>
@@ -587,8 +763,16 @@ input:focus, select:focus {
                     <td>{{ $student->section->name ?? '' }}</td>
                     <td>
                         <div class="action-icons">
+<<<<<<< HEAD
                             <i class="fa-solid fa-pen-to-square edit-icon" data-id="{{ $student->id }}" style="cursor: pointer;"></i>
                             <i class="fa-solid fa-trash delete-icon" data-id="{{ $student->id }}" style="cursor: pointer;"></i>
+=======
+                            <i class="fa-solid fa-pen-to-square edit-icon"
+                                onclick='editStudent(@json($student))'></i>
+
+                            <i class="fa-solid fa-trash delete-icon"
+                                onclick="deleteStudent({{ $student->id }})"></i>
+>>>>>>> 0f73c85e6f0254eb9744f874e159aa042318fde4
                         </div>
                     </td>
                 </tr>
@@ -680,7 +864,7 @@ input:focus, select:focus {
                     <select name="program_id" id="program_id" required>
                         <option value="">Select Program</option>
                         @foreach($programs as $program)
-                            <option value="{{ $program->id }}">{{ $program->name }}</option>
+                        <option value="{{ $program->id }}">{{ $program->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -690,7 +874,7 @@ input:focus, select:focus {
                     <select name="session_id" id="session_id" required>
                         <option value="">Select Session</option>
                         @foreach($sessions as $session)
-                            <option value="{{ $session->id }}">{{ $session->name }}</option>
+                        <option value="{{ $session->id }}">{{ $session->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -700,7 +884,7 @@ input:focus, select:focus {
                     <select name="section_id" id="section_id" required>
                         <option value="">Select Section</option>
                         @foreach($sections as $section)
-                            <option value="{{ $section->id }}">{{ $section->name }}</option>
+                        <option value="{{ $section->id }}">{{ $section->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -740,359 +924,465 @@ input:focus, select:focus {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-// CSRF Token setup
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // ==================== MODAL FUNCTIONS ====================
 
-// Get DOM elements
-const modal = document.getElementById('studentModal');
-const addBtn = document.getElementById('addStudentBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const saveStudentBtn = document.getElementById('saveStudentBtn');
-const modalTitle = document.getElementById('modalTitle');
-const studentForm = document.getElementById('studentForm');
-const formMethod = document.getElementById('formMethod');
-const studentId = document.getElementById('studentId');
-const sessionFilter = document.getElementById('sessionFilter');
+    function openModal() {
+        const modal = document.getElementById('studentModal');
+        const form = document.getElementById('studentForm');
+        const formMethod = document.getElementById('formMethod');
+        const passwordField = document.getElementById('password');
+        const passwordRequired = document.getElementById('passwordRequired');
+        const passwordHelp = document.getElementById('passwordHelp');
+        const studentId = document.getElementById('student_id');
 
-// ==================== MODAL FUNCTIONS ====================
+        form.reset();
+        formMethod.value = "POST";
+        studentId.value = '';
 
-function openModal() {
-    studentForm.reset();
-    formMethod.value = "POST";
-    modalTitle.textContent = "Student Registration Form";
-    studentId.value = '';
-    
-    // Set password field for new student
-    document.getElementById('password').required = true;
-    document.getElementById('passwordRequired').style.display = 'inline';
-    document.getElementById('passwordHelp').style.display = 'none';
-    
-    modal.style.display = 'flex';
-}
+        passwordField.required = true;
+        passwordField.placeholder = "Enter password";
+        passwordRequired.style.display = 'inline';
+        passwordHelp.style.display = 'none';
 
-function closeModal() {
-    modal.style.display = 'none';
-}
+        // Clear any previous values
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('department').value = '';
+        document.getElementById('gender').value = '';
+        document.getElementById('father_name').value = '';
+        document.getElementById('roll_no').value = '';
+        document.getElementById('app_no').value = '';
+        document.getElementById('semester').value = '';
+        document.getElementById('program_id').value = '';
+        document.getElementById('session_id').value = '';
+        document.getElementById('section_id').value = '';
+        document.getElementById('enrollment_date').value = '';
+        document.getElementById('new_student').value = '1';
+        document.getElementById('designation').value = 'student';
 
-addBtn.addEventListener('click', openModal);
-closeModalBtn.addEventListener('click', closeModal);
-
-// Close modal when clicking outside
-window.addEventListener('click', function(event) {
-    if (event.target === modal) closeModal();
-    if (event.target === document.getElementById('errorModal')) closeErrorModal();
-});
-
-// ==================== FILTER FUNCTION ====================
-
-sessionFilter.addEventListener('change', function() {
-    const sessionId = this.value;
-    let url = '{{ route("dashboard") }}';
-    if (sessionId) url += '?session_filter=' + sessionId;
-    window.location.href = url;
-});
-
-// ==================== FILE UPLOAD ====================
-
-document.getElementById('excel_file')?.addEventListener('change', function() {
-    const fileName = document.getElementById('fileName');
-    if (this.files && this.files[0]) {
-        fileName.textContent = this.files[0].name;
-        
-        if (this.files[0].size > 5 * 1024 * 1024) {
-            Swal.fire('Error', 'File size exceeds 5MB', 'error');
-            this.value = '';
-            fileName.textContent = 'No file chosen';
-        }
-        
-        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
-        const fileExt = this.files[0].name.substring(this.files[0].name.lastIndexOf('.')).toLowerCase();
-        if (!allowedExtensions.includes(fileExt)) {
-            Swal.fire('Error', 'Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
-            this.value = '';
-            fileName.textContent = 'No file chosen';
-        }
-    } else {
-        fileName.textContent = 'No file chosen';
+        modal.style.display = 'block';
     }
-});
 
-document.getElementById('importBtn')?.addEventListener('click', async function() {
-    const fileInput = document.getElementById('excel_file');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        Swal.fire('Error', 'Please select a file first.', 'error');
-        return;
+    function closeModal() {
+        document.getElementById('studentModal').style.display = 'none';
     }
-    
-    const formData = new FormData();
-    formData.append('excel_file', file);
-    formData.append('_token', csrfToken);
-    
-    const progressBar = document.getElementById('progressBar');
-    const progress = document.getElementById('progress');
-    
-    progressBar.style.display = 'block';
-    progress.style.width = '0%';
-    progress.textContent = '0%';
-    
-    let width = 0;
-    const interval = setInterval(() => {
-        if (width >= 90) clearInterval(interval);
-        else {
-            width += 10;
-            progress.style.width = width + '%';
-            progress.textContent = width + '%';
+
+    window.loadPage = function(url) {
+        fetch(url)
+            .then(res => res.text())
+            .then(data => {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(data, 'text/html');
+
+                let newContent = doc.querySelector('#content').innerHTML;
+                document.querySelector('#content').innerHTML = newContent;
+
+                window.history.pushState({}, '', url);
+            });
+    }
+
+    function editStudent(student) {
+        const modal = document.getElementById('studentModal');
+        const formMethod = document.getElementById('formMethod');
+        const passwordField = document.getElementById('password');
+        const passwordRequired = document.getElementById('passwordRequired');
+        const passwordHelp = document.getElementById('passwordHelp');
+        const studentId = document.getElementById('student_id');
+
+        formMethod.value = "PUT";
+        studentId.value = student.id;
+
+        passwordField.required = false;
+        passwordField.placeholder = "Leave blank to keep current password";
+        passwordRequired.style.display = 'none';
+        passwordHelp.style.display = 'block';
+        passwordField.value = '';
+
+        document.getElementById('name').value = student.user?.name || '';
+        document.getElementById('email').value = student.user?.email || '';
+        document.getElementById('department').value = student.user?.department || '';
+        document.getElementById('designation').value = student.user?.designation || 'student';
+        document.getElementById('gender').value = student.gender || '';
+        document.getElementById('father_name').value = student.father_name || '';
+        document.getElementById('roll_no').value = student.roll_no || '';
+        document.getElementById('app_no').value = student.app_no || '';
+        document.getElementById('semester').value = student.semester || '';
+        document.getElementById('program_id').value = student.program_id || '';
+        document.getElementById('session_id').value = student.session_id || '';
+        document.getElementById('section_id').value = student.section_id || '';
+        document.getElementById('enrollment_date').value = student.enrollment_date || '';
+        document.getElementById('new_student').value = student.new_student || '1';
+
+        modal.style.display = 'block';
+    }
+
+    function saveStudent() {
+        const formMethod = document.getElementById('formMethod').value;
+        const studentId = document.getElementById('student_id').value;
+        const password = document.getElementById('password').value;
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Validation
+        if (!name || !email) {
+            Swal.fire('Validation Error', 'Name and Email are required fields.', 'error');
+            return;
         }
-    }, 200);
-    
-    try {
-        const response = await fetch('{{ route("students.import.excel") }}', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const data = await response.json();
-        clearInterval(interval);
-        progress.style.width = '100%';
-        progress.textContent = '100%';
-        
-        if (data.success) {
-            Swal.fire('Success!', data.message, 'success').then(() => location.reload());
+
+        if (formMethod === 'POST' && (!password || password.length < 6)) {
+            Swal.fire('Validation Error', 'Password is required and must be at least 6 characters for new students.', 'error');
+            return;
+        }
+
+        if (formMethod === 'PUT' && password && password.length < 6) {
+            Swal.fire('Validation Error', 'Password must be at least 6 characters if provided.', 'error');
+            return;
+        }
+
+        // Prepare form data
+        let formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('department', document.getElementById('department').value);
+        formData.append('designation', document.getElementById('designation').value);
+        formData.append('gender', document.getElementById('gender').value);
+        formData.append('father_name', document.getElementById('father_name').value);
+        formData.append('roll_no', document.getElementById('roll_no').value);
+        formData.append('app_no', document.getElementById('app_no').value);
+        formData.append('semester', document.getElementById('semester').value);
+        formData.append('program_id', document.getElementById('program_id').value);
+        formData.append('session_id', document.getElementById('session_id').value);
+        formData.append('section_id', document.getElementById('section_id').value);
+        formData.append('enrollment_date', document.getElementById('enrollment_date').value);
+        formData.append('new_student', document.getElementById('new_student').value);
+
+        if (password) {
+            formData.append('password', password);
+        }
+
+        let url = '';
+        if (formMethod === 'POST') {
+            url = '{{ route("students.store") }}';
         } else {
-            progressBar.style.display = 'none';
-            if (data.errors) displayErrors(data.errors);
-            else Swal.fire('Error!', data.message || 'Error uploading file', 'error');
+            url = '/students/' + studentId;
+            formData.append('_method', 'PUT');
         }
-    } catch (error) {
-        clearInterval(interval);
-        progressBar.style.display = 'none';
-        Swal.fire('Error!', 'Network error. Please try again.', 'error');
-    }
-});
 
-// ==================== SAVE STUDENT ====================
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
-async function saveStudent() {
-    const method = formMethod.value;
-    const id = studentId.value;
-    const password = document.getElementById('password').value;
-    
-    // Validation
-    if (method === 'POST' && (!password || password.length < 6)) {
-        Swal.fire('Error', 'Password is required and must be at least 6 characters for new students.', 'error');
-        return;
-    }
-    
-    if (method === 'PUT' && password && password.length < 6) {
-        Swal.fire('Error', 'Password must be at least 6 characters if provided.', 'error');
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('_token', csrfToken);
-    formData.append('name', document.getElementById('name').value);
-    formData.append('email', document.getElementById('email').value);
-    if (password) formData.append('password', password);
-    formData.append('gender', document.getElementById('gender').value);
-    formData.append('father_name', document.getElementById('father_name').value);
-    formData.append('roll_no', document.getElementById('roll_no').value);
-    formData.append('app_no', document.getElementById('app_no').value);
-    formData.append('semester', document.getElementById('semester').value);
-    formData.append('program_id', document.getElementById('program_id').value);
-    formData.append('session_id', document.getElementById('session_id').value);
-    formData.append('section_id', document.getElementById('section_id').value);
-    formData.append('department', document.getElementById('department').value);
-    formData.append('designation', document.getElementById('designation').value);
-    formData.append('enrollment_date', document.getElementById('enrollment_date').value);
-    formData.append('new_student', document.getElementById('new_student').value);
-    
-    let url = "{{ route('students.store') }}";
-    
-    if (method === 'PUT' && id) {
-        formData.append('_method', 'PUT');
-        url = "/students/" + id;
-    }
-    
-    saveStudentBtn.disabled = true;
-    saveStudentBtn.innerHTML = '<span class="spinner"></span> Saving...';
-    
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message || 'Student saved successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        loadPage(window.location.pathname);
+                    });
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Save Student';
+
+                    let errorHtml = '<ul style="text-align: left;">';
+                    if (response.errors) {
+                        for (let field in response.errors) {
+                            errorHtml += `<li><strong>${field}:</strong> ${response.errors[field].join(', ')}</li>`;
+                        }
+                    } else {
+                        errorHtml += `<li>${response.message || 'An error occurred'}</li>`;
+                    }
+                    errorHtml += '</ul>';
+
+                    Swal.fire({
+                        title: 'Error!',
+                        html: errorHtml,
+                        icon: 'error',
+                        confirmButtonColor: '#0f1b5c'
+                    });
+                }
+            },
+            error: function(xhr) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Save Student';
+
+                console.log('Error response:', xhr);
+
+                let errorMsg = 'An error occurred. Please try again.';
+
+                if (xhr.status === 422) {
+                    // Validation errors
+                    let errors = xhr.responseJSON?.errors;
+                    if (errors) {
+                        let errorHtml = '<ul style="text-align: left;">';
+                        for (let field in errors) {
+                            errorHtml += `<li><strong>${field}:</strong> ${errors[field].join(', ')}</li>`;
+                        }
+                        errorHtml += '</ul>';
+
+                        Swal.fire({
+                            title: 'Validation Error!',
+                            html: errorHtml,
+                            icon: 'error',
+                            confirmButtonColor: '#0f1b5c'
+                        });
+                        return;
+                    }
+                } else if (xhr.status === 409) {
+                    errorMsg = xhr.responseJSON?.message || 'Email already exists!';
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+
+                Swal.fire('Error!', errorMsg, 'error');
+            }
         });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            Swal.fire('Success!', data.message, 'success').then(() => location.reload());
-        } else {
-            if (data.errors) {
-                let errorMsg = '';
-                for (let field in data.errors) {
-                    errorMsg += data.errors[field].join(', ') + '\n';
+    }
+
+    function deleteStudent(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/students/" + id,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Deleted!', response.message || 'Student has been deleted.', 'success').then(() => {
+                                loadPage(window.location.pathname);
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message || 'Could not delete student.', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Network error. Please try again.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        Swal.fire('Error!', errorMsg, 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    // ==================== EXCEL UPLOAD FUNCTIONS ====================
+
+    function displayFileName() {
+        const input = document.getElementById('excel_file');
+        const fileName = document.getElementById('fileName');
+
+        if (input.files && input.files[0]) {
+            fileName.textContent = input.files[0].name;
+
+            if (input.files[0].size > 5 * 1024 * 1024) {
+                Swal.fire('Error', 'File size exceeds 5MB. Please choose a smaller file.', 'error');
+                input.value = '';
+                fileName.textContent = 'No file chosen';
+                return;
+            }
+
+            const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+            const fileExt = input.files[0].name.substring(input.files[0].name.lastIndexOf('.')).toLowerCase();
+            if (!allowedExtensions.includes(fileExt)) {
+                Swal.fire('Error', 'Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
+                input.value = '';
+                fileName.textContent = 'No file chosen';
+            }
+        }
+    }
+
+    $('#excelUploadForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const fileInput = document.getElementById('excel_file');
+        if (!fileInput.files || !fileInput.files[0]) {
+            Swal.fire('Error', 'Please select a file first.', 'error');
+            return;
+        }
+
+        const formData = new FormData(this);
+        const progressBar = document.getElementById('progressBar');
+        const progress = document.getElementById('progress');
+        const submitBtn = $(this).find('button[type="submit"]');
+
+        progressBar.style.display = 'block';
+        progress.style.width = '0%';
+        progress.textContent = '0%';
+        submitBtn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Uploading...');
+
+        let width = 0;
+        const interval = setInterval(function() {
+            if (width >= 90) {
+                clearInterval(interval);
+            } else {
+                width += 10;
+                progress.style.width = width + '%';
+                progress.textContent = width + '%';
+            }
+        }, 200);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                clearInterval(interval);
+                progress.style.width = '100%';
+                progress.textContent = '100%';
+                submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
+
+                setTimeout(() => {
+                    if (data.success) {
+                        Swal.fire('Success!', data.message || 'Students imported successfully.', 'success').then(() => {
+                            loadPage(window.location.pathname);
+                        });
+                    } else {
+                        progressBar.style.display = 'none';
+                        if (data.errors && data.errors.length > 0) {
+                            displayErrors(data.errors);
+                        } else {
+                            Swal.fire('Error!', data.message || 'Error uploading file', 'error');
+                        }
+                    }
+                }, 500);
+            },
+            error: function(xhr) {
+                clearInterval(interval);
+                progressBar.style.display = 'none';
+                submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
+
+                let errorMsg = 'Network error. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
                 }
                 Swal.fire('Error!', errorMsg, 'error');
-            } else {
-                Swal.fire('Error!', data.message || 'Error saving student', 'error');
-            }
-            saveStudentBtn.disabled = false;
-            saveStudentBtn.innerHTML = 'Save Student';
-        }
-    } catch (error) {
-        Swal.fire('Error!', 'Network error. Please try again.', 'error');
-        saveStudentBtn.disabled = false;
-        saveStudentBtn.innerHTML = 'Save Student';
-    }
-}
-
-saveStudentBtn.addEventListener('click', saveStudent);
-
-// ==================== EDIT STUDENT ====================
-
-async function editStudent(id) {
-    try {
-        const response = await fetch(`/students/${id}/edit`, {
-            headers: { 
-                'X-Requested-With': 'XMLHttpRequest', 
-                'Accept': 'application/json'
             }
         });
-        
-        const student = await response.json();
-        
-        if (response.ok && student.success !== false) {
-            modalTitle.textContent = "Edit Student";
-            formMethod.value = "PUT";
-            studentId.value = student.id;
-            
-            document.getElementById('name').value = student.user?.name || student.name || '';
-            document.getElementById('email').value = student.user?.email || '';
-            document.getElementById('department').value = student.user?.department || '';
-            document.getElementById('designation').value = student.user?.designation || 'student';
-            document.getElementById('gender').value = student.gender || '';
-            document.getElementById('father_name').value = student.father_name || '';
-            document.getElementById('roll_no').value = student.roll_no || '';
-            document.getElementById('app_no').value = student.app_no || '';
-            document.getElementById('semester').value = student.semester || '';
-            document.getElementById('program_id').value = student.program_id || '';
-            document.getElementById('session_id').value = student.session_id || '';
-            document.getElementById('section_id').value = student.section_id || '';
-            document.getElementById('enrollment_date').value = student.enrollment_date || '';
-            document.getElementById('new_student').value = student.new_student || '1';
-            
-            // Set password field for update (optional)
-            document.getElementById('password').required = false;
-            document.getElementById('passwordRequired').style.display = 'none';
-            document.getElementById('passwordHelp').style.display = 'block';
-            document.getElementById('password').value = '';
-            
-            modal.style.display = 'flex';
-        } else {
-            Swal.fire('Error', student.message || 'Could not fetch student details', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        Swal.fire('Error', 'Network error. Could not fetch student details.', 'error');
-    }
-}
-// ==================== DELETE STUDENT ====================
-
-async function deleteStudent(id) {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "This action cannot be undone!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, delete it!'
     });
-    
-    if (result.isConfirmed) {
-        try {
-            const response = await fetch("/students/" + id, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                const row = document.getElementById('student-row-' + id);
-                if (row) row.remove();
-                
-                Swal.fire('Deleted!', data.message, 'success');
-            } else {
-                Swal.fire('Error!', data.message || 'Could not delete student', 'error');
-            }
-        } catch (error) {
-            Swal.fire('Error!', 'Network error. Please try again.', 'error');
+
+    function displayErrors(errors) {
+        const errorModal = document.getElementById('errorModal');
+        const errorContent = document.getElementById('errorContent');
+
+        let html = '<table class="error-table">';
+        html += '<thead><tr>';
+        html += '<th>Row #</th>';
+        html += '<th>Field</th>';
+        html += '<th>Error</th>';
+        html += '<th>Values</th>';
+        html += '</tr></thead><tbody>';
+
+        errors.forEach(error => {
+            html += '<tr>';
+            html += `<td>${error.row || 'N/A'}</td>`;
+            html += `<td>${error.attribute || 'General'}</td>`;
+            html += `<td>${error.errors ? error.errors.join(', ') : error.message}</td>`;
+            html += `<td><pre style="margin:0; font-size:12px;">${error.values ? JSON.stringify(error.values, null, 2) : 'N/A'}</pre></td>`;
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        errorContent.innerHTML = html;
+        errorModal.style.display = 'block';
+    }
+
+    function closeErrorModal() {
+        document.getElementById('errorModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('studentModal');
+        const errorModal = document.getElementById('errorModal');
+
+        if (event.target === modal) {
+            closeModal();
+        }
+
+        if (event.target === errorModal) {
+            closeErrorModal();
         }
     }
-}
 
-// ==================== ATTACH EVENTS ====================
-
-function attachIconEvents() {
-    document.querySelectorAll('.edit-icon').forEach(icon => {
-        icon.removeEventListener('click', icon.clickHandler);
-        const id = icon.getAttribute('data-id');
-        icon.clickHandler = () => editStudent(id);
-        icon.addEventListener('click', icon.clickHandler);
+    // Display session messages in SweetAlert
+    @if(session('success'))
+    Swal.fire({
+        title: 'Success!',
+        text: '{{ session('
+        success ') }}',
+        icon: 'success',
+        timer: 3000,
+        showConfirmButton: true
     });
-    
-    document.querySelectorAll('.delete-icon').forEach(icon => {
-        icon.removeEventListener('click', icon.clickHandler);
-        const id = icon.getAttribute('data-id');
-        icon.clickHandler = () => deleteStudent(id);
-        icon.addEventListener('click', icon.clickHandler);
+    @endif
+
+    @if(session('error'))
+    Swal.fire({
+        title: 'Error!',
+        text: '{{ session('
+        error ') }}',
+        icon: 'error',
+        confirmButtonColor: '#d33'
     });
-}
+    @endif
 
-attachIconEvents();
-
-// ==================== ERROR DISPLAY ====================
-
-function displayErrors(errors) {
-    const errorModal = document.getElementById('errorModal');
-    const errorContent = document.getElementById('errorContent');
-    
-    let html = '<table class="error-table"><thead><tr><th>Row #</th><th>Field</th><th>Error</th><th>Values</th></tr></thead><tbody>';
-    
-    errors.forEach(error => {
-        html += `<tr>
-            <td>${error.row}</td>
-            <td>${error.attribute}</td>
-            <td>${error.errors.join(', ')}</td>
-            <td><pre style="margin:0; font-size:12px;">${JSON.stringify(error.values, null, 2)}</pre></td>
-        </tr>`;
-    });
-    
-    html += '</tbody></table>';
-    errorContent.innerHTML = html;
-    errorModal.style.display = 'flex';
-}
-
-function closeErrorModal() {
-    document.getElementById('errorModal').style.display = 'none';
-}
-
-// Enter key submit
-document.getElementById('studentForm')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+    document.getElementById('sessionFilterForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        saveStudent();
-    }
-});
 
+        let formData = new FormData(this);
+        let params = new URLSearchParams(formData).toString();
+
+        let url = window.location.pathname + '?' + params;
+
+        loadPage(url, routeName);
+    });
+
+    function loadPage(url, routeName) {
+        $.ajax({
+            url: url,
+            success: function(res) {
+                document.getElementById('main-container').innerHTML = res;
+                if (routeName) setActiveSidebar(routeName); // sidebar highlight update
+                window.history.pushState({}, '', url);
+            }
+        });
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // prevent full page reload
+
+            const routeName = this.dataset.route; // from data-route
+            const url = this.getAttribute('href'); // actual url
+
+            loadPage(url, routeName); // pass routeName to loadPage
+        });
+    });
 </script>
 
 @endsection

@@ -4,209 +4,211 @@
 
 @section('styles')
 <style>
+    /* ROOT WIDTH CONTROL */
+    :root {
+        --sidebar-width: 270px;
+        --sidebar-collapsed-width: 70px;
+    }
 
-/* ROOT WIDTH CONTROL */
-:root {
-    --sidebar-width: 270px;
-    --sidebar-collapsed-width: 70px;
-}
+    /* MAIN CONTAINER */
+    .main-container {
+        position: fixed;
+        top: 80px;
+        left: var(--sidebar-width);
+        right: 20px;
+        bottom: 20px;
 
-/* MAIN CONTAINER */
-.main-container {
-    position: fixed;
-    top: 80px;
-    left: var(--sidebar-width);
-    right: 20px;
-    bottom: 20px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+        transition: left 0.3s ease;
+    }
 
-    transition: left 0.3s ease;
-}
+    body.sidebar-collapsed .main-container {
+        left: var(--sidebar-collapsed-width);
+    }
 
-body.sidebar-collapsed .main-container {
-    left: var(--sidebar-collapsed-width);
-}
+    /* TOP BAR */
+    .top-bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
 
-/* TOP BAR */
-.top-bar {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
+    .page-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f1b5c;
+        margin-bottom: 10px;
+    }
 
-.page-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #0f1b5c;
-    margin-bottom: 10px;
-}
+    /* BUTTON */
+    .add-btn {
+        background: #0f1b5c;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 
-/* BUTTON */
-.add-btn {
-    background: #0f1b5c;
-    color: #fff;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
+    /* TABLE */
+    .table-container {
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
 
-/* TABLE */
-.table-container {
-    flex: 1;
-    overflow-x: auto;
-    overflow-y: auto;
-}
+    table {
+        width: 100%;
+        min-width: 800px;
+        border-collapse: collapse;
+    }
 
-table {
-    width: 100%;
-    min-width: 800px;
-    border-collapse: collapse;
-}
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #0f1b5c;
+        color: #fff;
+        padding: 12px;
+    }
 
-thead th {
-    position: sticky;
-    top: 0;
-    background: #0f1b5c;
-    color: #fff;
-    padding: 12px;
-}
+    tbody td {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+    }
 
-tbody td {
-    padding: 12px;
-    border-bottom: 1px solid #e0e0e0;
-}
+    tbody tr:hover {
+        background-color: #f5f7fb;
+    }
 
-tbody tr:hover {
-    background-color: #f5f7fb;
-}
+    /* ================= MODAL FIXED ================= */
 
-/* ================= MODAL FIXED ================= */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+        background: rgba(0, 0, 0, 0.5);
 
-    background: rgba(0,0,0,0.5);
+        /* PERFECT CENTER */
+        align-items: center;
+        justify-content: center;
 
-    /* PERFECT CENTER */
-    align-items: center;
-    justify-content: center;
+        padding: 20px;
+    }
 
-    padding: 20px;
-}
+    .modal-content {
+        background: #fff;
+        width: 55%;
+        max-width: 700px;
 
-.modal-content {
-    background: #fff;
-    width: 55%;
-    max-width: 700px;
+        padding: 25px;
+        border-radius: 12px;
 
-    padding: 25px;
-    border-radius: 12px;
+        position: relative;
 
-    position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
 
-    max-height: 90vh;
-    overflow-y: auto;
-}
+    /* CLOSE BUTTON */
+    .close {
+        position: absolute;
+        right: 18px;
+        top: 12px;
+        cursor: pointer;
+        font-size: 24px;
+    }
 
-/* CLOSE BUTTON */
-.close {
-    position: absolute;
-    right: 18px;
-    top: 12px;
-    cursor: pointer;
-    font-size: 24px;
-}
+    /* FORM GRID */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 10px;
+    }
 
-/* FORM GRID */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin-top: 10px;
-}
+    /* FULL WIDTH */
+    .full-width {
+        grid-column: 1 / -1;
+    }
 
-/* FULL WIDTH */
-.full-width {
-    grid-column: 1 / -1;
-}
+    /* LABELS */
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #333;
+    }
 
-/* LABELS */
-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #333;
-}
+    /* INPUTS */
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: 0.2s;
+    }
 
-/* INPUTS */
-input, select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    outline: none;
-    transition: 0.2s;
-}
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #0f1b5c;
+    }
 
-input:focus, select:focus, textarea:focus {
-    border-color: #0f1b5c;
-}
+    /* TEXTAREA */
+    textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
 
-/* TEXTAREA */
-textarea {
-    min-height: 90px;
-    resize: vertical;
-}
+    /* SUBMIT BUTTON */
+    button[type="submit"] {
+        background: #0f1b5c;
+        color: #fff;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
 
-/* SUBMIT BUTTON */
-button[type="submit"] {
-    background: #0f1b5c;
-    color: #fff;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+        grid-column: 1 / -1;
+        width: 200px;
+        justify-self: center;
+    }
 
-    grid-column: 1 / -1;
-    width: 200px;
-    justify-self: center;
-}
+    /* MESSAGE */
+    #message {
+        display: none;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 6px;
+    }
 
-/* MESSAGE */
-#message {
-    display: none;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 6px;
-}
+    #message.success {
+        background: #d4edda;
+        color: #155724;
+    }
 
-#message.success {
-    background: #d4edda;
-    color: #155724;
-}
-
-#message.error {
-    background: #f8d7da;
-    color: #721c24;
-}
-
+    #message.error {
+        background: #f8d7da;
+        color: #721c24;
+    }
 </style>
 @endsection
 
@@ -236,12 +238,12 @@ button[type="submit"] {
 
             <tbody id="schemeTableBody">
                 @foreach($schemes as $scheme)
-                    <tr>
-                        <td>{{ $scheme->title }}</td>
-                        <td>{{ $scheme->credit_hrs }}</td>
-                        <td>{{ $scheme->description }}</td>
-                        <td>{{ $scheme->is_active ? 'Active' : 'Inactive' }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $scheme->title }}</td>
+                    <td>{{ $scheme->credit_hrs }}</td>
+                    <td>{{ $scheme->description }}</td>
+                    <td>{{ $scheme->is_active ? 'Active' : 'Inactive' }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -300,35 +302,34 @@ button[type="submit"] {
 
 @section('scripts')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
 <script>
-
-function openModal() {
-    document.getElementById('schemeModal').style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('schemeModal').style.display = 'none';
-}
-
-window.onclick = function(event) {
-    let modal = document.getElementById('schemeModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
+    function openModal() {
+        document.getElementById('schemeModal').style.display = 'flex';
     }
-}
 
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    function closeModal() {
+        document.getElementById('schemeModal').style.display = 'none';
     }
-});
 
-function appendSchemeRow(scheme) {
-    let status = scheme.is_active ? 'Active' : 'Inactive';
+    // FIXED CLICK HANDLER
+    document.addEventListener('click', function(event) {
+        let modal = document.getElementById('schemeModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 
-    let row = `
+    // CSRF
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    function appendSchemeRow(scheme) {
+        let status = scheme.is_active ? 'Active' : 'Inactive';
+
+        let row = `
         <tr>
             <td>${scheme.title}</td>
             <td>${scheme.credit_hrs}</td>
@@ -337,53 +338,53 @@ function appendSchemeRow(scheme) {
         </tr>
     `;
 
-    $('#schemeTableBody').prepend(row);
-}
+        $('#schemeTableBody').prepend(row);
+    }
 
-$('#schemeForm').on('submit', function(e){
-    e.preventDefault();
+    // FIXED EVENT
+    $(document).on('submit', '#schemeForm', function(e) {
+        e.preventDefault();
 
-    $.ajax({
-        url: "{{ route('scheme.store') }}",
-        method: "POST",
-        data: $(this).serialize(),
+        $.ajax({
+            url: "{{ route('scheme.store') }}",
+            method: "POST",
+            data: $(this).serialize(),
 
-        success: function(res){
-            $('#message')
-                .removeClass('error')
-                .addClass('success')
-                .html(res.message)
-                .fadeIn();
+            success: function(res) {
+                $('#message')
+                    .removeClass('error')
+                    .addClass('success')
+                    .html(res.message)
+                    .fadeIn();
 
-            appendSchemeRow(res.data);
+                appendSchemeRow(res.data);
 
-            $('#schemeForm')[0].reset();
+                $('#schemeForm')[0].reset();
 
-            setTimeout(() => {
-                closeModal();
-                $('#message').hide();
-            }, 1000);
-        },
+                setTimeout(() => {
+                    closeModal();
+                    $('#message').hide();
+                }, 1000);
+            },
 
-        error: function(err){
-            let msg = 'Something went wrong';
+            error: function(err) {
+                let msg = 'Something went wrong';
 
-            if(err.status === 422){
-                let errors = err.responseJSON.errors;
-                msg = Object.values(errors).join('<br>');
-            } else if(err.responseJSON?.message){
-                msg = err.responseJSON.message;
+                if (err.status === 422) {
+                    let errors = err.responseJSON.errors;
+                    msg = Object.values(errors).join('<br>');
+                } else if (err.responseJSON?.message) {
+                    msg = err.responseJSON.message;
+                }
+
+                $('#message')
+                    .removeClass('success')
+                    .addClass('error')
+                    .html(msg)
+                    .fadeIn();
             }
-
-            $('#message')
-                .removeClass('success')
-                .addClass('error')
-                .html(msg)
-                .fadeIn();
-        }
+        });
     });
-});
-
 </script>
 
 @endsection

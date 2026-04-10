@@ -28,19 +28,32 @@
         .hamburger {
             position: fixed;
             top: 10px;
+            left: 260px;
+
             height: 60px;
             width: 50px;
-            left: 260px;
+
             font-size: 20px;
             color: #fff;
+
             cursor: pointer;
             z-index: 1001;
+
             background: #0f1b5c;
             border-radius: 10px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             transition: left 0.3s ease;
+
+            line-height: 1;
+        }
+
+        .hamburger i {
+            display: block;
+            line-height: 1;
         }
 
         body.sidebar-collapsed .hamburger {
@@ -122,7 +135,18 @@
             transform: translateX(5px);
         }
 
+        .nav-link.active {
+            background: #fff !important;
+            color: #0f1b5c !important;
+            font-weight: bold;
+        }
+
         /* ================= CONTENT ================= */
+
+        #main-content {
+            transition: opacity 0.3s ease;
+        }
+
         .content {
             flex: 1;
             padding: 90px 40px 40px;
@@ -278,6 +302,9 @@
             if (link) {
                 e.preventDefault();
 
+                const route = link.getAttribute('data-route');
+                setActiveSidebar(route);
+
                 fetch(link.href, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
@@ -286,41 +313,103 @@
                     .then(res => res.text())
                     .then(html => {
 
-                        // inject page
-                        document.getElementById('main-content').innerHTML = html;
+                        const content = document.getElementById('main-content');
 
-                        // update URL
-                        window.history.pushState({}, '', link.href);
+                        // fade out
+                        content.style.opacity = 0;
 
-                        // IMPORTANT FIX
-                        if (link.href.includes('sos')) {
-                            if (typeof loadSchemes === "function") {
-                                loadSchemes();
+                        setTimeout(() => {
+
+                            content.innerHTML = html;
+
+                            content.style.opacity = 1;
+
+                            window.history.pushState({}, '', link.href);
+
+                            if (link.href.includes('sos')) {
+                                if (typeof loadSchemes === "function") {
+                                    loadSchemes();
+                                }
                             }
-                        }
+
+                        }, 150);
 
                     });
+
+                function setActiveSidebar(routeName) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+
+                    const activeLink = document.querySelector(`.nav-link[data-route='${routeName}']`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+
+                    let currentUrl = window.location.pathname;
+
+                    let route = '';
+
+                    if (currentUrl.includes('dashboard')) route = 'dashboard';
+                    else if (currentUrl.includes('scheme_of_study')) route = 'scheme_of_study';
+                    else if (currentUrl.includes('add-courses')) route = 'add-courses';
+                    else if (currentUrl.includes('course-prerequisite')) route = 'course-prerequisite.index';
+                    else if (currentUrl.includes('teacher')) route = 'teacher.index';
+                    else if (currentUrl.includes('enrollment')) route = 'enrollment.index';
+                    else if (currentUrl.includes('allocation')) route = 'allocation.index';
+
+                    setActiveSidebar(route);
+                });
             }
         });
 
-        function setActiveSidebar(routeName) {
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('!bg-white', '!text-[#0f1b5c]', 'font-bold');
-            });
+        window.addEventListener('popstate', function() {
+            let path = window.location.pathname;
 
-            const activeLink = document.querySelector(`.nav-link[data-route='${routeName}']`);
-            if (activeLink) {
-                activeLink.classList.add('!bg-white', '!text-[#0f1b5c]', 'font-bold');
-            }
+            loadPage(path);
+
+            let route = '';
+
+            if (path.includes('dashboard')) route = 'dashboard';
+            else if (path.includes('scheme_of_study')) route = 'scheme_of_study';
+            else if (path.includes('add-courses')) route = 'add-courses';
+            else if (path.includes('course-prerequisite')) route = 'course-prerequisite.index';
+            else if (path.includes('teacher')) route = 'teacher.index';
+            else if (path.includes('enrollment')) route = 'enrollment.index';
+            else if (path.includes('allocation')) route = 'allocation.index';
+
+            setActiveSidebar(route);
+        });
+
+        function loadPage(url) {
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+
+                    const content = document.getElementById('main-content');
+
+                    content.style.opacity = 0;
+
+                    setTimeout(() => {
+                        content.innerHTML = html;
+                        content.style.opacity = 1;
+                    }, 150);
+
+                });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            setActiveSidebar('dashboard'); // default active page
-        });
+        function navigate(url) {
+            loadPage(url);
+            history.pushState({}, '', url);
+        }
     </script>
 
     @yield('scripts')
 
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
 </html>

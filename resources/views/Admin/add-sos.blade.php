@@ -783,6 +783,17 @@
             }
         });
     }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // prevent full page reload
+
+            const routeName = this.dataset.route; // from data-route
+            const url = this.getAttribute('href'); // actual url
+
+            loadPage(url, routeName); // pass routeName to loadPage
+        });
+    });
 </script>
 
 @endsection

@@ -32,6 +32,28 @@
         transition: left 0.3s ease, width 0.3s ease;
     }
 
+    .table-container::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        /* background */
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #0f1b5c;
+        /* scrollbar color */
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #1c2c8c;
+        /* hover color */
+    }
+
     body.sidebar-collapsed .main-container {
         left: 100px;
         width: calc(100% - 120px);
@@ -212,6 +234,13 @@
         border: 1px dashed #0f1b5c;
     }
 
+    .download-buttons {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
     .upload-header {
         display: flex;
         justify-content: space-between;
@@ -358,6 +387,7 @@
 
     /* SweetAlert Custom Styles */
     .swal2-popup {
+        z-index: 1000000 !important;
         font-size: 14px !important;
     }
 
@@ -366,8 +396,13 @@
     }
 
     .swal2-html-container {
+        z-index: 999999 !important;
         font-size: 14px !important;
         text-align: left !important;
+    }
+
+    #studentModal {
+        z-index: 1000 !important;
     }
 </style>
 @endsection
@@ -389,7 +424,7 @@
             <div class="upload-title">
                 <i class="fa-solid fa-file-excel"></i> Bulk Import Students
             </div>
-            <div class="upload-buttons">
+            <div class="download-buttons">
                 <a href="{{ route('students.download.template') }}" class="btn-template" data-ajax="false">
                     <i class="fa-solid fa-download"></i> Download Template
                 </a>
@@ -403,10 +438,13 @@
                     <label for="excel_file" class="file-label">
                         <i class="fa-solid fa-upload"></i> Choose Excel File
                     </label>
-                    <input type="file" name="excel_file" id="excel_file" accept=".xlsx,.xls,.csv" required>
+                    <input type="file" name="excel_file" id="excel_file"
+                        accept=".xlsx,.xls,.csv"
+                        required
+                        onchange="displayFileName()">
                 </div>
                 <span id="fileName" class="selected-file">No file chosen</span>
-                <button type="button" class="btn-excel" id="importBtn">
+                <button type="submit" class="btn-excel" id="importBtn">
                     <i class="fa-solid fa-cloud-upload-alt"></i> Import Students
                 </button>
             </div>
@@ -478,7 +516,8 @@
                     <td>
                         <div class="action-icons">
                             <i class="fa-solid fa-pen-to-square edit-icon"
-                                onclick='editStudent(@json($student))'></i>
+                                                              ></i>
+
                             <i class="fa-solid fa-trash delete-icon"
                                 onclick="deleteStudent({{ $student->id }})"></i>
                         </div>
@@ -629,8 +668,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     // ==================== MODAL FUNCTIONS ====================
 
@@ -641,7 +678,7 @@
         const passwordField = document.getElementById('password');
         const passwordRequired = document.getElementById('passwordRequired');
         const passwordHelp = document.getElementById('passwordHelp');
-        const studentId = document.getElementById('student_id');
+        const studentId = document.getElementById('studentId');
 
         form.reset();
         formMethod.value = "POST";
@@ -681,7 +718,7 @@
         const passwordField = document.getElementById('password');
         const passwordRequired = document.getElementById('passwordRequired');
         const passwordHelp = document.getElementById('passwordHelp');
-        const studentId = document.getElementById('student_id');
+        const studentId = document.getElementById('studentId');
 
         formMethod.value = "PUT";
         studentId.value = student.id;
@@ -712,11 +749,11 @@
 
     function saveStudent() {
         const formMethod = document.getElementById('formMethod').value;
-        const studentId = document.getElementById('student_id').value;
+        const studentId = document.getElementById('studentId').value;
         const password = document.getElementById('password').value;
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
-        const submitBtn = document.getElementById('submitBtn');
+        const submitBtn = document.getElementById('saveStudentBtn');
 
         // Validation
         if (!name || !email) {
@@ -774,39 +811,7 @@
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.message || 'Student saved successfully.',
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        loadPage(window.location.href);
-                    });
-                } else {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Save Student';
 
-                    let errorHtml = '<ul style="text-align: left;">';
-                    if (response.errors) {
-                        for (let field in response.errors) {
-                            errorHtml += `<li><strong>${field}:</strong> ${response.errors[field].join(', ')}</li>`;
-                        }
-                    } else {
-                        errorHtml += `<li>${response.message || 'An error occurred'}</li>`;
-                    }
-                    errorHtml += '</ul>';
-
-                    Swal.fire({
-                        title: 'Error!',
-                        html: errorHtml,
-                        icon: 'error',
-                        confirmButtonColor: '#0f1b5c'
-                    });
-                }
-            },
             error: function(xhr) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Save Student';
@@ -862,9 +867,10 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        sa
                         if (response.success) {
 
-                            $(`i[onclick="deleteStudent(${id})"]`).closest('tr').remove();
+                            document.getElementById('student-row-' + id).remove();
 
                             Swal.fire('Deleted!', response.message || 'Student has been deleted.', 'success').then(() => {
                                 loadPage(window.location.href);
@@ -923,7 +929,7 @@
         const formData = new FormData(this);
         const progressBar = document.getElementById('progressBar');
         const progress = document.getElementById('progress');
-        const submitBtn = $(this).find('button[type="submit"]');
+        const submitBtn = $('#importBtn');
 
         progressBar.style.display = 'block';
         progress.style.width = '0%';
@@ -1072,14 +1078,18 @@
 
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault(); // prevent full page reload
+            e.preventDefault();
 
-            const routeName = this.dataset.route; // from data-route
-            const url = this.getAttribute('href'); // actual url
+            const routeName = this.dataset.route;
+            const url = this.getAttribute('href');
 
-            loadPage(url, routeName); // pass routeName to loadPage
+            loadPage(url, routeName);
         });
     });
+
+    $(document).on('click', '#addStudentBtn', openModal);
+    $(document).on('click', '#saveStudentBtn', saveStudent);
+    $(document).on('click', '#closeModalBtn', closeModal);
 </script>
 
 @endsection

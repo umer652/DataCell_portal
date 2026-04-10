@@ -4,384 +4,562 @@
 
 @section('styles')
 <style>
-    /* ===== MAIN CSS ===== */
+/* =========================
+   MAIN CONTAINER
+========================= */
+.main-container {
+    position: fixed;
+    top: 80px;
+    left: 270px;
+    width: calc(100% - 290px);
+    bottom: 20px;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-    .add-btn {
-        background: #0f1b5c;
-        color: #fff;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-left: auto;
-    }
+body.sidebar-collapsed .main-container {
+    left: 100px;
+    width: calc(100% - 120px);
+}
 
-    .main-container {
-        position: fixed;
-        top: 80px;
-        left: 270px;
-        width: calc(100% - 290px);
-        bottom: 20px;
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        transition: left 0.3s ease, width 0.3s ease;
-    }
+/* TOP BAR */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+}
 
-    body.sidebar-collapsed .main-container {
-        left: 100px;
-        width: calc(100% - 120px);
-    }
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f1b5c;
+}
 
-    .top-bar {
-        position: relative;
-        display: flex;
-        align-items: center;
-        margin-bottom: 25px;
-    }
+.add-btn {
+    background: #0f1b5c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.add-btn:hover { background: #0c1445; transform: translateY(-1px); }
 
-    .page-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #0f1b5c;
-        margin-bottom: 10px;
-    }
+/* FILTER BAR */
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+    gap: 15px;
+}
 
-    .dropdown-wrapper {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
+.session-dropdown {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #0f1b5c;
+    background-color: #0f1b5c;
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 200px;
+}
 
-    .session-dropdown {
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #0f1b5c;
-        background-color: #0f1b5c;
-        color: #fff;
-        font-weight: 500;
-        cursor: pointer;
-    }
+.session-dropdown option {
+    background: #fff;
+    color: #000;
+}
 
-    .session-dropdown option {
-        background: #fff;
-        color: #000;
-    }
+/* TABLE */
+.table-container {
+    flex: 1;
+    overflow: auto;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
 
-    .table-container {
-        flex: 1;
-        margin-top: 15px;
-        border-radius: 10px;
-        overflow-x: auto;
-        overflow-y: auto;
-    }
+table {
+    width: 100%;
+    min-width: 1300px;
+    border-collapse: collapse;
+}
 
-    table {
-        width: max-content;
-        min-width: 1600px;
-        border-collapse: collapse;
-    }
+thead {
+    background: #0f1b5c;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
-    thead th,
-    tbody td {
-        padding: 14px 20px;
-        white-space: nowrap;
-    }
+th, td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
 
-    thead th {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: #0f1b5c;
-        color: #fff;
-    }
+tbody tr:hover {
+    background: #f5f5f5;
+}
 
-    tbody td {
-        border-bottom: 1px solid #ddd;
-    }
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
 
-    /* MODAL */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(3px);
-    }
+.edit-btn, .delete-btn {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
 
-    .modal-content {
-        background: #fff;
-        margin: 2% auto;
-        width: 75%;
-        max-height: 90vh;
-        overflow-y: auto;
-        border-radius: 16px;
-        padding: 30px;
-        position: relative;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
+.edit-btn {
+    background: #ffc107;
+    color: #000;
+}
 
-    .close {
-        position: absolute;
-        right: 20px;
-        top: 15px;
-        font-size: 26px;
-        cursor: pointer;
-    }
+.edit-btn:hover {
+    background: #e0a800;
+}
 
-    /* FORM */
-    .form-title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #0f1b5c;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 10px;
-    }
+.delete-btn {
+    background: #dc3545;
+    color: #fff;
+}
 
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-    }
+.delete-btn:hover {
+    background: #c82333;
+}
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
+/* Excel Upload Section */
+.upload-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px dashed #0f1b5c;
+    flex-shrink: 0;
+}
 
-    label {
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: #333;
-    }
+.upload-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
-    input,
-    select {
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #d0d0d0;
-        font-size: 14px;
-    }
+.upload-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f1b5c;
+}
 
-    .full-width {
-        grid-column: 1 / -1;
-        display: flex;
-        justify-content: flex-end;
-    }
+.upload-buttons {
+    display: flex;
+    gap: 10px;
+}
 
-    .submit-btn {
-        background: #0f1b5c;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-    }
+.btn-excel {
+    background: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
 
-    .action-icons {
-        display: flex;
-        gap: 12px;
-    }
+.btn-template {
+    background: #17a2b8;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s;
+}
 
-    .edit-icon {
-        color: #0f1b5c;
-        cursor: pointer;
-    }
+.btn-excel:hover,
+.btn-template:hover {
+    opacity: 0.9;
+}
 
-    .delete-icon {
-        color: #d33;
-        cursor: pointer;
-    }
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+}
 
-    /* Excel Upload Styles */
-    .upload-section {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        border: 1px dashed #0f1b5c;
-    }
+.file-input-wrapper input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-    .upload-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+.file-label {
+    background: #0f1b5c;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+    transition: background 0.2s;
+}
 
-    .upload-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #0f1b5c;
-    }
+.file-label:hover {
+    background: #1a2a7a;
+}
 
-    .upload-buttons {
-        display: flex;
-        gap: 10px;
-    }
+.selected-file {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #666;
+}
 
-    .btn-excel {
-        background: #28a745;
-        color: white;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-    }
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 10px 0;
+    display: none;
+}
 
-    .btn-template {
-        background: #17a2b8;
-        color: white;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        text-decoration: none;
-        display: inline-block;
-    }
+.progress {
+    width: 0%;
+    height: 30px;
+    background-color: #0f1b5c;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    transition: width 0.3s;
+}
 
-    .btn-excel:hover,
-    .btn-template:hover {
-        opacity: 0.9;
-    }
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
 
-    .file-input-wrapper {
-        position: relative;
-        display: inline-block;
-    }
+.modal-content {
+    background: #fff;
+    width: 75%;
+    padding: 25px;
+    border-radius: 12px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
 
-    .file-input-wrapper input {
-        position: absolute;
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
         opacity: 0;
-        width: 0;
-        height: 0;
     }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
-    .file-label {
-        background: #0f1b5c;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        display: inline-block;
-    }
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
 
-    .selected-file {
-        margin-left: 10px;
-        font-size: 14px;
-        color: #666;
-    }
+.close:hover {
+    color: #000;
+}
 
-    /* Progress Bar */
-    .progress-bar {
-        width: 100%;
-        background-color: #f0f0f0;
-        border-radius: 5px;
-        margin: 10px 0;
-        display: none;
-    }
+/* FORM GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
 
-    .progress {
-        width: 0%;
-        height: 30px;
-        background-color: #0f1b5c;
-        border-radius: 5px;
-        color: white;
-        text-align: center;
-        line-height: 30px;
-        transition: width 0.3s;
-    }
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-    /* Error Modal Styles */
-    .error-modal {
-        display: none;
-        position: fixed;
-        z-index: 2100;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(5px);
-    }
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
 
-    .error-modal-content {
-        background: #fff;
-        margin: 5% auto;
-        width: 80%;
-        max-height: 80vh;
-        overflow-y: auto;
-        border-radius: 16px;
-        padding: 30px;
-        position: relative;
-    }
+.form-group label .required {
+    color: red;
+}
 
-    .error-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+.form-group select,
+.form-group input {
+    height: 42px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
 
-    .error-table th,
-    .error-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-        vertical-align: top;
-    }
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: #0f1b5c;
+}
 
-    .error-table th {
-        background: #f44336;
-        color: white;
-        position: sticky;
-        top: 0;
-    }
+/* ACTIONS */
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
 
-    .error-table tr:nth-child(even) {
-        background: #f9f9f9;
-    }
+.cancel-btn {
+    background: #ddd;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-    /* SweetAlert Custom Styles */
-    .swal2-popup {
-        font-size: 14px !important;
-    }
+.cancel-btn:hover {
+    background: #ccc;
+}
 
-    .swal2-title {
-        font-size: 22px !important;
-    }
+.save-btn {
+    background: #0f1b5c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-    .swal2-html-container {
-        font-size: 14px !important;
-        text-align: left !important;
+.save-btn:hover {
+    background: #0c1445;
+}
+
+.save-btn:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+/* Help Text */
+.help-text {
+    color: #666;
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Loading Spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error Modal Styles */
+.error-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 2100;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-modal-content {
+    background: #fff;
+    margin: 5% auto;
+    width: 80%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 30px;
+    position: relative;
+}
+
+.error-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.error-table th,
+.error-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.error-table th {
+    background: #f44336;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+.error-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: #cbd5e0;
+    margin-bottom: 20px;
+}
+
+.empty-state p {
+    color: #718096;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+}
+
+.toast {
+    background: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideInRight 0.3s ease;
+    min-width: 300px;
+    max-width: 450px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
     }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast-success {
+    border-left: 4px solid #28a745;
+    background: #d4edda;
+    color: #155724;
+}
+
+.toast-error {
+    border-left: 4px solid #dc3545;
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.toast-info {
+    border-left: 4px solid #17a2b8;
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.toast-warning {
+    border-left: 4px solid #ffc107;
+    background: #fff3cd;
+    color: #856404;
+}
+
+.toast-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.toast-message {
+    font-size: 14px;
+}
 </style>
 @endsection
 
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<div class="main-container">
 
-<div class="main-container" id="main-container">
-
-    <!-- Display Success/Error Messages -->
-    <div id="alertMessages"></div>
-
-     <h2 class="page-title">Student Management</h2>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <h2 class="page-title">Student Management</h2>
+    </div>
 
     <!-- Excel Upload Section -->
     <div class="upload-section">
@@ -390,7 +568,7 @@
                 <i class="fa-solid fa-file-excel"></i> Bulk Import Students
             </div>
             <div class="upload-buttons">
-                <a href="{{ route('students.download.template') }}" class="btn-template" data-ajax="false">
+                <a href="{{ route('students.download.template') }}" class="btn-template">
                     <i class="fa-solid fa-download"></i> Download Template
                 </a>
             </div>
@@ -423,26 +601,23 @@
         </small>
     </div>
 
-    <div class="top-bar">
-        <div class="dropdown-wrapper">
-            <form id="sessionFilterForm">
-                <select name="session_filter" onchange="this.form.submit()" class="session-dropdown">
-                    <option value="">All Sessions</option>
-                    @foreach($sessions as $session)
-                    <option value="{{ $session->id }}"
-                        {{ request('session_filter') == $session->id ? 'selected' : '' }}>
-                        {{ $session->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </form>
-        </div>
-
-        <button class="add-btn" id="addStudentBtn">+ Add Student</button>
+    <div class="filter-bar">
+        <form id="sessionFilterForm" method="GET" action="{{ route('dashboard') }}">
+            <select name="session_filter" onchange="this.form.submit()" class="session-dropdown">
+                <option value="">All Sessions</option>
+                @foreach($sessions as $session)
+                <option value="{{ $session->id }}" {{ request('session_filter') == $session->id ? 'selected' : '' }}>
+                    {{ $session->name }}
+                </option>
+                @endforeach
+            </select>
+        </form>
+        <button class="add-btn" id="addStudentBtn">+ New Student</button>
     </div>
 
+    <!-- TABLE -->
     <div class="table-container">
-        <table>
+        <table id="studentsTable">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -457,7 +632,7 @@
                     <th>Semester</th>
                     <th>Session</th>
                     <th>Section</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="studentsTableBody">
@@ -467,28 +642,29 @@
                     <td>{{ $student->user->email ?? '' }}</td>
                     <td>{{ $student->user->department ?? '' }}</td>
                     <td>{{ $student->user->designation ?? '' }}</td>
-                    <td>{{ $student->gender }}</td>
-                    <td>{{ $student->father_name }}</td>
-                    <td>{{ $student->roll_no }}</td>
-                    <td>{{ $student->app_no }}</td>
+                    <td>{{ $student->gender ?? '' }}</td>
+                    <td>{{ $student->father_name ?? '' }}</td>
+                    <td>{{ $student->roll_no ?? '' }}</td>
+                    <td>{{ $student->app_no ?? '' }}</td>
                     <td>{{ $student->program->name ?? '' }}</td>
-                    <td>{{ $student->semester }}</td>
+                    <td>{{ $student->semester ?? '' }}</td>
                     <td>{{ $student->session->name ?? '' }}</td>
                     <td>{{ $student->section->name ?? '' }}</td>
                     <td>
-                        <div class="action-icons">
-                            <i class="fa-solid fa-pen-to-square edit-icon"
-                                onclick='editStudent(@json($student))'></i>
-
-                            <i class="fa-solid fa-trash delete-icon"
-                                onclick="deleteStudent({{ $student->id }})"></i>
+                        <div class="action-buttons">
+                            <button class="edit-btn" data-student='@json($student)'>Edit</button>
+                            <button class="delete-btn" data-id="{{ $student->id }}">Delete</button>
                         </div>
                     </td>
                 </tr>
                 @empty
-                <tr id="no-students-row">
-                    <td colspan="13" style="text-align: center; padding: 40px;">
-                        No students found. Click "Add Student" or upload Excel file to create students.
+                <tr class="empty-state">
+                    <td colspan="13">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <p>No students found.</p>
+                            <button class="add-btn" onclick="openModal()">+ Add Your First Student</button>
+                        </div>
                     </td>
                 </tr>
                 @endforelse
@@ -501,7 +677,7 @@
 <div id="studentModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
-        <div class="form-title" id="modalTitle">Student Registration Form</div>
+        <h3 id="modalTitle" style="margin-bottom:15px;">Student Registration Form</h3>
 
         <form id="studentForm">
             @csrf
@@ -510,23 +686,23 @@
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Name *</label>
+                    <label>Name <span class="required">*</span></label>
                     <input type="text" name="name" id="name" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Email *</label>
+                    <label>Email <span class="required">*</span></label>
                     <input type="email" name="email" id="email" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Password <span id="passwordRequired">*</span></label>
+                    <label>Password <span id="passwordRequired" class="required">*</span></label>
                     <input type="password" name="password" id="password">
                     <small id="passwordHelp" class="help-text" style="display: none;">Leave blank to keep current password (for updates)</small>
                 </div>
 
                 <div class="form-group">
-                    <label>Department *</label>
+                    <label>Department <span class="required">*</span></label>
                     <input type="text" name="department" id="department" required>
                 </div>
 
@@ -540,7 +716,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Gender *</label>
+                    <label>Gender <span class="required">*</span></label>
                     <select name="gender" id="gender" required>
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
@@ -549,27 +725,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Father Name *</label>
+                    <label>Father Name <span class="required">*</span></label>
                     <input type="text" name="father_name" id="father_name" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Roll No *</label>
+                    <label>Roll No <span class="required">*</span></label>
                     <input type="text" name="roll_no" id="roll_no" required>
                 </div>
 
                 <div class="form-group">
-                    <label>App No *</label>
+                    <label>App No <span class="required">*</span></label>
                     <input type="text" name="app_no" id="app_no" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Semester *</label>
+                    <label>Semester <span class="required">*</span></label>
                     <input type="number" name="semester" id="semester" min="1" max="8" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Program *</label>
+                    <label>Program <span class="required">*</span></label>
                     <select name="program_id" id="program_id" required>
                         <option value="">Select Program</option>
                         @foreach($programs as $program)
@@ -579,7 +755,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Session *</label>
+                    <label>Session <span class="required">*</span></label>
                     <select name="session_id" id="session_id" required>
                         <option value="">Select Session</option>
                         @foreach($sessions as $session)
@@ -589,7 +765,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Section *</label>
+                    <label>Section <span class="required">*</span></label>
                     <select name="section_id" id="section_id" required>
                         <option value="">Select Section</option>
                         @foreach($sections as $section)
@@ -611,8 +787,9 @@
                     </select>
                 </div>
 
-                <div class="full-width">
-                    <button type="button" class="submit-btn" id="saveStudentBtn">Save Student</button>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="save-btn" id="saveStudentBtn">Save Student</button>
                 </div>
             </div>
         </form>
@@ -631,467 +808,528 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // ==================== MODAL FUNCTIONS ====================
+// ==================== INITIALIZATION ====================
+// Function to initialize all event listeners
+function initializePage() {
+    console.log('Initializing student page...');
+    
+    // Re-attach event listeners
+    const addBtn = document.getElementById('addStudentBtn');
+    if (addBtn) {
+        // Remove existing listeners to avoid duplicates
+        const newAddBtn = addBtn.cloneNode(true);
+        addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+        newAddBtn.addEventListener('click', openModal);
+    }
+    
+    const closeBtn = document.getElementById('closeModalBtn');
+    if (closeBtn) {
+        const newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        newCloseBtn.addEventListener('click', closeModal);
+    }
+    
+    const saveBtn = document.getElementById('saveStudentBtn');
+    if (saveBtn) {
+        const newSaveBtn = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+        newSaveBtn.addEventListener('click', saveStudent);
+    }
+    
+    // Re-attach edit buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        const studentData = newBtn.getAttribute('data-student');
+        if (studentData) {
+            const student = JSON.parse(studentData);
+            newBtn.addEventListener('click', () => editStudent(student));
+        }
+    });
+    
+    // Re-attach delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        const studentId = newBtn.getAttribute('data-id');
+        if (studentId) {
+            newBtn.addEventListener('click', () => deleteStudent(studentId));
+        }
+    });
+    
+    // Re-attach file input change event
+    const fileInput = document.getElementById('excel_file');
+    if (fileInput) {
+        const newFileInput = fileInput.cloneNode(true);
+        fileInput.parentNode.replaceChild(newFileInput, fileInput);
+        newFileInput.addEventListener('change', handleFileChange);
+    }
+    
+    // Re-attach import button
+    const importBtn = document.getElementById('importBtn');
+    if (importBtn) {
+        const newImportBtn = importBtn.cloneNode(true);
+        importBtn.parentNode.replaceChild(newImportBtn, importBtn);
+        newImportBtn.addEventListener('click', handleImport);
+    }
+    
+    // Re-attach session filter form submit
+    const sessionForm = document.getElementById('sessionFilterForm');
+    if (sessionForm) {
+        const newSessionForm = sessionForm.cloneNode(true);
+        sessionForm.parentNode.replaceChild(newSessionForm, sessionForm);
+        newSessionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.submit();
+        });
+    }
+    
+    // Display any session messages
+    @if(session('success'))
+    showToast('{{ session("success") }}', 'success');
+    @endif
+    
+    @if(session('error'))
+    showToast('{{ session("error") }}', 'error');
+    @endif
+}
 
-    function openModal() {
-        const modal = document.getElementById('studentModal');
-        const form = document.getElementById('studentForm');
-        const formMethod = document.getElementById('formMethod');
-        const passwordField = document.getElementById('password');
-        const passwordRequired = document.getElementById('passwordRequired');
-        const passwordHelp = document.getElementById('passwordHelp');
-        const studentId = document.getElementById('student_id');
+// ==================== MODAL FUNCTIONS ====================
 
-        form.reset();
-        formMethod.value = "POST";
-        studentId.value = '';
+function openModal() {
+    const modal = document.getElementById('studentModal');
+    const form = document.getElementById('studentForm');
+    const formMethod = document.getElementById('formMethod');
+    const passwordField = document.getElementById('password');
+    const passwordRequired = document.getElementById('passwordRequired');
+    const passwordHelp = document.getElementById('passwordHelp');
+    const studentId = document.getElementById('studentId');
 
-        passwordField.required = true;
-        passwordField.placeholder = "Enter password";
-        passwordRequired.style.display = 'inline';
-        passwordHelp.style.display = 'none';
+    form.reset();
+    formMethod.value = "POST";
+    studentId.value = '';
 
-        // Clear any previous values
-        document.getElementById('name').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('department').value = '';
-        document.getElementById('gender').value = '';
-        document.getElementById('father_name').value = '';
-        document.getElementById('roll_no').value = '';
-        document.getElementById('app_no').value = '';
-        document.getElementById('semester').value = '';
-        document.getElementById('program_id').value = '';
-        document.getElementById('session_id').value = '';
-        document.getElementById('section_id').value = '';
-        document.getElementById('enrollment_date').value = '';
-        document.getElementById('new_student').value = '1';
-        document.getElementById('designation').value = 'student';
+    passwordField.required = true;
+    passwordField.placeholder = "Enter password";
+    passwordRequired.style.display = 'inline';
+    passwordHelp.style.display = 'none';
 
-        modal.style.display = 'block';
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('department').value = '';
+    document.getElementById('gender').value = '';
+    document.getElementById('father_name').value = '';
+    document.getElementById('roll_no').value = '';
+    document.getElementById('app_no').value = '';
+    document.getElementById('semester').value = '';
+    document.getElementById('program_id').value = '';
+    document.getElementById('session_id').value = '';
+    document.getElementById('section_id').value = '';
+    document.getElementById('enrollment_date').value = '';
+    document.getElementById('new_student').value = '1';
+    document.getElementById('designation').value = 'student';
+
+    document.getElementById('modalTitle').textContent = 'Student Registration Form';
+    document.getElementById('saveStudentBtn').textContent = 'Save Student';
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('studentModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function editStudent(student) {
+    const formMethod = document.getElementById('formMethod');
+    const passwordField = document.getElementById('password');
+    const passwordRequired = document.getElementById('passwordRequired');
+    const passwordHelp = document.getElementById('passwordHelp');
+    const studentId = document.getElementById('studentId');
+
+    formMethod.value = "PUT";
+    studentId.value = student.id;
+
+    passwordField.required = false;
+    passwordField.placeholder = "Leave blank to keep current password";
+    passwordRequired.style.display = 'none';
+    passwordHelp.style.display = 'block';
+    passwordField.value = '';
+
+    document.getElementById('name').value = student.user?.name || '';
+    document.getElementById('email').value = student.user?.email || '';
+    document.getElementById('department').value = student.user?.department || '';
+    document.getElementById('designation').value = student.user?.designation || 'student';
+    document.getElementById('gender').value = student.gender || '';
+    document.getElementById('father_name').value = student.father_name || '';
+    document.getElementById('roll_no').value = student.roll_no || '';
+    document.getElementById('app_no').value = student.app_no || '';
+    document.getElementById('semester').value = student.semester || '';
+    document.getElementById('program_id').value = student.program_id || '';
+    document.getElementById('session_id').value = student.session_id || '';
+    document.getElementById('section_id').value = student.section_id || '';
+    document.getElementById('enrollment_date').value = student.enrollment_date || '';
+    document.getElementById('new_student').value = student.new_student || '1';
+
+    document.getElementById('modalTitle').textContent = 'Edit Student';
+    document.getElementById('saveStudentBtn').textContent = 'Update Student';
+
+    openModal();
+}
+
+function saveStudent() {
+    const formMethod = document.getElementById('formMethod').value;
+    const studentId = document.getElementById('studentId').value;
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const saveBtn = document.getElementById('saveStudentBtn');
+
+    if (!name || !email) {
+        showToast('Name and Email are required fields.', 'error');
+        return;
     }
 
-    function closeModal() {
-        document.getElementById('studentModal').style.display = 'none';
+    if (formMethod === 'POST' && (!password || password.length < 6)) {
+        showToast('Password is required and must be at least 6 characters for new students.', 'error');
+        return;
     }
 
-    window.loadPage = function(url) {
-        fetch(url)
-            .then(res => res.text())
-            .then(data => {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(data, 'text/html');
-
-                let newContent = doc.querySelector('#content').innerHTML;
-                document.querySelector('#content').innerHTML = newContent;
-
-                window.history.pushState({}, '', url);
-            });
+    if (formMethod === 'PUT' && password && password.length < 6) {
+        showToast('Password must be at least 6 characters if provided.', 'error');
+        return;
     }
 
-    function editStudent(student) {
-        const modal = document.getElementById('studentModal');
-        const formMethod = document.getElementById('formMethod');
-        const passwordField = document.getElementById('password');
-        const passwordRequired = document.getElementById('passwordRequired');
-        const passwordHelp = document.getElementById('passwordHelp');
-        const studentId = document.getElementById('student_id');
+    let formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('department', document.getElementById('department').value);
+    formData.append('designation', document.getElementById('designation').value);
+    formData.append('gender', document.getElementById('gender').value);
+    formData.append('father_name', document.getElementById('father_name').value);
+    formData.append('roll_no', document.getElementById('roll_no').value);
+    formData.append('app_no', document.getElementById('app_no').value);
+    formData.append('semester', document.getElementById('semester').value);
+    formData.append('program_id', document.getElementById('program_id').value);
+    formData.append('session_id', document.getElementById('session_id').value);
+    formData.append('section_id', document.getElementById('section_id').value);
+    formData.append('enrollment_date', document.getElementById('enrollment_date').value);
+    formData.append('new_student', document.getElementById('new_student').value);
 
-        formMethod.value = "PUT";
-        studentId.value = student.id;
-
-        passwordField.required = false;
-        passwordField.placeholder = "Leave blank to keep current password";
-        passwordRequired.style.display = 'none';
-        passwordHelp.style.display = 'block';
-        passwordField.value = '';
-
-        document.getElementById('name').value = student.user?.name || '';
-        document.getElementById('email').value = student.user?.email || '';
-        document.getElementById('department').value = student.user?.department || '';
-        document.getElementById('designation').value = student.user?.designation || 'student';
-        document.getElementById('gender').value = student.gender || '';
-        document.getElementById('father_name').value = student.father_name || '';
-        document.getElementById('roll_no').value = student.roll_no || '';
-        document.getElementById('app_no').value = student.app_no || '';
-        document.getElementById('semester').value = student.semester || '';
-        document.getElementById('program_id').value = student.program_id || '';
-        document.getElementById('session_id').value = student.session_id || '';
-        document.getElementById('section_id').value = student.section_id || '';
-        document.getElementById('enrollment_date').value = student.enrollment_date || '';
-        document.getElementById('new_student').value = student.new_student || '1';
-
-        modal.style.display = 'block';
+    if (password) {
+        formData.append('password', password);
     }
 
-    function saveStudent() {
-        const formMethod = document.getElementById('formMethod').value;
-        const studentId = document.getElementById('student_id').value;
-        const password = document.getElementById('password').value;
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const submitBtn = document.getElementById('submitBtn');
+    let url = '';
+    if (formMethod === 'POST') {
+        url = '{{ route("students.store") }}';
+    } else {
+        url = '/students/' + studentId;
+        formData.append('_method', 'PUT');
+    }
 
-        // Validation
-        if (!name || !email) {
-            Swal.fire('Validation Error', 'Name and Email are required fields.', 'error');
-            return;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                showToast(response.message || 'Student saved successfully.', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = formMethod === 'POST' ? 'Save Student' : 'Update Student';
+                showToast(response.message || 'An error occurred', 'error');
+            }
+        },
+        error: function(xhr) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = formMethod === 'POST' ? 'Save Student' : 'Update Student';
+            
+            let errorMsg = 'An error occurred. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+            }
+            showToast(errorMsg, 'error');
         }
+    });
+}
 
-        if (formMethod === 'POST' && (!password || password.length < 6)) {
-            Swal.fire('Validation Error', 'Password is required and must be at least 6 characters for new students.', 'error');
-            return;
-        }
-
-        if (formMethod === 'PUT' && password && password.length < 6) {
-            Swal.fire('Validation Error', 'Password must be at least 6 characters if provided.', 'error');
-            return;
-        }
-
-        // Prepare form data
-        let formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('department', document.getElementById('department').value);
-        formData.append('designation', document.getElementById('designation').value);
-        formData.append('gender', document.getElementById('gender').value);
-        formData.append('father_name', document.getElementById('father_name').value);
-        formData.append('roll_no', document.getElementById('roll_no').value);
-        formData.append('app_no', document.getElementById('app_no').value);
-        formData.append('semester', document.getElementById('semester').value);
-        formData.append('program_id', document.getElementById('program_id').value);
-        formData.append('session_id', document.getElementById('session_id').value);
-        formData.append('section_id', document.getElementById('section_id').value);
-        formData.append('enrollment_date', document.getElementById('enrollment_date').value);
-        formData.append('new_student', document.getElementById('new_student').value);
-
-        if (password) {
-            formData.append('password', password);
-        }
-
-        let url = '';
-        if (formMethod === 'POST') {
-            url = '{{ route("students.store") }}';
-        } else {
-            url = '/students/' + studentId;
-            formData.append('_method', 'PUT');
-        }
-
-        // Disable button and show loading
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
+function deleteStudent(id) {
+    if (confirm('⚠️ Are you sure you want to delete this student?\n\nThis action cannot be undone!')) {
+        showToast('Deleting student...', 'info');
+        
         $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
+            url: "/students/" + id,
+            type: "DELETE",
+            data: {
+                _token: "{{ csrf_token() }}"
+            },
             success: function(response) {
                 if (response.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.message || 'Student saved successfully.',
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        loadPage(window.location.pathname);
-                    });
+                    showToast(response.message || 'Student has been deleted.', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
                 } else {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Save Student';
-
-                    let errorHtml = '<ul style="text-align: left;">';
-                    if (response.errors) {
-                        for (let field in response.errors) {
-                            errorHtml += `<li><strong>${field}:</strong> ${response.errors[field].join(', ')}</li>`;
-                        }
-                    } else {
-                        errorHtml += `<li>${response.message || 'An error occurred'}</li>`;
-                    }
-                    errorHtml += '</ul>';
-
-                    Swal.fire({
-                        title: 'Error!',
-                        html: errorHtml,
-                        icon: 'error',
-                        confirmButtonColor: '#0f1b5c'
-                    });
+                    showToast(response.message || 'Could not delete student.', 'error');
                 }
             },
             error: function(xhr) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Save Student';
-
-                console.log('Error response:', xhr);
-
-                let errorMsg = 'An error occurred. Please try again.';
-
-                if (xhr.status === 422) {
-                    // Validation errors
-                    let errors = xhr.responseJSON?.errors;
-                    if (errors) {
-                        let errorHtml = '<ul style="text-align: left;">';
-                        for (let field in errors) {
-                            errorHtml += `<li><strong>${field}:</strong> ${errors[field].join(', ')}</li>`;
-                        }
-                        errorHtml += '</ul>';
-
-                        Swal.fire({
-                            title: 'Validation Error!',
-                            html: errorHtml,
-                            icon: 'error',
-                            confirmButtonColor: '#0f1b5c'
-                        });
-                        return;
-                    }
-                } else if (xhr.status === 409) {
-                    errorMsg = xhr.responseJSON?.message || 'Email already exists!';
-                } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMsg = xhr.responseJSON.message;
-                }
-
-                Swal.fire('Error!', errorMsg, 'error');
-            }
-        });
-    }
-
-    function deleteStudent(id) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This action cannot be undone!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/students/" + id,
-                    type: "DELETE",
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire('Deleted!', response.message || 'Student has been deleted.', 'success').then(() => {
-                                loadPage(window.location.pathname);
-                            });
-                        } else {
-                            Swal.fire('Error!', response.message || 'Could not delete student.', 'error');
-                        }
-                    },
-                    error: function(xhr) {
-                        let errorMsg = 'Network error. Please try again.';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMsg = xhr.responseJSON.message;
-                        }
-                        Swal.fire('Error!', errorMsg, 'error');
-                    }
-                });
-            }
-        });
-    }
-
-    // ==================== EXCEL UPLOAD FUNCTIONS ====================
-
-    function displayFileName() {
-        const input = document.getElementById('excel_file');
-        const fileName = document.getElementById('fileName');
-
-        if (input.files && input.files[0]) {
-            fileName.textContent = input.files[0].name;
-
-            if (input.files[0].size > 5 * 1024 * 1024) {
-                Swal.fire('Error', 'File size exceeds 5MB. Please choose a smaller file.', 'error');
-                input.value = '';
-                fileName.textContent = 'No file chosen';
-                return;
-            }
-
-            const allowedExtensions = ['.xlsx', '.xls', '.csv'];
-            const fileExt = input.files[0].name.substring(input.files[0].name.lastIndexOf('.')).toLowerCase();
-            if (!allowedExtensions.includes(fileExt)) {
-                Swal.fire('Error', 'Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
-                input.value = '';
-                fileName.textContent = 'No file chosen';
-            }
-        }
-    }
-
-    $('#excelUploadForm').on('submit', function(e) {
-        e.preventDefault();
-
-        const fileInput = document.getElementById('excel_file');
-        if (!fileInput.files || !fileInput.files[0]) {
-            Swal.fire('Error', 'Please select a file first.', 'error');
-            return;
-        }
-
-        const formData = new FormData(this);
-        const progressBar = document.getElementById('progressBar');
-        const progress = document.getElementById('progress');
-        const submitBtn = $(this).find('button[type="submit"]');
-
-        progressBar.style.display = 'block';
-        progress.style.width = '0%';
-        progress.textContent = '0%';
-        submitBtn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Uploading...');
-
-        let width = 0;
-        const interval = setInterval(function() {
-            if (width >= 90) {
-                clearInterval(interval);
-            } else {
-                width += 10;
-                progress.style.width = width + '%';
-                progress.textContent = width + '%';
-            }
-        }, 200);
-
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                clearInterval(interval);
-                progress.style.width = '100%';
-                progress.textContent = '100%';
-                submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
-
-                setTimeout(() => {
-                    if (data.success) {
-                        Swal.fire('Success!', data.message || 'Students imported successfully.', 'success').then(() => {
-                            loadPage(window.location.pathname);
-                        });
-                    } else {
-                        progressBar.style.display = 'none';
-                        if (data.errors && data.errors.length > 0) {
-                            displayErrors(data.errors);
-                        } else {
-                            Swal.fire('Error!', data.message || 'Error uploading file', 'error');
-                        }
-                    }
-                }, 500);
-            },
-            error: function(xhr) {
-                clearInterval(interval);
-                progressBar.style.display = 'none';
-                submitBtn.prop('disabled', false).html('<i class="fa-solid fa-cloud-upload-alt"></i> Import Students');
-
                 let errorMsg = 'Network error. Please try again.';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMsg = xhr.responseJSON.message;
                 }
-                Swal.fire('Error!', errorMsg, 'error');
+                showToast(errorMsg, 'error');
             }
         });
-    });
-
-    function displayErrors(errors) {
-        const errorModal = document.getElementById('errorModal');
-        const errorContent = document.getElementById('errorContent');
-
-        let html = '<table class="error-table">';
-        html += '<thead><tr>';
-        html += '<th>Row #</th>';
-        html += '<th>Field</th>';
-        html += '<th>Error</th>';
-        html += '<th>Values</th>';
-        html += '</tr></thead><tbody>';
-
-        errors.forEach(error => {
-            html += '<tr>';
-            html += `<td>${error.row || 'N/A'}</td>`;
-            html += `<td>${error.attribute || 'General'}</td>`;
-            html += `<td>${error.errors ? error.errors.join(', ') : error.message}</td>`;
-            html += `<td><pre style="margin:0; font-size:12px;">${error.values ? JSON.stringify(error.values, null, 2) : 'N/A'}</pre></td>`;
-            html += '</tr>';
-        });
-
-        html += '</tbody></table>';
-        errorContent.innerHTML = html;
-        errorModal.style.display = 'block';
+    } else {
+        showToast('Deletion cancelled', 'info');
     }
+}
 
-    function closeErrorModal() {
-        document.getElementById('errorModal').style.display = 'none';
-    }
+// ==================== EXCEL UPLOAD FUNCTIONS ====================
 
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('studentModal');
-        const errorModal = document.getElementById('errorModal');
+function handleFileChange() {
+    const fileName = document.getElementById('fileName');
+    const input = this;
 
-        if (event.target === modal) {
-            closeModal();
+    if (input.files && input.files[0]) {
+        fileName.textContent = input.files[0].name;
+
+        if (input.files[0].size > 5 * 1024 * 1024) {
+            showToast('File size exceeds 5MB. Please choose a smaller file.', 'error');
+            input.value = '';
+            fileName.textContent = 'No file chosen';
+            return;
         }
 
-        if (event.target === errorModal) {
-            closeErrorModal();
+        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExt = input.files[0].name.substring(input.files[0].name.lastIndexOf('.')).toLowerCase();
+        if (!allowedExtensions.includes(fileExt)) {
+            showToast('Invalid file type. Please upload .xlsx, .xls, or .csv files only.', 'error');
+            input.value = '';
+            fileName.textContent = 'No file chosen';
         }
     }
+}
 
-    // Display session messages in SweetAlert
-    @if(session('success'))
-    Swal.fire({
-        title: 'Success!',
-        text: '{{ session('
-        success ') }}',
-        icon: 'success',
-        timer: 3000,
-        showConfirmButton: true
-    });
-    @endif
+function handleImport() {
+    const form = document.getElementById('excelUploadForm');
+    const fileInput = document.getElementById('excel_file');
 
-    @if(session('error'))
-    Swal.fire({
-        title: 'Error!',
-        text: '{{ session('
-        error ') }}',
-        icon: 'error',
-        confirmButtonColor: '#d33'
-    });
-    @endif
+    if (!fileInput.files || !fileInput.files[0]) {
+        showToast('Please select a file first.', 'error');
+        return;
+    }
 
-    document.getElementById('sessionFilterForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    const formData = new FormData(form);
+    const progressBar = document.getElementById('progressBar');
+    const progress = document.getElementById('progress');
+    const importBtn = this;
 
-        let formData = new FormData(this);
-        let params = new URLSearchParams(formData).toString();
+    progressBar.style.display = 'block';
+    progress.style.width = '0%';
+    progress.textContent = '0%';
+    importBtn.disabled = true;
+    importBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
 
-        let url = window.location.pathname + '?' + params;
+    let width = 0;
+    const interval = setInterval(function() {
+        if (width >= 90) {
+            clearInterval(interval);
+        } else {
+            width += 10;
+            progress.style.width = width + '%';
+            progress.textContent = width + '%';
+        }
+    }, 200);
 
-        loadPage(url, routeName);
-    });
+    $.ajax({
+        url: form.action,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            clearInterval(interval);
+            progress.style.width = '100%';
+            progress.textContent = '100%';
+            importBtn.disabled = false;
+            importBtn.innerHTML = '<i class="fa-solid fa-cloud-upload-alt"></i> Import Students';
 
-    function loadPage(url, routeName) {
-        $.ajax({
-            url: url,
-            success: function(res) {
-                document.getElementById('main-container').innerHTML = res;
-                if (routeName) setActiveSidebar(routeName); // sidebar highlight update
-                window.history.pushState({}, '', url);
+            setTimeout(() => {
+                if (data.success) {
+                    showToast(data.message || 'Students imported successfully.', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    progressBar.style.display = 'none';
+                    if (data.errors && data.errors.length > 0) {
+                        displayErrors(data.errors);
+                    } else {
+                        showToast(data.message || 'Error uploading file', 'error');
+                    }
+                }
+            }, 500);
+        },
+        error: function(xhr) {
+            clearInterval(interval);
+            progressBar.style.display = 'none';
+            importBtn.disabled = false;
+            importBtn.innerHTML = '<i class="fa-solid fa-cloud-upload-alt"></i> Import Students';
+
+            let errorMsg = 'Network error. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
             }
-        });
+            showToast(errorMsg, 'error');
+        }
+    });
+}
+
+function displayErrors(errors) {
+    const errorModal = document.getElementById('errorModal');
+    const errorContent = document.getElementById('errorContent');
+
+    let html = '<table class="error-table">';
+    html += '<thead><tr>';
+    html += '<th>Row #</th>';
+    html += '<th>Field</th>';
+    html += '<th>Error</th>';
+    html += '<th>Values</th>';
+    html += '</tr></thead><tbody>';
+
+    errors.forEach(error => {
+        html += '<tr>';
+        html += `<td>${error.row || 'N/A'}</td>`;
+        html += `<td>${error.attribute || 'General'}</td>`;
+        html += `<td>${error.errors ? error.errors.join(', ') : error.message}</td>`;
+        html += `<td><pre style="margin:0; font-size:12px;">${error.values ? JSON.stringify(error.values, null, 2) : 'N/A'}</pre></td>`;
+        html += '</tr>';
+    });
+
+    html += '</tbody></tr>';
+    errorContent.innerHTML = html;
+    errorModal.style.display = 'flex';
+}
+
+function closeErrorModal() {
+    document.getElementById('errorModal').style.display = 'none';
+}
+
+// Toast notification system
+function showToast(message, type = 'success') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let icon = '';
+    let title = '';
+    switch(type) {
+        case 'success':
+            icon = '✓';
+            title = 'Success!';
+            break;
+        case 'error':
+            icon = '✗';
+            title = 'Error!';
+            break;
+        case 'warning':
+            icon = '⚠';
+            title = 'Warning!';
+            break;
+        case 'info':
+            icon = 'ℹ';
+            title = 'Info';
+            break;
+        default:
+            icon = '✓';
+            title = 'Success!';
+    }
+    
+    toast.innerHTML = `
+        <div class="toast-title">${icon} ${title}</div>
+        <div class="toast-message">${escapeHtml(message)}</div>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 300);
+    }, 3000);
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('studentModal');
+    const errorModal = document.getElementById('errorModal');
+
+    if (event.target === modal) {
+        closeModal();
     }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault(); // prevent full page reload
+    if (event.target === errorModal) {
+        closeErrorModal();
+    }
+}
 
-            const routeName = this.dataset.route; // from data-route
-            const url = this.getAttribute('href'); // actual url
+// Initialize page when DOM loads and also when AJAX navigation occurs
+document.addEventListener('DOMContentLoaded', initializePage);
 
-            loadPage(url, routeName); // pass routeName to loadPage
-        });
+// Also listen for AJAX navigation events (if your layout uses them)
+document.addEventListener('ajax-loaded', initializePage);
+
+// Use MutationObserver to detect when content is replaced via AJAX
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList' && mutation.target.id === 'main-content') {
+            initializePage();
+        }
     });
+});
+
+// Start observing after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        observer.observe(mainContent, { childList: true, subtree: true });
+    }
+    initializePage();
+});
 </script>
 
 @endsection

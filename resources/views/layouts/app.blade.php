@@ -139,6 +139,8 @@
             background: #fff !important;
             color: #0f1b5c !important;
             font-weight: bold;
+            margin-left: 5px;
+            margin-right: 5px;
         }
 
         /* ================= CONTENT ================= */

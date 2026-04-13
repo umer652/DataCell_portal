@@ -251,29 +251,6 @@ tbody tr:hover {
     border-left: 4px solid #17a2b8;
 }
 
-.toast-warning {
-    background: #fff3cd;
-    color: #856404;
-    border-left: 4px solid #ffc107;
-}
-
-.toast-message {
-    flex: 1;
-    font-size: 14px;
-}
-
-.toast-close {
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.toast-close:hover {
-    opacity: 1;
-}
-
 @keyframes slideIn {
     from {
         transform: translateX(100%);
@@ -284,162 +261,17 @@ tbody tr:hover {
         opacity: 1;
     }
 }
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-}
-
-/* CUSTOM CONFIRM DIALOG */
-.custom-confirm-dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 11000;
-    animation: fadeIn 0.2s ease;
-}
-
-.confirm-dialog-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-}
-
-.confirm-dialog-content {
-    position: relative;
-    background: white;
-    border-radius: 12px;
-    width: 400px;
-    max-width: 90%;
-    padding: 0;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    animation: scaleIn 0.2s ease;
-}
-
-@keyframes scaleIn {
-    from {
-        transform: scale(0.95);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.confirm-dialog-header {
-    padding: 20px 24px 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.confirm-dialog-icon {
-    width: 40px;
-    height: 40px;
-    background: #fee2e2;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #dc3545;
-}
-
-.confirm-dialog-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-
-.confirm-dialog-body {
-    padding: 16px 24px;
-}
-
-.confirm-dialog-message {
-    font-size: 15px;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-.confirm-dialog-detail {
-    font-size: 13px;
-    color: #888;
-    margin-top: 8px;
-}
-
-.confirm-dialog-footer {
-    padding: 16px 24px 24px 24px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    border-top: 1px solid #eee;
-}
-
-.confirm-btn {
-    padding: 8px 20px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.confirm-btn-cancel {
-    background: #e9ecef;
-    color: #495057;
-}
-
-.confirm-btn-cancel:hover {
-    background: #dee2e6;
-}
-
-.confirm-btn-delete {
-    background: #dc3545;
-    color: white;
-}
-
-.confirm-btn-delete:hover {
-    background: #c82333;
-    transform: translateY(-1px);
-}
 </style>
 @endsection
 
 @section('content')
 
 <div class="main-container">
-
-    <!-- TOP -->
     <div class="top-bar">
         <h2 class="page-title">Enrollment Management</h2>
-        <button class="add-btn" onclick="openModal()">+ Add Enrollment</button>
+        <button class="add-btn" onclick="window.openModal()">+ Add Enrollment</button>
     </div>
 
-    <!-- FILTERS -->
     <div class="search-box">
         <div class="filters-left">
             <select id="programFilter">
@@ -466,11 +298,10 @@ tbody tr:hover {
 
         <div class="filters-right">
             <input type="text" id="searchInput" placeholder="Search...">
-            <button class="reset-btn" onclick="resetFilters()">Reset</button>
+            <button class="reset-btn" onclick="window.resetFilters()">Reset</button>
         </div>
     </div>
 
-    <!-- SCROLLABLE TABLE CONTAINER -->
     <div class="table-container">
         <table id="allocationsTable">
             <thead>
@@ -486,31 +317,16 @@ tbody tr:hover {
                 </tr>
             </thead>
             <tbody id="enrollmentBody">
-            @foreach($enrollments as $e)
-                <tr data-student-name="{{ $e->student->name }}">
-                    <td>{{ $e->student->name }}</td>
-                    <td>{{ $e->offeredCourse->course->course_title ?? '-' }}</td>
-                    <td>{{ $e->program->name }}</td>
-                    <td>{{ $e->session->name }}</td>
-                    <td>{{ $e->semester }}</td>
-                    <td>{{ $e->section->name ?? '' }}</td>
-                    <td>{{ $e->enrollment_date }}</td>
-                    <td class="action-buttons">
-                        <button onclick="editEnrollment({{ $e->id }})" class="edit-btn">Edit</button>
-                        <button onclick="deleteEnrollment({{ $e->id }}, this)" class="delete-btn">Delete</button>
-                    </td>
-                </tr>
-            @endforeach
+                <tr><td colspan="8" style="text-align: center;">Loading data...</td></tr>
             </tbody>
         </table>
     </div>
-
 </div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
 <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
+    <span class="close" onclick="window.closeModal()">&times;</span>
     <h3 id="modalTitle">Add Enrollment</h3>
 
     <form id="enrollmentForm">
@@ -586,442 +402,343 @@ tbody tr:hover {
 </div>
 </div>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// Store current enrollment ID for editing
-let currentEnrollmentId = null;
-let isEditMode = false;
-
-// Get CSRF token
-const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-// DOM Elements
-let searchInput = document.getElementById('searchInput');
-let sessionFilter = document.getElementById('sessionFilter');
-let semesterFilter = document.getElementById('semesterFilter');
-let programFilter = document.getElementById('programFilter');
-
-// Load allocations on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Setup form submission
-    document.getElementById('enrollmentForm').addEventListener('submit', handleFormSubmit);
+// Make sure all functions are attached to window
+(function() {
+    // Get CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     
-    // Setup program change handler for course loading
-    document.getElementById('program_id').addEventListener('change', loadCourses);
-    document.getElementById('semester').addEventListener('input', loadCourses);
+    let currentEnrollmentId = null;
     
-    // Setup filter handlers
-    if (searchInput) searchInput.addEventListener('keyup', fetchData);
-    if (sessionFilter) sessionFilter.addEventListener('change', fetchData);
-    if (semesterFilter) semesterFilter.addEventListener('change', fetchData);
-    if (programFilter) programFilter.addEventListener('change', fetchData);
-});
-
-// TOAST MESSAGES SYSTEM
-function showToast(message, type = 'success', duration = 3000) {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-        <span class="toast-message">${message}</span>
-        <span class="toast-close">&times;</span>
-    `;
-    
-    container.appendChild(toast);
-    
-    // Add close button functionality
-    const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.addEventListener('click', () => {
-        removeToast(toast);
-    });
-    
-    // Auto remove after duration
-    setTimeout(() => {
-        removeToast(toast);
-    }, duration);
-}
-
-function removeToast(toast) {
-    toast.style.animation = 'fadeOut 0.3s ease';
-    setTimeout(() => {
-        if (toast.parentNode) {
+    // Show toast
+    window.showToast = function(message, type = 'success', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <span class="toast-message">${message}</span>
+            <span class="toast-close">&times;</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.addEventListener('click', () => {
             toast.remove();
-        }
-    }, 300);
-}
-
-// CUSTOM CONFIRM DIALOG
-function showConfirmDialog({ title, message, detail, onConfirm, onCancel }) {
-    // Remove existing dialog if any
-    const existingDialog = document.querySelector('.custom-confirm-dialog');
-    if (existingDialog) {
-        existingDialog.remove();
-    }
-    
-    // Create dialog element
-    const dialog = document.createElement('div');
-    dialog.className = 'custom-confirm-dialog';
-    dialog.innerHTML = `
-        <div class="confirm-dialog-overlay"></div>
-        <div class="confirm-dialog-content">
-            <div class="confirm-dialog-header">
-                <div class="confirm-dialog-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 8V12M12 16H12.01M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h3 class="confirm-dialog-title">${title}</h3>
-            </div>
-            <div class="confirm-dialog-body">
-                <div class="confirm-dialog-message">${message}</div>
-                ${detail ? `<div class="confirm-dialog-detail">${detail}</div>` : ''}
-            </div>
-            <div class="confirm-dialog-footer">
-                <button class="confirm-btn confirm-btn-cancel">Cancel</button>
-                <button class="confirm-btn confirm-btn-delete">Delete</button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(dialog);
-    
-    // Add event listeners
-    const overlay = dialog.querySelector('.confirm-dialog-overlay');
-    const cancelBtn = dialog.querySelector('.confirm-btn-cancel');
-    const deleteBtn = dialog.querySelector('.confirm-btn-delete');
-    
-    const closeDialog = () => {
-        dialog.style.animation = 'fadeOut 0.2s ease';
+        });
+        
         setTimeout(() => {
-            if (dialog.parentNode) {
-                dialog.remove();
-            }
-        }, 200);
+            if (toast.parentNode) toast.remove();
+        }, duration);
     };
     
-    overlay.addEventListener('click', () => {
-        closeDialog();
-        if (onCancel) onCancel();
-    });
-    
-    cancelBtn.addEventListener('click', () => {
-        closeDialog();
-        if (onCancel) onCancel();
-    });
-    
-    deleteBtn.addEventListener('click', () => {
-        closeDialog();
-        if (onConfirm) onConfirm();
-    });
-}
-
-// FILTER FUNCTION
-function fetchData() {
-    fetch(`?search=${searchInput.value}&session_id=${sessionFilter.value}&semester=${semesterFilter.value}&program_id=${programFilter.value}`, {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => res.text())
-    .then(html => document.getElementById('enrollmentBody').innerHTML = html);
-}
-
-function resetFilters() {
-    if (searchInput) searchInput.value = '';
-    if (sessionFilter) sessionFilter.value = '';
-    if (semesterFilter) semesterFilter.value = '';
-    if (programFilter) programFilter.value = '';
-    fetchData();
-    showToast('Filters reset successfully', 'info', 2000);
-}
-
-// COURSE LOAD FUNCTION
-function loadCourses() {
-    let programId = document.getElementById('program_id').value;
-    let semester = document.getElementById('semester').value;
-    let dropdown = document.getElementById('coursesDropdown');
-    
-    if (!programId || !semester) {
-        dropdown.innerHTML = '<option value="">Select Program and Semester First</option>';
-        return;
-    }
-    
-    dropdown.innerHTML = '<option>Loading courses...</option>';
-    
-    fetch(`/get-offered-courses?program_id=${programId}&semester=${semester}`)
-        .then(res => res.json())
-        .then(data => {
-            dropdown.innerHTML = '';
-            if (data.length === 0) {
-                dropdown.innerHTML = '<option value="">No courses available</option>';
-            } else {
-                data.forEach(c => {
-                    let option = document.createElement('option');
-                    option.value = c.id;
-                    option.textContent = c.course.course_title;
-                    dropdown.appendChild(option);
-                });
+    // Fetch data function
+    window.fetchData = function() {
+        const searchInput = document.getElementById('searchInput');
+        const sessionFilter = document.getElementById('sessionFilter');
+        const semesterFilter = document.getElementById('semesterFilter');
+        const programFilter = document.getElementById('programFilter');
+        
+        let url = window.location.pathname + '?';
+        url += 'search=' + (searchInput ? encodeURIComponent(searchInput.value) : '');
+        url += '&session_id=' + (sessionFilter ? encodeURIComponent(sessionFilter.value) : '');
+        url += '&semester=' + (semesterFilter ? encodeURIComponent(semesterFilter.value) : '');
+        url += '&program_id=' + (programFilter ? encodeURIComponent(programFilter.value) : '');
+        
+        fetch(url, {
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/html'
+            }
+        })
+        .then(res => res.text())
+        .then(html => {
+            const tbody = document.getElementById('enrollmentBody');
+            if (tbody) {
+                tbody.innerHTML = html;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            dropdown.innerHTML = '<option value="">Error loading courses</option>';
-            showToast('Failed to load courses', 'error', 3000);
+            const tbody = document.getElementById('enrollmentBody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Error loading data</td></tr>';
+            }
         });
-}
-
-// Handle form submission (Create/Update)
-function handleFormSubmit(e) {
-    e.preventDefault();
+    };
     
-    const form = e.target;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
+    // Reset filters
+    window.resetFilters = function() {
+        const searchInput = document.getElementById('searchInput');
+        const sessionFilter = document.getElementById('sessionFilter');
+        const semesterFilter = document.getElementById('semesterFilter');
+        const programFilter = document.getElementById('programFilter');
+        
+        if (searchInput) searchInput.value = '';
+        if (sessionFilter) sessionFilter.value = '';
+        if (semesterFilter) semesterFilter.value = '';
+        if (programFilter) programFilter.value = '';
+        
+        window.fetchData();
+        window.showToast('Filters reset successfully', 'info', 2000);
+    };
     
-    // Get selected courses (multiple)
-    const courseSelect = document.getElementById('coursesDropdown');
-    const selectedOptions = Array.from(courseSelect.selectedOptions);
-    
-    if (selectedOptions.length === 0) {
-        showToast('Please select at least one course', 'error', 3000);
-        return;
-    }
-    
-    // For both create and update, send array of course IDs
-    data.offered_course_id = selectedOptions.map(option => option.value);
-    
-    let url = '/enrollments/store';
-    let method = 'POST';
-    
-    if (currentEnrollmentId) {
-        url = `/enrollments/${currentEnrollmentId}`;
-        method = 'PUT';
-    }
-    
-    const saveBtn = form.querySelector('button[type="submit"]');
-    saveBtn.disabled = true;
-    const originalText = saveBtn.textContent;
-    saveBtn.textContent = 'Saving...';
-    
-    fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(response => {
-        if (response.success) {
-            showToast(response.message, 'success', 3000);
-            closeModal();
-            fetchData();
-            resetForm();
-        } else {
-            showToast(response.message || 'Error saving enrollment', 'error', 4000);
-            if (response.errors) {
-                for (let key in response.errors) {
-                    showToast(`${key}: ${response.errors[key].join(', ')}`, 'error', 4000);
+    // Load courses
+    window.loadCourses = function() {
+        let programId = document.getElementById('program_id').value;
+        let semester = document.getElementById('semester').value;
+        let dropdown = document.getElementById('coursesDropdown');
+        
+        if (!programId || !semester) {
+            dropdown.innerHTML = '<option value="">Select Program and Semester First</option>';
+            return;
+        }
+        
+        dropdown.innerHTML = '<option>Loading courses...</option>';
+        
+        fetch(`/get-offered-courses?program_id=${programId}&semester=${semester}`)
+            .then(res => res.json())
+            .then(data => {
+                dropdown.innerHTML = '';
+                if (data.length === 0) {
+                    dropdown.innerHTML = '<option value="">No courses available</option>';
+                } else {
+                    data.forEach(c => {
+                        let option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = c.course.course_title;
+                        dropdown.appendChild(option);
+                    });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                dropdown.innerHTML = '<option value="">Error loading courses</option>';
+                window.showToast('Failed to load courses', 'error', 3000);
+            });
+    };
+    
+    // Handle form submission
+    window.handleFormSubmit = function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        const courseSelect = document.getElementById('coursesDropdown');
+        const selectedOptions = Array.from(courseSelect.selectedOptions);
+        
+        if (selectedOptions.length === 0) {
+            window.showToast('Please select at least one course', 'error', 3000);
+            return;
+        }
+        
+        data.offered_course_id = selectedOptions.map(option => option.value);
+        
+        let url = '/enrollments/store';
+        let method = 'POST';
+        
+        if (currentEnrollmentId) {
+            url = `/enrollments/${currentEnrollmentId}`;
+            method = 'PUT';
+        }
+        
+        const saveBtn = form.querySelector('button[type="submit"]');
+        saveBtn.disabled = true;
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = 'Saving...';
+        
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                window.showToast(response.message, 'success', 3000);
+                window.closeModal();
+                window.fetchData();
+                window.resetForm();
+            } else {
+                window.showToast(response.message || 'Error saving enrollment', 'error', 4000);
             }
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('An error occurred while saving', 'error', 4000);
-    })
-    .finally(() => {
-        saveBtn.disabled = false;
-        saveBtn.textContent = originalText;
-    });
-}
-
-// Edit enrollment - Load student and their enrolled courses
-function editEnrollment(id) {
-    showToast('Loading enrollment details...', 'info', 2000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.showToast('An error occurred while saving', 'error', 4000);
+        })
+        .finally(() => {
+            saveBtn.disabled = false;
+            saveBtn.textContent = originalText;
+        });
+    };
     
-    fetch(`/enrollments/${id}/edit`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        }
-    })
-    .then(res => res.json())
-    .then(response => {
-        if (response.success) {
-            const data = response.data;
-            const enrolledCourseIds = response.enrolled_courses || [];
-            currentEnrollmentId = id;
-            isEditMode = true;
-            
-            // Fill form fields
-            document.getElementById('student_id').value = data.student_id;
-            document.getElementById('program_id').value = data.program_id;
-            document.getElementById('session_id').value = data.session_id;
-            document.getElementById('section_id').value = data.section_id;
-            document.getElementById('semester').value = data.semester;
-            document.getElementById('enrollment_date').value = data.enrollment_date;
-            
-            // Load courses and select the enrolled ones
-            const programId = data.program_id;
-            const semester = data.semester;
-            
-            fetch(`/get-offered-courses?program_id=${programId}&semester=${semester}`)
-                .then(res => res.json())
-                .then(courses => {
-                    const dropdown = document.getElementById('coursesDropdown');
-                    dropdown.innerHTML = '';
-                    
-                    if (courses.length === 0) {
-                        dropdown.innerHTML = '<option value="">No courses available</option>';
-                    } else {
-                        courses.forEach(c => {
-                            const option = document.createElement('option');
-                            option.value = c.id;
-                            option.textContent = c.course.course_title;
-                            // Select if this course is already enrolled
-                            if (enrolledCourseIds.includes(c.id)) {
-                                option.selected = true;
-                            }
-                            dropdown.appendChild(option);
-                        });
-                    }
-                    
-                    // Keep multiple select for edit mode to allow adding/removing courses
-                    dropdown.multiple = true;
-                    const helpText = document.querySelector('#coursesDropdown + small');
-                    if (helpText) {
-                        helpText.textContent = 'Hold Ctrl/Cmd to select multiple courses (add or remove)';
-                    }
-                });
-            
-            // Update modal title and button
-            document.getElementById('modalTitle').textContent = 'Edit Enrollment (Add/Remove Courses)';
-            const submitBtn = document.querySelector('#enrollmentForm button[type="submit"]');
-            submitBtn.textContent = 'Update Enrollment';
-            
-            openModal();
-            showToast('Enrollment loaded. You can add or remove courses.', 'success', 3000);
-        } else {
-            showToast(response.message || 'Failed to load enrollment', 'error', 4000);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('Failed to load enrollment details', 'error', 4000);
-    });
-}
-
-// Delete enrollment with confirmation dialog
-function deleteEnrollment(id, buttonElement) {
-    // Get student name from the table row
-    const row = buttonElement.closest('tr');
-    const studentName = row ? row.cells[0].innerText : 'this enrollment';
-    
-    // Show custom confirmation dialog
-    showConfirmDialog({
-        title: 'Confirm Deletion',
-        message: `Are you sure you want to delete enrollment for ${studentName}?`,
-        detail: '⚠️ This action cannot be undone and will remove all associated course enrollments from the system.',
-        onConfirm: () => {
-            performDelete(id);
-        },
-        onCancel: () => {
-            showToast('Deletion cancelled', 'info', 2000);
-        }
-    });
-}
-
-// Function to perform the actual delete
-function performDelete(id) {
-    // Show loading toast
-    showToast('Deleting enrollment...', 'info', 2000);
-    
-    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
-                  document.querySelector('input[name="_token"]')?.value;
-    
-    fetch(`/enrollments/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': token,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        credentials: 'same-origin'
-    })
-    .then(async response => {
-        if (!response.ok) {
-            const text = await response.text();
-            try {
-                const error = JSON.parse(text);
-                throw new Error(error.message || 'Server error');
-            } catch(e) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Edit enrollment
+    window.editEnrollment = function(id) {
+        window.showToast('Loading enrollment details...', 'info', 2000);
+        
+        fetch(`/enrollments/${id}/edit`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                const data = response.data;
+                currentEnrollmentId = id;
+                
+                document.getElementById('student_id').value = data.student_id;
+                document.getElementById('program_id').value = data.program_id;
+                document.getElementById('session_id').value = data.session_id;
+                document.getElementById('section_id').value = data.section_id;
+                document.getElementById('semester').value = data.semester;
+                document.getElementById('enrollment_date').value = data.enrollment_date;
+                
+                document.getElementById('modalTitle').textContent = 'Edit Enrollment';
+                window.openModal();
+                
+                // Load courses
+                window.loadCourses();
+                
+                window.showToast('Enrollment loaded', 'success', 3000);
+            } else {
+                window.showToast(response.message || 'Failed to load enrollment', 'error', 4000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.showToast('Failed to load enrollment details', 'error', 4000);
+        });
+    };
+    
+    // Delete enrollment
+    window.deleteEnrollment = function(id, buttonElement) {
+        if (confirm('Are you sure you want to delete this enrollment?')) {
+            fetch(`/enrollments/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    window.showToast(response.message, 'success', 3000);
+                    window.fetchData();
+                } else {
+                    window.showToast(response.message || 'Error deleting enrollment', 'error', 4000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.showToast('An error occurred while deleting', 'error', 4000);
+            });
         }
-        return response.json();
-    })
-    .then(response => {
-        if (response.success) {
-            showToast(response.message || '✅ Enrollment deleted successfully!', 'success', 3000);
-            fetchData(); // Refresh the table
-        } else {
-            showToast(response.message || 'Error deleting enrollment', 'error', 4000);
+    };
+    
+    // Open modal
+    window.openModal = function() {
+        document.getElementById('modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+    
+    // Close modal
+    window.closeModal = function() {
+        document.getElementById('modal').style.display = 'none';
+        document.body.style.overflow = '';
+        window.resetForm();
+    };
+    
+    // Reset form
+    window.resetForm = function() {
+        document.getElementById('enrollmentForm').reset();
+        currentEnrollmentId = null;
+        document.getElementById('modalTitle').textContent = 'Add Enrollment';
+        const dropdown = document.getElementById('coursesDropdown');
+        dropdown.innerHTML = '<option value="">Select Program and Semester First</option>';
+    };
+    
+    // Initialize everything when DOM is ready
+    function init() {
+        console.log('Initializing enrollment page...');
+        
+        // Set up event listeners
+        const form = document.getElementById('enrollmentForm');
+        if (form) {
+            form.removeEventListener('submit', window.handleFormSubmit);
+            form.addEventListener('submit', window.handleFormSubmit);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast(error.message || 'An error occurred while deleting', 'error', 4000);
-    });
-}
-
-// Open modal
-function openModal() {
-    document.getElementById('modal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-// Close modal and reset form
-function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    document.body.style.overflow = '';
-    resetForm();
-}
-
-// Reset form to initial state
-function resetForm() {
-    document.getElementById('enrollmentForm').reset();
-    currentEnrollmentId = null;
-    isEditMode = false;
-    document.getElementById('modalTitle').textContent = 'Add Enrollment';
-    
-    const submitBtn = document.querySelector('#enrollmentForm button[type="submit"]');
-    submitBtn.textContent = 'Save Enrollment';
-    
-    // Reset dropdown to multiple select for create mode
-    const dropdown = document.getElementById('coursesDropdown');
-    dropdown.innerHTML = '<option value="">Select Program and Semester First</option>';
-    dropdown.multiple = true;
-    
-    // Reset help text
-    const helpText = document.querySelector('#coursesDropdown + small');
-    if (helpText) {
-        helpText.textContent = 'Hold Ctrl/Cmd to select multiple courses';
+        
+        const programSelect = document.getElementById('program_id');
+        if (programSelect) {
+            programSelect.removeEventListener('change', window.loadCourses);
+            programSelect.addEventListener('change', window.loadCourses);
+        }
+        
+        const semesterInput = document.getElementById('semester');
+        if (semesterInput) {
+            semesterInput.removeEventListener('input', window.loadCourses);
+            semesterInput.addEventListener('input', window.loadCourses);
+        }
+        
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.removeEventListener('keyup', window.fetchData);
+            searchInput.addEventListener('keyup', window.fetchData);
+        }
+        
+        const sessionFilter = document.getElementById('sessionFilter');
+        if (sessionFilter) {
+            sessionFilter.removeEventListener('change', window.fetchData);
+            sessionFilter.addEventListener('change', window.fetchData);
+        }
+        
+        const semesterFilter = document.getElementById('semesterFilter');
+        if (semesterFilter) {
+            semesterFilter.removeEventListener('change', window.fetchData);
+            semesterFilter.addEventListener('change', window.fetchData);
+        }
+        
+        const programFilter = document.getElementById('programFilter');
+        if (programFilter) {
+            programFilter.removeEventListener('change', window.fetchData);
+            programFilter.addEventListener('change', window.fetchData);
+        }
+        
+        // Load data
+        window.fetchData();
     }
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('modal');
-    if (event.target === modal) {
-        closeModal();
+    
+    // Run init when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-}
+    
+    // Handle modal outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        if (event.target === modal) {
+            window.closeModal();
+        }
+    };
+})();
 </script>
 
 @endsection

@@ -242,71 +242,124 @@ tbody tr:hover {
     cursor: not-allowed;
 }
 
-/* ALERT MESSAGES */
-.alert {
+/* CUSTOM CONFIRM DIALOG */
+.confirm-dialog {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    z-index: 10000;
-    animation: slideIn 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+    animation: fadeIn 0.2s ease;
 }
 
-@keyframes slideIn {
+.confirm-dialog-content {
+    background: white;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    overflow: hidden;
+    animation: scaleIn 0.2s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
     from {
-        transform: translateX(100%);
+        transform: scale(0.95);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: scale(1);
         opacity: 1;
     }
 }
 
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+.confirm-dialog-header {
+    padding: 20px 24px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+.confirm-dialog-icon {
+    width: 40px;
+    height: 40px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc3545;
 }
 
-.alert-info {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
+.confirm-dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
 }
 
-.alert-warning {
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+.confirm-dialog-body {
+    padding: 16px 24px;
 }
 
-/* LOADING STATE */
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #999;
+.confirm-dialog-message {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 8px;
 }
 
-/* EMPTY STATE */
-.empty-state {
-    text-align: center;
-    padding: 40px;
-    color: #999;
+.confirm-dialog-detail {
+    font-size: 13px;
+    color: #888;
+    margin-top: 8px;
+    white-space: pre-line;
 }
 
-/* REQUIRED FIELD INDICATOR */
-.required:after {
-    content: " *";
-    color: red;
+.confirm-dialog-footer {
+    padding: 16px 24px 24px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #eee;
+}
+
+.confirm-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.confirm-btn-cancel {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.confirm-btn-cancel:hover {
+    background: #dee2e6;
+}
+
+.confirm-btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.confirm-btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-1px);
 }
 
 /* TOAST CONTAINER */
@@ -336,6 +389,17 @@ tbody tr:hover {
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
     }
 }
 
@@ -372,15 +436,22 @@ tbody tr:hover {
     font-size: 14px;
 }
 
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
+/* LOADING STATE */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.required:after {
+    content: " *";
+    color: red;
 }
 </style>
 @endsection
@@ -392,7 +463,7 @@ tbody tr:hover {
     <!-- TOP BAR -->
     <div class="top-bar">
         <h2 class="page-title">Teacher Course Allocation</h2>
-        <button class="add-btn" onclick="openModal()">+ New Allocation</button>
+        <button class="add-btn" onclick="window.openModal()">+ New Allocation</button>
     </div>
 
     <!-- TABLE -->
@@ -425,7 +496,7 @@ tbody tr:hover {
 <div class="modal" id="allocationModal">
 <div class="modal-content">
 
-    <span class="close" onclick="closeModal()">&times;</span>
+    <span class="close" onclick="window.closeModal()">&times;</span>
 
     <h3 id="modalTitle" style="margin-bottom:15px;">New Teacher Allocation</h3>
 
@@ -502,7 +573,7 @@ tbody tr:hover {
             </div>
 
             <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button type="button" class="cancel-btn" onclick="window.closeModal()">Cancel</button>
                 <button type="submit" class="save-btn" id="saveBtn">Save Allocation</button>
             </div>
 
@@ -513,421 +584,477 @@ tbody tr:hover {
 </div>
 
 <script>
-// Store current allocation ID for editing
-let currentAllocationId = null;
+// Self-executing function to avoid conflicts
+(function() {
+    // Store current allocation ID for editing
+    let currentAllocationId = null;
 
-// Get CSRF token from meta tag
-const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Get CSRF token from meta tag
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-// Load allocations on page load
-document.addEventListener('DOMContentLoaded', function() {
-    loadAllocations();
-    
-    // Setup form submission
-    document.getElementById('allocationForm').addEventListener('submit', handleFormSubmit);
-    
-    // Setup program change handler
-    document.getElementById('program_id').addEventListener('change', handleProgramChange);
-});
-
-// Load all allocations
-function loadAllocations() {
-    const tbody = document.querySelector('#allocationsTable tbody');
-    tbody.innerHTML = '<tr class="loading"><td colspan="9">Loading allocations...</td></tr>';
-    
-    fetch('/allocations/data', {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
-    })
-    .then(response => {
-        if (!response.data || response.data.length === 0) {
-            tbody.innerHTML = '<tr class="empty-state"><td colspan="9">No allocations found. Click "New Allocation" to add.</td></tr>';
-            showToast('No allocations found', 'info');
-            return;
+    // Show toast message
+    window.showToast = function(message, type = 'success') {
+        let container = document.querySelector('.toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
         }
         
-        tbody.innerHTML = '';
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
         
-        response.data.forEach(allocation => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${allocation.serial}</td>
-                    <td>${escapeHtml(allocation.program)}</td>
-                    <td>${escapeHtml(allocation.scheme)}</td>
-                    <td>${escapeHtml(allocation.course)}</td>
-                    <td>${escapeHtml(allocation.teacher)}</td>
-                    <td>${escapeHtml(allocation.session)}</td>
-                    <td>${escapeHtml(allocation.section)}</td>
-                    <td>Semester ${allocation.semester}</td>
-                    <td class="action-buttons">
-                        <button onclick="editAllocation(${allocation.id})" class="edit-btn">Edit</button>
-                        <button onclick="deleteAllocation(${allocation.id})" class="delete-btn">Delete</button>
-                    </td>
-                </tr>
-            `;
+        let icon = '';
+        let title = '';
+        switch(type) {
+            case 'success': icon = '✓'; title = 'Success!'; break;
+            case 'error': icon = '✗'; title = 'Error!'; break;
+            case 'warning': icon = '⚠'; title = 'Warning!'; break;
+            case 'info': icon = 'ℹ'; title = 'Info'; break;
+            default: icon = '✓'; title = 'Success!';
+        }
+        
+        toast.innerHTML = `
+            <div class="toast-title">${icon} ${title}</div>
+            <div class="toast-message">${escapeHtml(message)}</div>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300);
+        }, 3000);
+    };
+
+    // Custom confirm dialog
+    window.showConfirmDialog = function({ title, message, detail, onConfirm, onCancel }) {
+        // Remove existing dialog
+        const existingDialog = document.querySelector('.confirm-dialog');
+        if (existingDialog) existingDialog.remove();
+        
+        // Create dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'confirm-dialog';
+        dialog.innerHTML = `
+            <div class="confirm-dialog-content">
+                <div class="confirm-dialog-header">
+                    <div class="confirm-dialog-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 8V12M12 16H12.01M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="confirm-dialog-title">${escapeHtml(title)}</h3>
+                </div>
+                <div class="confirm-dialog-body">
+                    <div class="confirm-dialog-message">${escapeHtml(message)}</div>
+                    ${detail ? `<div class="confirm-dialog-detail">${escapeHtml(detail)}</div>` : ''}
+                </div>
+                <div class="confirm-dialog-footer">
+                    <button class="confirm-btn confirm-btn-cancel">Cancel</button>
+                    <button class="confirm-btn confirm-btn-delete">Delete</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+        
+        const overlay = dialog.querySelector('.confirm-dialog');
+        const cancelBtn = dialog.querySelector('.confirm-btn-cancel');
+        const deleteBtn = dialog.querySelector('.confirm-btn-delete');
+        
+        const closeDialog = () => {
+            dialog.style.animation = 'fadeOut 0.2s ease';
+            setTimeout(() => {
+                if (dialog.parentNode) dialog.remove();
+            }, 200);
+        };
+        
+        cancelBtn.addEventListener('click', () => {
+            closeDialog();
+            if (onCancel) onCancel();
         });
         
-        showToast(`${response.data.length} allocation(s) loaded successfully`, 'success');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        tbody.innerHTML = '<tr class="empty-state"><td colspan="9">Error loading allocations. Please refresh the page.</td></tr>';
-        showToast('Failed to load allocations: ' + error.message, 'error');
-    });
-}
-
-// Handle program change - load courses and schemes
-function handleProgramChange() {
-    let programId = this.value;
-    let courseSelect = document.getElementById('course_id');
-    let schemeSelect = document.getElementById('scheme_id');
-    
-    if (!programId) {
-        courseSelect.innerHTML = '<option value="">Select Program First</option>';
-        schemeSelect.innerHTML = '<option value="">Select Program First</option>';
-        courseSelect.disabled = true;
-        schemeSelect.disabled = true;
-        return;
-    }
-    
-    // Disable and show loading
-    courseSelect.disabled = true;
-    schemeSelect.disabled = true;
-    courseSelect.innerHTML = '<option>Loading courses...</option>';
-    schemeSelect.innerHTML = '<option>Loading scheme...</option>';
-    
-    // Load courses
-    fetch(`/get-courses/${programId}`)
-        .then(res => res.json())
-        .then(data => {
-            courseSelect.innerHTML = '<option value="">Select Course</option>';
-            if (data.length === 0) {
-                courseSelect.innerHTML = '<option value="">No courses available</option>';
-                courseSelect.disabled = true;
-                showToast('No courses found for this program', 'warning');
-            } else {
-                data.forEach(c => {
-                    courseSelect.innerHTML += `<option value="${c.id}">${escapeHtml(c.course_title)}</option>`;
-                });
-                courseSelect.disabled = false;
-                showToast(`${data.length} course(s) loaded`, 'success');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            courseSelect.innerHTML = '<option value="">Error loading courses</option>';
-            courseSelect.disabled = true;
-            showToast('Failed to load courses', 'error');
+        deleteBtn.addEventListener('click', () => {
+            closeDialog();
+            if (onConfirm) onConfirm();
         });
-    
-    // Load active scheme
-    fetch(`/get-active-scheme/${programId}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.id) {
-                schemeSelect.innerHTML = `<option value="${data.id}" selected>${escapeHtml(data.title)} (Active)</option>`;
-                schemeSelect.disabled = false;
-                showToast('Active scheme loaded', 'success');
-            } else {
-                schemeSelect.innerHTML = '<option value="">No active scheme found</option>';
-                schemeSelect.disabled = true;
-                showToast('No active scheme found for this program', 'warning');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            schemeSelect.innerHTML = '<option value="">Error loading scheme</option>';
-            schemeSelect.disabled = true;
-            showToast('Failed to load scheme', 'error');
-        });
-}
-
-// Handle form submission (Create/Update)
-function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    // Validate form
-    const form = e.target;
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        showToast('Please fill all required fields', 'warning');
-        return;
-    }
-    
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    
-    // Disable save button to prevent double submission
-    const saveBtn = document.getElementById('saveBtn');
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-    
-    let url = '/allocations/store';
-    let method = 'POST';
-    let action = 'create';
-    
-    if (currentAllocationId) {
-        url = `/allocations/${currentAllocationId}`;
-        method = 'PUT';
-        action = 'update';
-    }
-    
-    fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(response => {
-        if (response.success) {
-            showToast(response.message, 'success');
-            closeModal();
-            loadAllocations();
-            resetForm();
-        } else {
-            showToast(response.message || `Error ${action}ing allocation`, 'error');
-            if (response.errors) {
-                console.error('Validation errors:', response.errors);
-                for (let key in response.errors) {
-                    showToast(`${key}: ${response.errors[key].join(', ')}`, 'error');
-                }
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast(`An error occurred while ${action}ing allocation: ${error.message}`, 'error');
-    })
-    .finally(() => {
-        saveBtn.disabled = false;
-        saveBtn.textContent = currentAllocationId ? 'Update Allocation' : 'Save Allocation';
-    });
-}
-
-// Edit allocation
-async function editAllocation(id) {
-    try {
-        showToast('Loading allocation details...', 'info');
         
-        const response = await fetch(`/allocations/${id}/edit`, {
+        // Click outside to cancel
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeDialog();
+                if (onCancel) onCancel();
+            }
+        });
+    };
+
+    // Escape HTML
+    function escapeHtml(text) {
+        if (!text) return '-';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Load all allocations
+    window.loadAllocations = function() {
+        const tbody = document.querySelector('#allocationsTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '<tr class="loading"><td colspan="9">Loading allocations...</td></tr>';
+        
+        fetch('/allocations/data', {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             }
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            const data = result.data;
-            currentAllocationId = id;
-            
-            // Set program
-            document.getElementById('program_id').value = data.program_id;
-            
-            // Load courses for this program
-            const coursesResponse = await fetch(`/get-courses/${data.program_id}`);
-            const courses = await coursesResponse.json();
-            
-            const courseSelect = document.getElementById('course_id');
-            courseSelect.innerHTML = '<option value="">Select Course</option>';
-            courses.forEach(c => {
-                const selected = c.id == data.course_id ? 'selected' : '';
-                courseSelect.innerHTML += `<option value="${c.id}" ${selected}>${escapeHtml(c.course_title)}</option>`;
-            });
-            courseSelect.disabled = false;
-            
-            // Load scheme
-            const schemeResponse = await fetch(`/get-active-scheme/${data.program_id}`);
-            const scheme = await schemeResponse.json();
-            
-            const schemeSelect = document.getElementById('scheme_id');
-            if (scheme && scheme.id) {
-                const selected = scheme.id == data.scheme_id ? 'selected' : '';
-                schemeSelect.innerHTML = `<option value="${scheme.id}" ${selected}>${escapeHtml(scheme.title)} (Active)</option>`;
-                schemeSelect.disabled = false;
-            } else {
-                schemeSelect.innerHTML = '<option value="">No active scheme found</option>';
-                schemeSelect.disabled = true;
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+        })
+        .then(response => {
+            if (!response.data || response.data.length === 0) {
+                tbody.innerHTML = '<tr class="empty-state"><td colspan="9">No allocations found. Click "New Allocation" to add.</td></tr>';
+                return;
             }
             
-            // Fill other fields
-            document.getElementById('teacher_id').value = data.teacher_id;
-            document.getElementById('session_id').value = data.session_id;
-            document.getElementById('section_id').value = data.section_id;
-            document.getElementById('semester').value = data.semester;
+            tbody.innerHTML = '';
             
-            // Update modal
-            document.getElementById('modalTitle').textContent = 'Edit Teacher Allocation';
-            document.getElementById('saveBtn').textContent = 'Update Allocation';
-            
-            openModal();
-            showToast('Allocation loaded successfully', 'success');
-        } else {
-            showToast(result.message || 'Failed to load allocation details', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('Failed to load allocation details: ' + error.message, 'error');
-    }
-}
+            response.data.forEach(allocation => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${allocation.serial}</td>
+                        <td>${escapeHtml(allocation.program)}</td>
+                        <td>${escapeHtml(allocation.scheme)}</td>
+                        <td>${escapeHtml(allocation.course)}</td>
+                        <td>${escapeHtml(allocation.teacher)}</td>
+                        <td>${escapeHtml(allocation.session)}</td>
+                        <td>${escapeHtml(allocation.section)}</td>
+                        <td>Semester ${allocation.semester}</td>
+                        <td class="action-buttons">
+                            <button onclick="window.editAllocation(${allocation.id})" class="edit-btn">Edit</button>
+                            <button onclick="window.deleteAllocation(${allocation.id}, '${escapeHtml(allocation.course)}', '${escapeHtml(allocation.teacher)}')" class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            tbody.innerHTML = '<tr class="empty-state"><td colspan="9">Error loading allocations. Please refresh the page.</td></tr>';
+            window.showToast('Failed to load allocations: ' + error.message, 'error');
+        });
+    };
 
-// Delete allocation
-function deleteAllocation(id) {
-    if (confirm('⚠️ Are you sure you want to delete this allocation?\n\nThis action cannot be undone!')) {
-        showToast('Deleting allocation...', 'info');
+    // Handle program change - load courses and schemes
+    window.handleProgramChange = function() {
+        let programId = document.getElementById('program_id').value;
+        let courseSelect = document.getElementById('course_id');
+        let schemeSelect = document.getElementById('scheme_id');
         
-        // Get CSRF token
-        let token = csrfToken;
-        if (!token) {
-            token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!programId) {
+            courseSelect.innerHTML = '<option value="">Select Program First</option>';
+            schemeSelect.innerHTML = '<option value="">Select Program First</option>';
+            courseSelect.disabled = true;
+            schemeSelect.disabled = true;
+            return;
         }
-        if (!token) {
-            token = document.querySelector('input[name="_token"]')?.value;
+        
+        courseSelect.disabled = true;
+        schemeSelect.disabled = true;
+        courseSelect.innerHTML = '<option>Loading courses...</option>';
+        schemeSelect.innerHTML = '<option>Loading scheme...</option>';
+        
+        // Load courses
+        fetch(`/get-courses/${programId}`)
+            .then(res => res.json())
+            .then(data => {
+                courseSelect.innerHTML = '<option value="">Select Course</option>';
+                if (data.length === 0) {
+                    courseSelect.innerHTML = '<option value="">No courses available</option>';
+                    courseSelect.disabled = true;
+                } else {
+                    data.forEach(c => {
+                        courseSelect.innerHTML += `<option value="${c.id}">${escapeHtml(c.course_title)}</option>`;
+                    });
+                    courseSelect.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                courseSelect.innerHTML = '<option value="">Error loading courses</option>';
+                courseSelect.disabled = true;
+                window.showToast('Failed to load courses', 'error');
+            });
+        
+        // Load active scheme
+        fetch(`/get-active-scheme/${programId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.id) {
+                    schemeSelect.innerHTML = `<option value="${data.id}" selected>${escapeHtml(data.title)} (Active)</option>`;
+                    schemeSelect.disabled = false;
+                } else {
+                    schemeSelect.innerHTML = '<option value="">No active scheme found</option>';
+                    schemeSelect.disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                schemeSelect.innerHTML = '<option value="">Error loading scheme</option>';
+                schemeSelect.disabled = true;
+                window.showToast('Failed to load scheme', 'error');
+            });
+    };
+
+    // Handle form submission
+    window.handleFormSubmit = function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            window.showToast('Please fill all required fields', 'warning');
+            return;
         }
         
-        // Create form data with _method and _token
-        const formData = new FormData();
-        formData.append('_method', 'DELETE');
-        formData.append('_token', token);
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
         
-        fetch(`/allocations/${id}`, {
-            method: 'POST',
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+        
+        let url = '/allocations/store';
+        let method = 'POST';
+        
+        if (currentAllocationId) {
+            url = `/allocations/${currentAllocationId}`;
+            method = 'PUT';
+        }
+        
+        fetch(url, {
+            method: method,
             headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: formData
+            body: JSON.stringify(data)
         })
         .then(res => res.json())
         .then(response => {
             if (response.success) {
-                showToast(response.message, 'success');
-                loadAllocations(); // Refresh the table
+                window.showToast(response.message, 'success');
+                window.closeModal();
+                window.loadAllocations();
+                window.resetForm();
             } else {
-                showToast(response.message || 'Error deleting allocation', 'error');
+                window.showToast(response.message || 'Error saving allocation', 'error');
+                if (response.errors) {
+                    for (let key in response.errors) {
+                        window.showToast(`${key}: ${response.errors[key].join(', ')}`, 'error');
+                    }
+                }
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast('An error occurred while deleting: ' + error.message, 'error');
+            window.showToast('An error occurred while saving', 'error');
+        })
+        .finally(() => {
+            saveBtn.disabled = false;
+            saveBtn.textContent = currentAllocationId ? 'Update Allocation' : 'Save Allocation';
         });
-    } else {
-        showToast('Deletion cancelled', 'info');
-    }
-}
+    };
 
-// Open modal
-function openModal() {
-    document.getElementById('allocationModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-// Close modal and reset form
-function closeModal() {
-    document.getElementById('allocationModal').style.display = 'none';
-    document.body.style.overflow = '';
-    resetForm();
-}
-
-// Reset form to initial state
-function resetForm() {
-    document.getElementById('allocationForm').reset();
-    currentAllocationId = null;
-    
-    document.getElementById('modalTitle').textContent = 'New Teacher Allocation';
-    document.getElementById('saveBtn').textContent = 'Save Allocation';
-    
-    const courseSelect = document.getElementById('course_id');
-    const schemeSelect = document.getElementById('scheme_id');
-    courseSelect.innerHTML = '<option value="">Select Program First</option>';
-    schemeSelect.innerHTML = '<option value="">Select Program First</option>';
-    courseSelect.disabled = true;
-    schemeSelect.disabled = true;
-}
-
-// Enhanced Toast notification system
-function showToast(message, type = 'success') {
-    // Create toast container if it doesn't exist
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
-    
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    
-    // Set icon based on type
-    let icon = '';
-    let title = '';
-    switch(type) {
-        case 'success':
-            icon = '✓';
-            title = 'Success!';
-            break;
-        case 'error':
-            icon = '✗';
-            title = 'Error!';
-            break;
-        case 'warning':
-            icon = '⚠';
-            title = 'Warning!';
-            break;
-        case 'info':
-            icon = 'ℹ';
-            title = 'Info';
-            break;
-        default:
-            icon = '✓';
-            title = 'Success!';
-    }
-    
-    toast.innerHTML = `
-        <div class="toast-title">${icon} ${title}</div>
-        <div class="toast-message">${escapeHtml(message)}</div>
-    `;
-    
-    container.appendChild(toast);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
+    // Edit allocation
+    window.editAllocation = async function(id) {
+        try {
+            window.showToast('Loading allocation details...', 'info');
+            
+            const response = await fetch(`/allocations/${id}/edit`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                const data = result.data;
+                currentAllocationId = id;
+                
+                document.getElementById('program_id').value = data.program_id;
+                
+                // Trigger program change to load courses
+                await window.handleProgramChange();
+                
+                // Small delay to ensure courses are loaded
+                setTimeout(() => {
+                    document.getElementById('course_id').value = data.course_id;
+                    document.getElementById('scheme_id').value = data.scheme_id;
+                    document.getElementById('teacher_id').value = data.teacher_id;
+                    document.getElementById('session_id').value = data.session_id;
+                    document.getElementById('section_id').value = data.section_id;
+                    document.getElementById('semester').value = data.semester;
+                }, 500);
+                
+                document.getElementById('modalTitle').textContent = 'Edit Teacher Allocation';
+                document.getElementById('saveBtn').textContent = 'Update Allocation';
+                
+                window.openModal();
+                window.showToast('Allocation loaded successfully', 'success');
+            } else {
+                window.showToast(result.message || 'Failed to load allocation', 'error');
             }
-        }, 300);
-    }, 3000);
-}
+        } catch (error) {
+            console.error('Error:', error);
+            window.showToast('Failed to load allocation details', 'error');
+        }
+    };
 
-// Escape HTML
-function escapeHtml(text) {
-    if (!text) return '-';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+    // Delete allocation with custom confirm dialog
+    window.deleteAllocation = function(id, courseName, teacherName) {
+        window.showConfirmDialog({
+            title: 'Confirm Deletion',
+            message: `Are you sure you want to delete this allocation?`,
+            detail: `Course: ${courseName}\nTeacher: ${teacherName}\n\n⚠️ This action cannot be undone!`,
+            onConfirm: () => {
+                // Proceed with deletion
+                window.showToast('Deleting allocation...', 'info');
+                
+                // Get CSRF token from multiple possible sources
+                let token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                
+                if (!token) {
+                    const tokenInput = document.querySelector('input[name="_token"]');
+                    if (tokenInput) {
+                        token = tokenInput.value;
+                    }
+                }
+                
+                if (!token) {
+                    window.showToast('CSRF token not found. Please refresh the page.', 'error');
+                    return;
+                }
+                
+                // Create form data for POST request with _method DELETE
+                const formData = new FormData();
+                formData.append('_method', 'DELETE');
+                formData.append('_token', token);
+                
+                fetch(`/allocations/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(async response => {
+                    if (response.status === 419) {
+                        throw new Error('Session expired. Please refresh the page.');
+                    }
+                    if (!response.ok) {
+                        const text = await response.text();
+                        try {
+                            const error = JSON.parse(text);
+                            throw new Error(error.message || 'Server error');
+                        } catch(e) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                    }
+                    return response.json();
+                })
+                .then(response => {
+                    if (response.success) {
+                        window.showToast(response.message, 'success');
+                        window.loadAllocations();
+                    } else {
+                        window.showToast(response.message || 'Error deleting allocation', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.showToast(error.message || 'An error occurred while deleting', 'error');
+                });
+            },
+            onCancel: () => {
+                window.showToast('Deletion cancelled', 'info');
+            }
+        });
+    };
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('allocationModal');
-    if (event.target === modal) {
-        closeModal();
+    // Open modal
+    window.openModal = function() {
+        document.getElementById('allocationModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+
+    // Close modal
+    window.closeModal = function() {
+        document.getElementById('allocationModal').style.display = 'none';
+        document.body.style.overflow = '';
+        window.resetForm();
+    };
+
+    // Reset form
+    window.resetForm = function() {
+        document.getElementById('allocationForm').reset();
+        currentAllocationId = null;
+        document.getElementById('modalTitle').textContent = 'New Teacher Allocation';
+        document.getElementById('saveBtn').textContent = 'Save Allocation';
+        
+        const courseSelect = document.getElementById('course_id');
+        const schemeSelect = document.getElementById('scheme_id');
+        courseSelect.innerHTML = '<option value="">Select Program First</option>';
+        schemeSelect.innerHTML = '<option value="">Select Program First</option>';
+        courseSelect.disabled = true;
+        schemeSelect.disabled = true;
+    };
+
+    // Initialize everything
+    function init() {
+        console.log('Initializing Allocation page...');
+        
+        // Set up event listeners
+        const form = document.getElementById('allocationForm');
+        if (form) {
+            form.removeEventListener('submit', window.handleFormSubmit);
+            form.addEventListener('submit', window.handleFormSubmit);
+        }
+        
+        const programSelect = document.getElementById('program_id');
+        if (programSelect) {
+            programSelect.removeEventListener('change', window.handleProgramChange);
+            programSelect.addEventListener('change', window.handleProgramChange);
+        }
+        
+        // Load allocations immediately
+        window.loadAllocations();
     }
-}
+    
+    // Run init when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    // Handle modal outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('allocationModal');
+        if (event.target === modal) {
+            window.closeModal();
+        }
+    };
+})();
 </script>
 
 @endsection

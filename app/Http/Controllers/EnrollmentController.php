@@ -14,75 +14,85 @@ use Illuminate\Support\Facades\Validator;
 
 class EnrollmentController extends Controller
 {
-    public function index(Request $request)
-    {
-        $students = Student::all();
-        $programs = Program::all();
-        $sessions = Session::all();
-        $sections = Section::all();
+    // In your EnrollmentController.php, update the index method:
 
-        $query = Enrollment::with([
-            'student',
-            'offeredCourse.course',
-            'program',
-            'session',
-            'section'
-        ]);
+// In your EnrollmentController.php, update the index method:
 
-        // 🔍 SEARCH
-        if ($request->search) {
-            $query->whereHas('student', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            });
-        }
+public function index(Request $request)
+{
+    $students = Student::all();
+    $programs = Program::all();
+    $sessions = Session::all();
+    $sections = Section::all();
 
-        // SESSION FILTER
-        if ($request->session_id) {
-            $query->where('session_id', $request->session_id);
-        }
+    $query = Enrollment::with([
+        'student',
+        'offeredCourse.course',
+        'program',
+        'session',
+        'section'
+    ]);
 
-        // SEMESTER FILTER
-        if ($request->semester) {
-            $query->where('semester', $request->semester);
-        }
-
-        // PROGRAM FILTER
-        if ($request->program_id) {
-            $query->where('program_id', $request->program_id);
-        }
-
-        $enrollments = $query->get();
-
-        // AJAX RESPONSE
-        if ($request->ajax()) {
-            $html = '';
-            foreach ($enrollments as $e) {
-                $html .= '
-                <tr>
-                    <td>' . ($e->student->name ?? '-') . '</td>
-                    <td>' . ($e->offeredCourse->course->course_title ?? '-') . '</td>
-                    <td>' . ($e->program->name ?? '-') . '</td>
-                    <td>' . ($e->session->name ?? '-') . '</td>
-                    <td>' . ($e->semester ?? '-') . '</td>
-                    <td>' . ($e->section ?? '-') . '</td>
-                    <td>' . ($e->enrollment_date ?? '-') . '</td>
-                    <td class="action-buttons">
-                        <button onclick="editEnrollment(' . $e->id . ')" class="edit-btn">Edit</button>
-                        <button onclick="deleteEnrollment(' . $e->id . ')" class="delete-btn">Delete</button>
-                    </td>
-                </tr>';
-            }
-            return response($html);
-        }
-
-        return view('Admin.enrollment', compact(
-            'enrollments',
-            'students',
-            'programs',
-            'sessions',
-            'sections'
-        ));
+    // 🔍 SEARCH
+    if ($request->search) {
+        $query->whereHas('student', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%');
+        });
     }
+
+    // SESSION FILTER
+    if ($request->session_id) {
+        $query->where('session_id', $request->session_id);
+    }
+
+    // SEMESTER FILTER
+    if ($request->semester) {
+        $query->where('semester', $request->semester);
+    }
+
+    // PROGRAM FILTER
+    if ($request->program_id) {
+        $query->where('program_id', $request->program_id);
+    }
+
+    $enrollments = $query->get();
+
+    // AJAX RESPONSE - Return only table rows
+    if ($request->ajax()) {
+        $html = '';
+        foreach ($enrollments as $e) {
+            $html .= '
+            <tr>
+                <td>' . htmlspecialchars($e->student->name ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->offeredCourse->course->course_title ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->program->name ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->session->name ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->semester ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->section->name ?? '-') . '</td>
+                <td>' . htmlspecialchars($e->enrollment_date ?? '-') . '</td>
+                <td class="action-buttons">
+                    <button onclick="window.editEnrollment(' . $e->id . ')" class="edit-btn">Edit</button>
+                    <button onclick="window.deleteEnrollment(' . $e->id . ', this)" class="delete-btn">Delete</button>
+                </td>
+            </tr>';
+        }
+        
+        if (empty($html)) {
+            $html = '<tr><td colspan="8" style="text-align: center;">No enrollments found</td></tr>';
+        }
+        
+        return response($html);
+    }
+
+    return view('Admin.enrollment', compact(
+        'enrollments',
+        'students',
+        'programs',
+        'sessions',
+        'sections'
+    ));
+}
+
 
     // AJAX: Get offered courses
     public function getOfferedCourses(Request $request)

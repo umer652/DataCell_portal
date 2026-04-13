@@ -262,24 +262,27 @@ class AllocationController extends Controller
     /**
      * Delete an allocation
      */
-    public function destroy($id)
-    {
-        try {
-            $allocation = Allocation::findOrFail($id);
-            $allocation->delete();
+    /**
+ * Delete an allocation
+ */
+public function destroy($id)
+{
+    try {
+        $allocation = Allocation::findOrFail($id);
+        $allocation->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Allocation deleted successfully!'
-            ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Allocation deleted successfully!'
+        ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete allocation: ' . $e->getMessage()
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete allocation: ' . $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Bulk delete allocations

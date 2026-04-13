@@ -450,308 +450,151 @@ input:focus, select:focus {
 @endsection
 
 @section('scripts')
-
 <script>
-// CSRF Token setup
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-// Get elements
-const modal = document.getElementById('teacherModal');
-const addBtn = document.getElementById('addTeacherBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const cancelBtn = document.getElementById('cancelBtn');
-const saveBtn = document.getElementById('saveBtn');
-const updateBtn = document.getElementById('updateBtn');
-const modalTitle = document.getElementById('modalTitle');
-const teacherId = document.getElementById('teacher_id');
-const nameInput = document.getElementById('name');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const designationInput = document.getElementById('designation');
-const departmentInput = document.getElementById('department');
-const passwordRequired = document.getElementById('passwordRequired');
-const passwordHelp = document.getElementById('passwordHelp');
-const passwordRequiredText = document.getElementById('passwordRequiredText');
-
-// ==================== MODAL FUNCTIONS ====================
-
-function openModal() {
-    resetForm();
-    modalTitle.textContent = "Add New Teacher";
-    passwordRequired.style.display = 'inline';
-    passwordHelp.style.display = 'none';
-    passwordRequiredText.style.display = 'inline';
-    passwordInput.required = true;
-    modal.style.display = 'flex';
-}
-
-function closeModal() {
-    modal.style.display = 'none';
-    resetForm();
-}
-
-function resetForm() {
-    teacherId.value = '';
-    nameInput.value = '';
-    emailInput.value = '';
-    passwordInput.value = '';
-    designationInput.value = '';
-    departmentInput.value = '';
-    saveBtn.style.display = 'inline-block';
-    updateBtn.style.display = 'none';
-    document.getElementById('formError').style.display = 'none';
-    document.getElementById('formError').innerHTML = '';
-}
-
-// Open modal on add button click
-addBtn.addEventListener('click', openModal);
-
-// Close modal on close button click
-closeModalBtn.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-
-// Close modal when clicking outside
-window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
-// ==================== SHOW ERROR ====================
-
-function showError(msg) {
-    const errorDiv = document.getElementById('formError');
-    errorDiv.innerHTML = msg;
-    errorDiv.style.display = 'block';
-    setTimeout(() => {
-        errorDiv.style.display = 'none';
-    }, 5000);
-}
-
-// ==================== VALIDATE FORM ====================
-
-function validateForm(isEdit = false) {
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+// Teacher Management Module
+function initTeacherModule() {
+    console.log('Initializing Teacher Module...');
     
-    if (!name) {
-        showError('Please enter teacher name');
-        nameInput.focus();
-        return false;
+    // CSRF Token setup
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!csrfToken) {
+        console.error('CSRF token not found');
+        return;
     }
-    if (!email) {
-        showError('Please enter email address');
-        emailInput.focus();
-        return false;
-    }
-    if (!isEdit && !password) {
-        showError('Please enter password for new teacher');
-        passwordInput.focus();
-        return false;
-    }
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showError('Please enter a valid email address');
-        emailInput.focus();
-        return false;
-    }
-    if (password && password.length < 6) {
-        showError('Password must be at least 6 characters');
-        passwordInput.focus();
-        return false;
-    }
-    return true;
-}
-
-// ==================== CREATE TEACHER ====================
-
-async function saveTeacher() {
-    if (!validateForm(false)) return;
     
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
+    // Get elements
+    const modal = document.getElementById('teacherModal');
+    const addBtn = document.getElementById('addTeacherBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const teacherId = document.getElementById('teacher_id');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const designationInput = document.getElementById('designation');
+    const departmentInput = document.getElementById('department');
+    const passwordRequired = document.getElementById('passwordRequired');
+    const passwordHelp = document.getElementById('passwordHelp');
+    const passwordRequiredText = document.getElementById('passwordRequiredText');
     
-    try {
-        const response = await fetch("{{ route('teachers.store') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                name: nameInput.value.trim(),
-                email: emailInput.value.trim(),
-                password: passwordInput.value,
-                designation: designationInput.value.trim(),
-                department: departmentInput.value.trim()
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: data.message || 'Teacher added successfully',
-                timer: 2000,
-                showConfirmButton: false
-            });
+    // Check if essential elements exist
+    if (!modal || !addBtn) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    function openModal() {
+        resetForm();
+        modalTitle.textContent = "Add New Teacher";
+        if (passwordRequired) passwordRequired.style.display = 'inline';
+        if (passwordHelp) passwordHelp.style.display = 'none';
+        if (passwordRequiredText) passwordRequiredText.style.display = 'inline';
+        if (passwordInput) passwordInput.required = true;
+        modal.style.display = 'flex';
+    }
+    
+    function closeModal() {
+        modal.style.display = 'none';
+        resetForm();
+    }
+    
+    function resetForm() {
+        if (teacherId) teacherId.value = '';
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+        if (designationInput) designationInput.value = '';
+        if (departmentInput) departmentInput.value = '';
+        if (saveBtn) saveBtn.style.display = 'inline-block';
+        if (updateBtn) updateBtn.style.display = 'none';
+        const formError = document.getElementById('formError');
+        if (formError) {
+            formError.style.display = 'none';
+            formError.innerHTML = '';
+        }
+    }
+    
+    function showError(msg) {
+        const errorDiv = document.getElementById('formError');
+        if (errorDiv) {
+            errorDiv.innerHTML = msg;
+            errorDiv.style.display = 'block';
             setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+                errorDiv.style.display = 'none';
+            }, 5000);
         } else {
-            if (data.errors) {
-                let errorMsg = '';
-                for (let field in data.errors) {
-                    errorMsg += data.errors[field].join(', ') + '<br>';
-                }
-                showError(errorMsg);
-            } else {
-                showError(data.message || 'Error saving teacher');
-            }
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Save Teacher';
+            Swal.fire('Error', msg, 'error');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showError('Error saving teacher. Please try again.');
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save Teacher';
     }
-}
-
-// ==================== EDIT TEACHER ====================
-
-async function editTeacher(id) {
-    try {
-        const response = await fetch("/teachers/edit/" + id, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        });
+    
+    function validateForm(isEdit = false) {
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
         
-        const data = await response.json();
-        
-        if (response.ok) {
-            modalTitle.textContent = "Edit Teacher";
-            teacherId.value = data.id;
-            nameInput.value = data.user.name;
-            emailInput.value = data.user.email;
-            designationInput.value = data.user.designation || '';
-            departmentInput.value = data.user.department || '';
-            passwordInput.value = '';
-            
-            passwordRequired.style.display = 'none';
-            passwordHelp.style.display = 'inline';
-            passwordRequiredText.style.display = 'none';
-            passwordInput.required = false;
-            
-            saveBtn.style.display = 'none';
-            updateBtn.style.display = 'inline-block';
-            modal.style.display = 'flex';
-        } else {
-            Swal.fire('Error', 'Could not fetch teacher details', 'error');
+        if (!name) {
+            showError('Please enter teacher name');
+            if (nameInput) nameInput.focus();
+            return false;
         }
-    } catch (error) {
-        console.error('Error:', error);
-        Swal.fire('Error', 'Could not fetch teacher details', 'error');
-    }
-}
-
-// ==================== UPDATE TEACHER ====================
-
-async function updateTeacher() {
-    if (!validateForm(true)) return;
-    
-    const id = teacherId.value;
-    updateBtn.disabled = true;
-    updateBtn.textContent = 'Updating...';
-    
-    try {
-        const response = await fetch("/teachers/update/" + id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                name: nameInput.value.trim(),
-                email: emailInput.value.trim(),
-                password: passwordInput.value,
-                designation: designationInput.value.trim(),
-                department: departmentInput.value.trim()
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Updated!',
-                text: data.message || 'Teacher updated successfully',
-                timer: 2000,
-                showConfirmButton: false
-            });
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        } else {
-            if (data.errors) {
-                let errorMsg = '';
-                for (let field in data.errors) {
-                    errorMsg += data.errors[field].join(', ') + '<br>';
-                }
-                showError(errorMsg);
-            } else {
-                showError(data.message || 'Error updating teacher');
-            }
-            updateBtn.disabled = false;
-            updateBtn.textContent = 'Update Teacher';
+        if (!email) {
+            showError('Please enter email address');
+            if (emailInput) emailInput.focus();
+            return false;
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showError('Error updating teacher. Please try again.');
-        updateBtn.disabled = false;
-        updateBtn.textContent = 'Update Teacher';
+        if (!isEdit && !password) {
+            showError('Please enter password for new teacher');
+            if (passwordInput) passwordInput.focus();
+            return false;
+        }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showError('Please enter a valid email address');
+            if (emailInput) emailInput.focus();
+            return false;
+        }
+        if (password && password.length < 6) {
+            showError('Password must be at least 6 characters');
+            if (passwordInput) passwordInput.focus();
+            return false;
+        }
+        return true;
     }
-}
-
-// ==================== DELETE TEACHER ====================
-
-async function deleteTeacher(id) {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "This action cannot be undone!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, delete it!'
-    });
     
-    if (result.isConfirmed) {
+    async function saveTeacher() {
+        if (!validateForm(false)) return;
+        
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+        }
+        
         try {
-            const response = await fetch("/teachers/delete/" + id, {
-                method: 'DELETE',
+            const response = await fetch("{{ route('teachers.store') }}", {
+                method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                body: JSON.stringify({
+                    name: nameInput ? nameInput.value.trim() : '',
+                    email: emailInput ? emailInput.value.trim() : '',
+                    password: passwordInput ? passwordInput.value : '',
+                    designation: designationInput ? designationInput.value.trim() : '',
+                    department: departmentInput ? departmentInput.value.trim() : ''
+                })
             });
             
             const data = await response.json();
             
-            if (response.ok && data.success) {
+            if (response.ok && data.status) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Deleted!',
-                    text: data.message || 'Teacher deleted successfully',
+                    title: 'Success!',
+                    text: data.message || 'Teacher added successfully',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -759,50 +602,267 @@ async function deleteTeacher(id) {
                     window.location.reload();
                 }, 2000);
             } else {
-                Swal.fire('Error', data.message || 'Could not delete teacher', 'error');
+                if (data.errors) {
+                    let errorMsg = '';
+                    for (let field in data.errors) {
+                        errorMsg += data.errors[field].join(', ') + '<br>';
+                    }
+                    showError(errorMsg);
+                } else {
+                    showError(data.message || 'Error saving teacher');
+                }
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Teacher';
+                }
             }
         } catch (error) {
             console.error('Error:', error);
-            Swal.fire('Error', 'Could not delete teacher', 'error');
+            showError('Error saving teacher. Please try again.');
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Teacher';
+            }
         }
     }
+    
+    async function editTeacher(id) {
+        try {
+            const response = await fetch("/teachers/edit/" + id, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                if (modalTitle) modalTitle.textContent = "Edit Teacher";
+                if (teacherId) teacherId.value = data.id;
+                if (nameInput) nameInput.value = data.user.name;
+                if (emailInput) emailInput.value = data.user.email;
+                if (designationInput) designationInput.value = data.user.designation || '';
+                if (departmentInput) departmentInput.value = data.user.department || '';
+                if (passwordInput) passwordInput.value = '';
+                
+                if (passwordRequired) passwordRequired.style.display = 'none';
+                if (passwordHelp) passwordHelp.style.display = 'inline';
+                if (passwordRequiredText) passwordRequiredText.style.display = 'none';
+                if (passwordInput) passwordInput.required = false;
+                
+                if (saveBtn) saveBtn.style.display = 'none';
+                if (updateBtn) updateBtn.style.display = 'inline-block';
+                if (modal) modal.style.display = 'flex';
+            } else {
+                Swal.fire('Error', 'Could not fetch teacher details', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Could not fetch teacher details', 'error');
+        }
+    }
+    
+    async function updateTeacher() {
+        if (!validateForm(true)) return;
+        
+        const id = teacherId ? teacherId.value : '';
+        if (updateBtn) {
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Updating...';
+        }
+        
+        try {
+            const response = await fetch("/teachers/update/" + id, {
+                method: 'POST', // Changed to POST as your route shows POST for update
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    name: nameInput ? nameInput.value.trim() : '',
+                    email: emailInput ? emailInput.value.trim() : '',
+                    password: passwordInput ? passwordInput.value : '',
+                    designation: designationInput ? designationInput.value.trim() : '',
+                    department: departmentInput ? departmentInput.value.trim() : '',
+                    _method: 'PUT' // Laravel method spoofing
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.status) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: data.message || 'Teacher updated successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                if (data.errors) {
+                    let errorMsg = '';
+                    for (let field in data.errors) {
+                        errorMsg += data.errors[field].join(', ') + '<br>';
+                    }
+                    showError(errorMsg);
+                } else {
+                    showError(data.message || 'Error updating teacher');
+                }
+                if (updateBtn) {
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = 'Update Teacher';
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Error updating teacher. Please try again.');
+            if (updateBtn) {
+                updateBtn.disabled = false;
+                updateBtn.textContent = 'Update Teacher';
+            }
+        }
+    }
+    
+    async function deleteTeacher(id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        });
+        
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch("/teachers/delete/" + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message || 'Teacher deleted successfully',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    Swal.fire('Error', data.message || 'Could not delete teacher', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Could not delete teacher', 'error');
+            }
+        }
+    }
+    
+    // Remove old event listeners and attach new ones
+    // Add button
+    const newAddBtn = addBtn.cloneNode(true);
+    addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+    newAddBtn.addEventListener('click', openModal);
+    
+    // Close button
+    if (closeModalBtn) {
+        const newCloseBtn = closeModalBtn.cloneNode(true);
+        closeModalBtn.parentNode.replaceChild(newCloseBtn, closeModalBtn);
+        newCloseBtn.addEventListener('click', closeModal);
+    }
+    
+    // Cancel button
+    if (cancelBtn) {
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        newCancelBtn.addEventListener('click', closeModal);
+    }
+    
+    // Save button
+    if (saveBtn) {
+        const newSaveBtn = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+        newSaveBtn.addEventListener('click', saveTeacher);
+    }
+    
+    // Update button
+    if (updateBtn) {
+        const newUpdateBtn = updateBtn.cloneNode(true);
+        updateBtn.parentNode.replaceChild(newUpdateBtn, updateBtn);
+        newUpdateBtn.addEventListener('click', updateTeacher);
+    }
+    
+    // Edit buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = newBtn.getAttribute('data-id');
+            editTeacher(id);
+        });
+    });
+    
+    // Delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = newBtn.getAttribute('data-id');
+            deleteTeacher(id);
+        });
+    });
+    
+    // Enter key submit
+    if (modal) {
+        modal.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (saveBtn && saveBtn.style.display !== 'none' && saveBtn.offsetParent !== null) {
+                    saveTeacher();
+                } else if (updateBtn && updateBtn.style.display !== 'none' && updateBtn.offsetParent !== null) {
+                    updateTeacher();
+                }
+            }
+        });
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+    
+    console.log('Teacher Module Initialized Successfully');
 }
 
-// ==================== ATTACH EVENTS ====================
-
-// Save button click
-saveBtn.addEventListener('click', saveTeacher);
-updateBtn.addEventListener('click', updateTeacher);
-
-// Attach edit/delete events to buttons
-document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        editTeacher(id);
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        initTeacherModule();
     });
-});
+} else {
+    initTeacherModule();
+}
 
-document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        deleteTeacher(id);
-    });
-});
-
-// Enter key submit
-document.getElementById('teacherModal').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        if (saveBtn.style.display !== 'none' && saveBtn.offsetParent !== null) {
-            saveTeacher();
-        } else if (updateBtn.style.display !== 'none' && updateBtn.offsetParent !== null) {
-            updateTeacher();
-        }
-    }
-});
-
+// Export to global scope
+window.initTeacherModule = initTeacherModule;
 </script>
-
 @endsection

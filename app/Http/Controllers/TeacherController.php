@@ -21,123 +21,154 @@ class TeacherController extends Controller
 
     // STORE
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-        'designation' => 'required',
-        'department' => 'required',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-
-        // ✅ Get role dynamically from roles table
-        $role = Role::where('name', 'Teacher')->firstOrFail();
-
-        // CREATE USER
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'designation' => $request->designation,
-            'department' => $request->department,
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'designation' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
         ]);
 
-        // ASSIGN ROLE
-        UserRoleAssignment::create([
-            'user_id' => $user->id,
-            'role_id' => $role->id, // ✅ dynamic
-            'start_date' => now(),
-            'end_date' => null,
-        ]);
+        DB::beginTransaction();
 
-        // CREATE TEACHER
-        Teacher::create([
-            'user_id' => $user->id
-        ]);
+        try {
+            // Get role dynamically from roles table
+            $role = Role::where('name', 'Teacher')->first();
+            
+            if (!$role) {
+                // Create teacher role if it doesn't exist
+                $role = Role::create(['name' => 'Teacher']);
+            }
 
-        DB::commit();
+            // CREATE USER
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'designation' => $request->designation,
+                'department' => $request->department,
+            ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Teacher created successfully'
-        ]);
+            // ASSIGN ROLE
+            UserRoleAssignment::create([
+                'user_id' => $user->id,
+                'role_id' => $role->id,
+                'start_date' => now(),
+                'end_date' => null,
+            ]);
 
-    } catch (\Exception $e) {
-        DB::rollback();
+            // CREATE TEACHER
+            Teacher::create([
+                'user_id' => $user->id
+            ]);
 
-        return response()->json([
-            'status' => false,
-            'message' => $e->getMessage()
-        ], 500);
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Teacher created successfully',
+                'data' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Error creating teacher: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
-    // EDIT
+
+    // EDIT - Get teacher details for editing
     public function edit($id)
     {
-        $teacher = Teacher::with('user')->findOrFail($id);
+        try {
+            $teacher = Teacher::with('user')->findOrFail($id);
 
-        return response()->json([
-            'id' => $teacher->id,
-            'user' => [
-                'name' => $teacher->user->name,
-                'email' => $teacher->user->email,
-                'designation' => $teacher->user->designation,
-                'department' => $teacher->user->department,
-            ]
-        ]);
+            return response()->json([
+                'id' => $teacher->id,
+                'user' => [
+                    'name' => $teacher->user->name,
+                    'email' => $teacher->user->email,
+                    'designation' => $teacher->user->designation,
+                    'department' => $teacher->user->department,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Teacher not found'
+            ], 404);
+        }
     }
 
     // UPDATE
     public function update(Request $request, $id)
     {
-        $teacher = Teacher::findOrFail($id);
-        $user = User::findOrFail($teacher->user_id);
+        try {
+            $teacher = Teacher::findOrFail($id);
+            $user = User::findOrFail($teacher->user_id);
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'designation' => 'required',
-            'department' => 'required',
-            'password' => 'nullable|min:6',
-        ]);
-
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'designation' => $request->designation,
-            'department' => $request->department,
-        ]);
-
-        if ($request->password) {
-            $user->update([
-                'password' => Hash::make($request->password),
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'designation' => 'nullable|string|max:255',
+                'department' => 'nullable|string|max:255',
+                'password' => 'nullable|min:6',
             ]);
-        }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Teacher updated successfully'
-        ]);
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'designation' => $request->designation,
+                'department' => $request->department,
+            ]);
+
+            if ($request->filled('password')) {
+                $user->update([
+                    'password' => Hash::make($request->password),
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Teacher updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error updating teacher: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // DELETE
     public function destroy($id)
     {
-        $teacher = Teacher::findOrFail($id);
-        $user = User::findOrFail($teacher->user_id);
+        try {
+            $teacher = Teacher::findOrFail($id);
+            $user = User::findOrFail($teacher->user_id);
 
-        UserRoleAssignment::where('user_id', $user->id)->delete();
+            // Delete role assignment
+            UserRoleAssignment::where('user_id', $user->id)->delete();
 
-        $teacher->delete();
-        $user->delete();
+            // Delete teacher record
+            $teacher->delete();
+            
+            // Delete user record
+            $user->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Teacher deleted successfully'
-        ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Teacher deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error deleting teacher: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

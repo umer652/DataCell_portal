@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -299,6 +300,36 @@
             setLayout(true);
         });
 
+        // Function to set active sidebar link
+        function setActiveSidebar(routeName) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const activeLink = document.querySelector(`.nav-link[data-route='${routeName}']`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Function to extract and execute scripts from HTML
+        function executeScripts(html, container) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            const scripts = tempDiv.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                document.body.appendChild(newScript);
+            });
+        }
+
+        // Handle AJAX navigation
         document.addEventListener('click', function(e) {
             const link = e.target.closest('.ajax-link');
             if (link) {
@@ -307,110 +338,178 @@
                 const route = link.getAttribute('data-route');
                 setActiveSidebar(route);
 
+                // Show loading state
+                const content = document.getElementById('main-content');
+                content.style.opacity = '0.5';
+                
+                // Add loading spinner or text if desired
+                const originalContent = content.innerHTML;
+                content.style.pointerEvents = 'none';
+
                 fetch(link.href, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(res => res.text())
-                    .then(html => {
-
-                        const content = document.getElementById('main-content');
-
-                        // fade out
-                        content.style.opacity = 0;
-
-                        setTimeout(() => {
-
-                            content.innerHTML = html;
-
-                            content.style.opacity = 1;
-
-                            window.history.pushState({}, '', link.href);
-
-                            if (link.href.includes('sos')) {
-                                if (typeof loadSchemes === "function") {
-                                    loadSchemes();
-                                }
-                            }
-
-                        }, 150);
-
-                    });
-
-                function setActiveSidebar(routeName) {
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.remove('active');
-                    });
-
-                    const activeLink = document.querySelector(`.nav-link[data-route='${routeName}']`);
-                    if (activeLink) {
-                        activeLink.classList.add('active');
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
                     }
-                }
-
-                document.addEventListener('DOMContentLoaded', function() {
-
-                    let currentUrl = window.location.pathname;
-
-                    let route = '';
-
-                    if (currentUrl.includes('dashboard')) route = 'dashboard';
-                    else if (currentUrl.includes('scheme_of_study')) route = 'scheme_of_study';
-                    else if (currentUrl.includes('add-courses')) route = 'add-courses';
-                    else if (currentUrl.includes('course-prerequisite')) route = 'course-prerequisite.index';
-                    else if (currentUrl.includes('teacher')) route = 'teacher.index';
-                    else if (currentUrl.includes('enrollment')) route = 'enrollment.index';
-                    else if (currentUrl.includes('allocation')) route = 'allocation.index';
-
-                    setActiveSidebar(route);
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.text();
+                })
+                .then(html => {
+                    // Update content
+                    content.innerHTML = html;
+                    content.style.opacity = '1';
+                    content.style.pointerEvents = 'auto';
+                    
+                    // Update browser history
+                    window.history.pushState({}, '', link.href);
+                    
+                    // Extract and execute scripts from the loaded HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const scripts = tempDiv.querySelectorAll('script');
+                    
+                    // Execute each script
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        if (oldScript.src) {
+                            newScript.src = oldScript.src;
+                            newScript.async = false;
+                        } else {
+                            newScript.textContent = oldScript.textContent;
+                        }
+                        document.body.appendChild(newScript);
+                        // Remove it after execution to keep DOM clean
+                        setTimeout(() => {
+                            if (newScript.parentNode) {
+                                newScript.parentNode.removeChild(newScript);
+                            }
+                        }, 100);
+                    });
+                    
+                    // Re-initialize modules based on the loaded page
+                    setTimeout(() => {
+                        // Check for teacher module
+                        if (link.href.includes('teacher')) {
+                            if (typeof window.initTeacherModule === 'function') {
+                                console.log('Re-initializing Teacher Module');
+                                window.initTeacherModule();
+                            }
+                        }
+                        // Check for enrollment module
+                        if (link.href.includes('enrollment')) {
+                            if (typeof window.initEnrollmentModule === 'function') {
+                                window.initEnrollmentModule();
+                            }
+                        }
+                        // Check for allocation module
+                        if (link.href.includes('allocation')) {
+                            if (typeof window.initAllocationModule === 'function') {
+                                window.initAllocationModule();
+                            }
+                        }
+                        // Check for courses module
+                        if (link.href.includes('courses')) {
+                            if (typeof window.initCoursesModule === 'function') {
+                                window.initCoursesModule();
+                            }
+                        }
+                        // Check for SOS module
+                        if (link.href.includes('sos')) {
+                            if (typeof loadSchemes === "function") {
+                                loadSchemes();
+                            }
+                        }
+                    }, 100);
+                })
+                .catch(error => {
+                    console.error('Error loading page:', error);
+                    content.innerHTML = '<div class="error-message" style="text-align: center; padding: 50px; color: red;">Error loading page. Please try again.</div>';
+                    content.style.opacity = '1';
+                    content.style.pointerEvents = 'auto';
                 });
             }
         });
 
+        // Handle browser back/forward buttons
         window.addEventListener('popstate', function() {
             let path = window.location.pathname;
-
-            loadPage(path);
-
-            let route = '';
-
-            if (path.includes('dashboard')) route = 'dashboard';
-            else if (path.includes('scheme_of_study')) route = 'scheme_of_study';
-            else if (path.includes('add-courses')) route = 'add-courses';
-            else if (path.includes('course-prerequisite')) route = 'course-prerequisite.index';
-            else if (path.includes('teacher')) route = 'teacher.index';
-            else if (path.includes('enrollment')) route = 'enrollment.index';
-            else if (path.includes('allocation')) route = 'allocation.index';
-
-            setActiveSidebar(route);
+            
+            // Fetch and load the page
+            fetch(path, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const content = document.getElementById('main-content');
+                content.innerHTML = html;
+                
+                // Extract and execute scripts
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const scripts = tempDiv.querySelectorAll('script');
+                
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    if (oldScript.src) {
+                        newScript.src = oldScript.src;
+                        newScript.async = false;
+                    } else {
+                        newScript.textContent = oldScript.textContent;
+                    }
+                    document.body.appendChild(newScript);
+                    setTimeout(() => {
+                        if (newScript.parentNode) {
+                            newScript.parentNode.removeChild(newScript);
+                        }
+                    }, 100);
+                });
+                
+                // Update active sidebar based on path
+                let route = '';
+                if (path.includes('dashboard')) route = 'dashboard';
+                else if (path.includes('scheme_of_study')) route = 'scheme_of_study';
+                else if (path.includes('add-courses')) route = 'add-courses';
+                else if (path.includes('course-prerequisite')) route = 'course-prerequisite.index';
+                else if (path.includes('teacher')) route = 'teacher.index';
+                else if (path.includes('enrollment')) route = 'enrollment.index';
+                else if (path.includes('allocation')) route = 'allocation.index';
+                
+                setActiveSidebar(route);
+                
+                // Re-initialize modules
+                setTimeout(() => {
+                    if (path.includes('teacher') && typeof window.initTeacherModule === 'function') {
+                        window.initTeacherModule();
+                    }
+                }, 100);
+            });
         });
 
-        function loadPage(url) {
-            fetch(url)
-                .then(res => res.text())
-                .then(html => {
-
-                    const content = document.getElementById('main-content');
-
-                    content.style.opacity = 0;
-
-                    setTimeout(() => {
-                        content.innerHTML = html;
-                        content.style.opacity = 1;
-                    }, 150);
-
-                });
-        }
-
-        function navigate(url) {
-            loadPage(url);
-            history.pushState({}, '', url);
-        }
+        // Initial active sidebar set
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentUrl = window.location.pathname;
+            let route = '';
+            
+            if (currentUrl.includes('dashboard')) route = 'dashboard';
+            else if (currentUrl.includes('scheme_of_study')) route = 'scheme_of_study';
+            else if (currentUrl.includes('add-courses')) route = 'add-courses';
+            else if (currentUrl.includes('course-prerequisite')) route = 'course-prerequisite.index';
+            else if (currentUrl.includes('teacher')) route = 'teacher.index';
+            else if (currentUrl.includes('enrollment')) route = 'enrollment.index';
+            else if (currentUrl.includes('allocation')) route = 'allocation.index';
+            
+            setActiveSidebar(route);
+        });
     </script>
 
     @yield('scripts')
-
+    
+    <!-- Include any additional JS files -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 

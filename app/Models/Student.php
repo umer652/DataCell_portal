@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     protected $table = 'student';
-
     protected $primaryKey = 'id';
-
     public $timestamps = false;
 
     protected $fillable = [
-        // 'name', // <-- REMOVE THIS LINE - name doesn't exist in student table
         'user_id',
         'name',
         'gender',
@@ -49,5 +46,11 @@ class Student extends Model
     public function section()
     {
         return $this->belongsTo(Section::class, 'section_id');
+    }
+
+    // ADD THIS RELATIONSHIP
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'student_id', 'id');
     }
 }

@@ -53,6 +53,13 @@
                 <i class="fas fa-tasks mr-2"></i> Allocation Management
             </a>
         </li>
+        <!-- Add this to your sidebar menu -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('transcripts.index') }}">
+        <i class="fas fa-print"></i> 
+        <span>Print Transcript</span>
+    </a>
+</li>
     </ul>
 
 </div>

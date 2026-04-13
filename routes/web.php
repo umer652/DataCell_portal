@@ -9,7 +9,10 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CoursePrerequisiteController;
+use App\Http\Controllers\TranscriptController;
 
+// ==================== EXISTING ROUTES ====================
+// (Keep all your existing routes here)
 
 Route::get('/', function () {
     return view('Auth.login');
@@ -22,7 +25,6 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'webLogin'])->name('webLogin');
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
-
 
 Route::get('/sos', [SchemeOfStudyController::class, 'index'])->name('scheme_of_study');
 Route::post('/sos-create', [SchemeOfStudyController::class, 'store'])->name('scheme.store');
@@ -38,19 +40,12 @@ Route::get('/students/download-template', [StudentController::class, 'downloadTe
 Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 
 //course Controller
-Route::get('/courses', [CourseController::class, 'index'])
-    ->name('add-courses');
-Route::post('/courses', [CourseController::class, 'store'])
-    ->name('courses.store');
-Route::put('/courses/{id}', [CourseController::class, 'update'])
-    ->name('courses.update');
-Route::delete('/courses/{id}', [CourseController::class, 'destroy'])
-    ->name('courses.destroy');
-Route::post('/courses/import', [CourseController::class, 'import'])
-    ->name('courses.import');
+Route::get('/courses', [CourseController::class, 'index'])->name('add-courses');
+Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+Route::post('/courses/import', [CourseController::class, 'import'])->name('courses.import');
 Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-
-
 
 // enrollment controller
 Route::prefix('enrollments')->group(function () {
@@ -61,9 +56,8 @@ Route::prefix('enrollments')->group(function () {
     Route::delete('/{id}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
 });
 
-// Helper route for getting offered courses (outside the prefix or inside)
+// Helper route for getting offered courses
 Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCourses'])->name('enrollment.getOfferedCourses');
-
 
 //Allocation Controller
 Route::prefix('allocations')->group(function () {
@@ -76,25 +70,37 @@ Route::prefix('allocations')->group(function () {
     Route::post('/bulk-delete', [AllocationController::class, 'bulkDelete'])->name('allocations.bulk-delete');
 });
 
-// Helper routes (already in your controller)
+// Helper routes
 Route::get('/get-courses/{program_id}', [AllocationController::class, 'getCoursesByProgram']);
 Route::get('/get-active-scheme/{program_id}', [AllocationController::class, 'getActiveSchemeByProgram']);
 Route::get('/get-schemes/{program_id}', [AllocationController::class, 'getSchemesByProgram']);
 Route::get('/get-teachers-by-course/{course_id}', [AllocationController::class, 'getTeachersByCourse']);
 
-
 //Teacher Controller
 Route::get('/teachers', [TeacherController::class, 'index'])->name('teacher.index');
-
 Route::post('/teachers/store', [TeacherController::class, 'store'])->name('teachers.store');
-
 Route::get('/teachers/edit/{id}', [TeacherController::class, 'edit'])->name('teachers.edit');
-
 Route::post('/teachers/update/{id}', [TeacherController::class, 'update'])->name('teachers.update');
-
 Route::delete('/teachers/delete/{id}', [TeacherController::class, 'destroy'])->name('teachers.destroy');
 
-
-// Course Prerequsite controller
+// Course Prerequisite controller
 Route::resource('course-prerequisite', CoursePrerequisiteController::class);
 Route::get('/search-all', [CoursePrerequisiteController::class, 'searchAll'])->name('course-prerequisite.search');
+
+// ==================== TRANSCRIPT ROUTES (ADD THESE) ====================
+
+// Transcript routes - list all students
+Route::get('/admin/transcripts', [TranscriptController::class, 'index'])->name('transcripts.index');
+
+// View transcript for specific student (using student ID - primary key)
+Route::get('/admin/transcript/{id}', [TranscriptController::class, 'show'])->name('transcript.show');
+
+// Download PDF version
+Route::get('/admin/transcript/{id}/pdf', [TranscriptController::class, 'downloadPDF'])->name('transcript.pdf');
+
+// Print version (opens print dialog)
+Route::get('/admin/transcript/{id}/print', [TranscriptController::class, 'print'])->name('transcript.print');
+
+// ==================== END TRANSCRIPT ROUTES ====================
+
+?>

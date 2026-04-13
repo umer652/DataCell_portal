@@ -52,4 +52,15 @@ class Enrollment extends Model
     {
         return $this->belongsTo(OfferedCourse::class, 'offered_course_id');
     }
+    public function course()
+    {
+        return $this->hasOneThrough(
+            Course::class,
+            OfferedCourse::class,
+            'id',           // Foreign key on offered_courses table
+            'id',           // Foreign key on courses table
+            'offered_course_id', // Local key on enrollments
+            'course_id'     // Local key on offered_courses
+        );
+    }
 }

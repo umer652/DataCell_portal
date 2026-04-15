@@ -222,6 +222,60 @@
             background: #fff;
             color: #0f1b5c;
         }
+
+        :root {
+            --sidebar-width: 270px;
+            --sidebar-collapsed-width: 70px;
+        }
+
+        /* MAIN CONTENT AREA (GLOBAL FOR ALL PAGES) */
+        .main-container {
+            position: fixed;
+            top: 80px;
+            left: var(--sidebar-width);
+            right: 20px;
+            bottom: 20px;
+
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            transition: left 0.3s ease;
+        }
+
+        /* SIDEBAR COLLAPSED SUPPORT */
+        body.sidebar-collapsed .main-container {
+            left: var(--sidebar-collapsed-width);
+        }
+
+        /* TABLE SCROLL CUSTOM BLUE */
+        .table-scroll {
+            overflow: auto;
+        }
+
+        /* scrollbar styling */
+        .table-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: #e6f0ff;
+            border-radius: 10px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #0f1b53;
+            border-radius: 10px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb:hover {
+            background: #2c3d89;
+        }
     </style>
 
     @yield('styles')
@@ -316,7 +370,7 @@
         function executeScripts(html, container) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = html;
-            
+
             const scripts = tempDiv.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -341,36 +395,122 @@
                 // Show loading state
                 const content = document.getElementById('main-content');
                 content.style.opacity = '0.5';
-                
+
                 // Add loading spinner or text if desired
                 const originalContent = content.innerHTML;
                 content.style.pointerEvents = 'none';
 
                 fetch(link.href, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Network response was not ok');
+                        return res.text();
+                    })
+                    .then(html => {
+                        // Update content
+                        content.innerHTML = html;
+                        content.style.opacity = '1';
+                        content.style.pointerEvents = 'auto';
+
+                        // Update browser history
+                        window.history.pushState({}, '', link.href);
+
+                        // Extract and execute scripts from the loaded HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const scripts = tempDiv.querySelectorAll('script');
+
+                        // Execute each script
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            if (oldScript.src) {
+                                newScript.src = oldScript.src;
+                                newScript.async = false;
+                            } else {
+                                newScript.textContent = oldScript.textContent;
+                            }
+                            document.body.appendChild(newScript);
+                            // Remove it after execution to keep DOM clean
+                            setTimeout(() => {
+                                if (newScript.parentNode) {
+                                    newScript.parentNode.removeChild(newScript);
+                                }
+                            }, 100);
+                        });
+
+                        // Re-initialize modules based on the loaded page
+                        setTimeout(() => {
+                            // Check for teacher module
+                            if (link.href.includes('teacher')) {
+                                if (typeof window.initTeacherModule === 'function') {
+                                    console.log('Re-initializing Teacher Module');
+                                    window.initTeacherModule();
+                                }
+                            }
+                            // Check for enrollment module
+                            if (link.href.includes('enrollment')) {
+                                if (typeof window.initEnrollmentModule === 'function') {
+                                    window.initEnrollmentModule();
+                                }
+                            }
+                            // Check for allocation module
+                            if (link.href.includes('allocation')) {
+                                if (typeof window.initAllocationModule === 'function') {
+                                    window.initAllocationModule();
+                                }
+                            }
+                            // Check for courses module
+                            if (link.href.includes('courses')) {
+                                if (typeof window.initCoursesModule === 'function') {
+                                    window.initCoursesModule();
+                                }
+                            }
+                            // Check for SOS module
+                            if (link.href.includes('sos')) {
+                                if (typeof loadSchemes === "function") {
+                                    loadSchemes();
+                                }
+                            }
+                            // Check for results module
+                            if (link.href.includes('results')) {
+                                console.log('Results page loaded');
+                            }
+                        }, 100);
+                    })
+                    .catch(error => {
+                        console.error('Error loading page:', error);
+                        content.innerHTML = '<div class="error-message" style="text-align: center; padding: 50px; color: red;">Error loading page. Please try again.</div>';
+                        content.style.opacity = '1';
+                        content.style.pointerEvents = 'auto';
+                    });
+            }
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function() {
+            let path = window.location.pathname;
+
+            // Fetch and load the page
+            fetch(path, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'text/html'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw new Error('Network response was not ok');
-                    return res.text();
-                })
+                .then(res => res.text())
                 .then(html => {
-                    // Update content
+                    const content = document.getElementById('main-content');
                     content.innerHTML = html;
-                    content.style.opacity = '1';
-                    content.style.pointerEvents = 'auto';
-                    
-                    // Update browser history
-                    window.history.pushState({}, '', link.href);
-                    
-                    // Extract and execute scripts from the loaded HTML
+
+                    // Extract and execute scripts
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
                     const scripts = tempDiv.querySelectorAll('script');
-                    
-                    // Execute each script
+
                     scripts.forEach(oldScript => {
                         const newScript = document.createElement('script');
                         if (oldScript.src) {
@@ -380,121 +520,40 @@
                             newScript.textContent = oldScript.textContent;
                         }
                         document.body.appendChild(newScript);
-                        // Remove it after execution to keep DOM clean
                         setTimeout(() => {
                             if (newScript.parentNode) {
                                 newScript.parentNode.removeChild(newScript);
                             }
                         }, 100);
                     });
-                    
-                    // Re-initialize modules based on the loaded page
-                    setTimeout(() => {
-                        // Check for teacher module
-                        if (link.href.includes('teacher')) {
-                            if (typeof window.initTeacherModule === 'function') {
-                                console.log('Re-initializing Teacher Module');
-                                window.initTeacherModule();
-                            }
-                        }
-                        // Check for enrollment module
-                        if (link.href.includes('enrollment')) {
-                            if (typeof window.initEnrollmentModule === 'function') {
-                                window.initEnrollmentModule();
-                            }
-                        }
-                        // Check for allocation module
-                        if (link.href.includes('allocation')) {
-                            if (typeof window.initAllocationModule === 'function') {
-                                window.initAllocationModule();
-                            }
-                        }
-                        // Check for courses module
-                        if (link.href.includes('courses')) {
-                            if (typeof window.initCoursesModule === 'function') {
-                                window.initCoursesModule();
-                            }
-                        }
-                        // Check for SOS module
-                        if (link.href.includes('sos')) {
-                            if (typeof loadSchemes === "function") {
-                                loadSchemes();
-                            }
-                        }
-                    }, 100);
-                })
-                .catch(error => {
-                    console.error('Error loading page:', error);
-                    content.innerHTML = '<div class="error-message" style="text-align: center; padding: 50px; color: red;">Error loading page. Please try again.</div>';
-                    content.style.opacity = '1';
-                    content.style.pointerEvents = 'auto';
-                });
-            }
-        });
 
-        // Handle browser back/forward buttons
-        window.addEventListener('popstate', function() {
-            let path = window.location.pathname;
-            
-            // Fetch and load the page
-            fetch(path, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'text/html'
-                }
-            })
-            .then(res => res.text())
-            .then(html => {
-                const content = document.getElementById('main-content');
-                content.innerHTML = html;
-                
-                // Extract and execute scripts
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                const scripts = tempDiv.querySelectorAll('script');
-                
-                scripts.forEach(oldScript => {
-                    const newScript = document.createElement('script');
-                    if (oldScript.src) {
-                        newScript.src = oldScript.src;
-                        newScript.async = false;
-                    } else {
-                        newScript.textContent = oldScript.textContent;
-                    }
-                    document.body.appendChild(newScript);
+                    // Update active sidebar based on path
+                    let route = '';
+                    if (path.includes('dashboard')) route = 'dashboard';
+                    else if (path.includes('scheme_of_study')) route = 'scheme_of_study';
+                    else if (path.includes('add-courses')) route = 'add-courses';
+                    else if (path.includes('course-prerequisite')) route = 'course-prerequisite.index';
+                    else if (path.includes('teacher')) route = 'teacher.index';
+                    else if (path.includes('enrollment')) route = 'enrollment.index';
+                    else if (path.includes('allocation')) route = 'allocation.index';
+                    else if (path.includes('results')) route = 'results.index';
+
+                    setActiveSidebar(route);
+
+                    // Re-initialize modules
                     setTimeout(() => {
-                        if (newScript.parentNode) {
-                            newScript.parentNode.removeChild(newScript);
+                        if (path.includes('teacher') && typeof window.initTeacherModule === 'function') {
+                            window.initTeacherModule();
                         }
                     }, 100);
                 });
-                
-                // Update active sidebar based on path
-                let route = '';
-                if (path.includes('dashboard')) route = 'dashboard';
-                else if (path.includes('scheme_of_study')) route = 'scheme_of_study';
-                else if (path.includes('add-courses')) route = 'add-courses';
-                else if (path.includes('course-prerequisite')) route = 'course-prerequisite.index';
-                else if (path.includes('teacher')) route = 'teacher.index';
-                else if (path.includes('enrollment')) route = 'enrollment.index';
-                else if (path.includes('allocation')) route = 'allocation.index';
-                
-                setActiveSidebar(route);
-                
-                // Re-initialize modules
-                setTimeout(() => {
-                    if (path.includes('teacher') && typeof window.initTeacherModule === 'function') {
-                        window.initTeacherModule();
-                    }
-                }, 100);
-            });
         });
 
         // Initial active sidebar set
         document.addEventListener('DOMContentLoaded', function() {
             let currentUrl = window.location.pathname;
             let route = '';
-            
+
             if (currentUrl.includes('dashboard')) route = 'dashboard';
             else if (currentUrl.includes('scheme_of_study')) route = 'scheme_of_study';
             else if (currentUrl.includes('add-courses')) route = 'add-courses';
@@ -502,13 +561,14 @@
             else if (currentUrl.includes('teacher')) route = 'teacher.index';
             else if (currentUrl.includes('enrollment')) route = 'enrollment.index';
             else if (currentUrl.includes('allocation')) route = 'allocation.index';
-            
+            else if (currentUrl.includes('results')) route = 'results.index';
+
             setActiveSidebar(route);
         });
     </script>
 
     @yield('scripts')
-    
+
     <!-- Include any additional JS files -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

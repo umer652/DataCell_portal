@@ -10,6 +10,7 @@ use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CoursePrerequisiteController;
 use App\Http\Controllers\TranscriptController;
+use App\Http\Controllers\ResultController;
 
 // ==================== EXISTING ROUTES ====================
 // (Keep all your existing routes here)
@@ -70,6 +71,9 @@ Route::prefix('allocations')->group(function () {
     Route::post('/bulk-delete', [AllocationController::class, 'bulkDelete'])->name('allocations.bulk-delete');
 });
 
+// Result Controller
+Route::resource('results', ResultController::class);
+
 // Helper routes
 Route::get('/get-courses/{program_id}', [AllocationController::class, 'getCoursesByProgram']);
 Route::get('/get-active-scheme/{program_id}', [AllocationController::class, 'getActiveSchemeByProgram']);
@@ -102,5 +106,3 @@ Route::get('/admin/transcript/{id}/pdf', [TranscriptController::class, 'download
 Route::get('/admin/transcript/{id}/print', [TranscriptController::class, 'print'])->name('transcript.print');
 
 // ==================== END TRANSCRIPT ROUTES ====================
-
-?>

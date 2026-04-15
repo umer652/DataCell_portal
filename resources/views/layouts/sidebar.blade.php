@@ -53,13 +53,19 @@
                 <i class="fas fa-tasks mr-2"></i> Allocation Management
             </a>
         </li>
-        <!-- Add this to your sidebar menu -->
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('transcripts.index') }}">
-        <i class="fas fa-print"></i> 
-        <span>Print Transcript</span>
-    </a>
-</li>
+        <li>
+            <a href="{{ route('results.index') }}"
+                class="nav-link ajax-link flex items-center p-2 rounded hover:bg-blue-500 hover:text-white text-gray-700" data-route="results.index">
+                <i class="fas fa-chart-line mr-2"></i> Results Management
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('transcripts.index') }}">
+                <i class="fas fa-print"></i>
+                <span>Print Transcript</span>
+            </a>
+        </li>
     </ul>
 
 </div>

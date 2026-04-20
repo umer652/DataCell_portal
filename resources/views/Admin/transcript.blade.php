@@ -232,7 +232,7 @@ tbody tr:hover {
 }
 
 .cgpa-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #0f1b5c;
     color: #fff;
     padding: 15px;
     border-radius: 10px;
@@ -413,7 +413,7 @@ tbody tr:hover {
         
         <!-- HEADER -->
         <div class="transcript-header">
-            <h2>NORTHERN UNIVERSITY,NOWSHERA</h2>
+            <h2>NORTHERN UNIVERSITY, NOWSHERA</h2>
             <p>Official Transcript of Records</p>
         </div>
 
@@ -446,6 +446,11 @@ tbody tr:hover {
         </div>
 
         <!-- SEMESTER RESULTS -->
+        @php
+            $totalGradePoints = 0;
+            $totalCreditsAll = 0;
+        @endphp
+
         @forelse($semesterData as $semester => $data)
         <div class="semester-section">
             <div class="semester-title">{{ $semester }}</div>
@@ -465,46 +470,58 @@ tbody tr:hover {
                     </thead>
                     <tbody>
                         @forelse($data['enrollments'] as $index => $enrollment)
+                        @php
+                            // Calculate grade points for this course
+                            $gradeLetter = $enrollment->grade ?? 'N/A';
+                            $gradePoints = 0.0;
+                            
+                            if(is_numeric($gradeLetter)) {
+                                $numericGrade = floatval($gradeLetter);
+                                if($numericGrade >= 90) $gradePoints = 4.0;
+                                elseif($numericGrade >= 85) $gradePoints = 3.7;
+                                elseif($numericGrade >= 80) $gradePoints = 3.3;
+                                elseif($numericGrade >= 75) $gradePoints = 3.0;
+                                elseif($numericGrade >= 70) $gradePoints = 2.7;
+                                elseif($numericGrade >= 65) $gradePoints = 2.3;
+                                elseif($numericGrade >= 60) $gradePoints = 2.0;
+                                elseif($numericGrade >= 55) $gradePoints = 1.7;
+                                elseif($numericGrade >= 50) $gradePoints = 1.0;
+                                else $gradePoints = 0.0;
+                            } else {
+                                $pointsMap = [
+                                    'A+'=>4.0,'A'=>4.0,'A-'=>3.7,'B+'=>3.3,'B'=>3.0,'B-'=>2.7,
+                                    'C+'=>2.3,'C'=>2.0,'C-'=>1.7,'D+'=>1.3,'D'=>1.0,'F'=>0.0
+                                ];
+                                $gradePoints = $pointsMap[strtoupper(trim($gradeLetter))] ?? 0.0;
+                            }
+                            
+                            $credits = $enrollment->credits ?? 3;
+                            
+                            // Add to cumulative totals if not failed
+                            if($gradeLetter != 'F' && $gradeLetter != 'F' && !(is_numeric($gradeLetter) && floatval($gradeLetter) < 50)) {
+                                $totalGradePoints += ($gradePoints * $credits);
+                                $totalCreditsAll += $credits;
+                            }
+                        @endphp
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $enrollment->course_code ?? 'N/A' }}</td>
                             <td>{{ $enrollment->course_name ?? 'N/A' }}</td>
-                            <td class="text-center">{{ $enrollment->credits ?? 3 }}</td>
+                            <td class="text-center">{{ $credits }}</td>
                             <td class="text-center">
                                 @php
-                                    $grade = $enrollment->grade ?? 'N/A';
+                                    $gradeDisplay = $gradeLetter;
                                     $gradeClass = 'badge';
-                                    if($grade == 'A+' || $grade == 'A') $gradeClass .= ' badge-success';
-                                    elseif($grade == 'F') $gradeClass .= ' badge-warning';
+                                    if($gradeDisplay == 'A+' || $gradeDisplay == 'A') $gradeClass .= ' badge-success';
+                                    elseif($gradeDisplay == 'F') $gradeClass .= ' badge-warning';
                                 @endphp
-                                <span class="{{ $gradeClass }}">{{ $grade }}</span>
+                                <span class="{{ $gradeClass }}">{{ $gradeDisplay }}</span>
                             </td>
+                            <td class="text-center">{{ number_format($gradePoints, 2) }}</td>
                             <td class="text-center">
-                                @php
-                                    $points = [
-                                        'A+'=>4.0,'A'=>4.0,'A-'=>3.7,'B+'=>3.3,'B'=>3.0,'B-'=>2.7,
-                                        'C+'=>2.3,'C'=>2.0,'C-'=>1.7,'D+'=>1.3,'D'=>1.0,'F'=>0.0
-                                    ];
-                                    if(is_numeric($grade)) {
-                                        if($grade>=90) echo '4.0';
-                                        elseif($grade>=85) echo '3.7';
-                                        elseif($grade>=80) echo '3.3';
-                                        elseif($grade>=75) echo '3.0';
-                                        elseif($grade>=70) echo '2.7';
-                                        elseif($grade>=65) echo '2.3';
-                                        elseif($grade>=60) echo '2.0';
-                                        elseif($grade>=55) echo '1.7';
-                                        elseif($grade>=50) echo '1.0';
-                                        else echo '0.0';
-                                    } else {
-                                        echo $points[strtoupper(trim($grade))] ?? '0.0';
-                                    }
-                                @endphp
-                            </td>
-                            <td class="text-center">
-                                @if($grade == 'F')
+                                @if($gradeDisplay == 'F')
                                     <span class="badge badge-warning">Fail</span>
-                                @elseif($grade == 'A+' || $grade == 'A')
+                                @elseif($gradeDisplay == 'A+' || $gradeDisplay == 'A')
                                     <span class="badge badge-success">Excellent</span>
                                 @else
                                     <span class="badge badge-success">Pass</span>
@@ -521,7 +538,7 @@ tbody tr:hover {
             </div>
             
             <div class="gpa-box">
-                <strong>Semester GPA:</strong> {{ $data['gpa'] }} &nbsp;|&nbsp;
+                <strong>Semester GPA:</strong> {{ number_format($data['gpa'], 2) }} &nbsp;|&nbsp;
                 <strong>Total Credits:</strong> {{ $data['total_credits'] }}
             </div>
         </div>
@@ -533,11 +550,21 @@ tbody tr:hover {
         </div>
         @endforelse
 
-        <!-- CGPA -->
-        @if(!empty($semesterData))
+        <!-- CGPA - DYNAMICALLY CALCULATED -->
+        @if(!empty($semesterData) && $totalCreditsAll > 0)
+        @php
+            $cgpa = $totalGradePoints / $totalCreditsAll;
+        @endphp
         <div class="cgpa-box">
             <h4>CUMULATIVE GPA (CGPA)</h4>
-            <h3>{{ $cgpa }}</h3>
+            <h3>{{ number_format($cgpa, 2) }}</h3>
+            <small>Total Quality Points: {{ number_format($totalGradePoints, 2) }} | Total Credits: {{ $totalCreditsAll }}</small>
+        </div>
+        @elseif(!empty($semesterData))
+        <div class="cgpa-box">
+            <h4>CUMULATIVE GPA (CGPA)</h4>
+            <h3>0.00</h3>
+            <small>No passing grades recorded yet</small>
         </div>
         @endif
 

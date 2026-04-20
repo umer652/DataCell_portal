@@ -87,7 +87,8 @@
 </head>
 <body>
     <div class="header">
-        <h2>UNIVERSITY ACADEMIC TRANSCRIPT</h2>
+        <h2>NORTHERN UNIVERSITY, NOWSHERA</h2>
+        <h2> ACADEMIC TRANSCRIPT</h2>
         <p>Official Transcript of Records</p>
     </div>
 

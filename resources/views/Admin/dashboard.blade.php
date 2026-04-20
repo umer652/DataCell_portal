@@ -516,7 +516,7 @@
                     <td>
                         <div class="action-icons">
                             <i class="fa-solid fa-pen-to-square edit-icon"
-                                                              ></i>
+                                onclick="handleEdit({{ $student->id }})"></i>
 
                             <i class="fa-solid fa-trash delete-icon"
                                 onclick="deleteStudent({{ $student->id }})"></i>
@@ -712,6 +712,21 @@
         document.getElementById('studentModal').style.display = 'none';
     }
 
+    function handleEdit(id) {
+        $.ajax({
+            url: '/students/' + id + '/edit',
+            type: 'GET',
+            success: function(res) {
+                if (res.success) {
+                    editStudent(res);
+                }
+            },
+            error: function() {
+                Swal.fire('Error!', 'Failed to fetch student data', 'error');
+            }
+        });
+    }
+
     function editStudent(student) {
         const modal = document.getElementById('studentModal');
         const formMethod = document.getElementById('formMethod');
@@ -812,39 +827,28 @@
             processData: false,
             contentType: false,
 
+            success: function(response) {
+
+                if (response.success) {
+
+                    Swal.fire('Success!', response.message, 'success');
+
+                    closeModal();
+                    loadPage(window.location.href);
+
+                } else {
+                    Swal.fire('Error!', response.message, 'error');
+                }
+            },
+
             error: function(xhr) {
+                let msg = xhr.responseJSON?.message || 'Error occurred';
+                Swal.fire('Error!', msg, 'error');
+            },
+
+            complete: function() {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Save Student';
-
-                console.log('Error response:', xhr);
-
-                let errorMsg = 'An error occurred. Please try again.';
-
-                if (xhr.status === 422) {
-                    // Validation errors
-                    let errors = xhr.responseJSON?.errors;
-                    if (errors) {
-                        let errorHtml = '<ul style="text-align: left;">';
-                        for (let field in errors) {
-                            errorHtml += `<li><strong>${field}:</strong> ${errors[field].join(', ')}</li>`;
-                        }
-                        errorHtml += '</ul>';
-
-                        Swal.fire({
-                            title: 'Validation Error!',
-                            html: errorHtml,
-                            icon: 'error',
-                            confirmButtonColor: '#0f1b5c'
-                        });
-                        return;
-                    }
-                } else if (xhr.status === 409) {
-                    errorMsg = xhr.responseJSON?.message || 'Email already exists!';
-                } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMsg = xhr.responseJSON.message;
-                }
-
-                Swal.fire('Error!', errorMsg, 'error');
             }
         });
     }
@@ -867,7 +871,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        sa
+
                         if (response.success) {
 
                             document.getElementById('student-row-' + id).remove();

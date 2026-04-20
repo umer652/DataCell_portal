@@ -363,7 +363,6 @@
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Credit Hours</th>
                     <th>Description</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -397,12 +396,6 @@
                 </div>
 
                 <div>
-                    <label>Credit Hours *</label>
-                    <input type="number" name="credit_hrs" id="credit_hrs" placeholder="e.g., 3" required min="1" step="1">
-                    <span class="field-error" id="credit_hrsError"></span>
-                </div>
-
-                <div>
                     <label>Status *</label>
                     <select name="is_active" id="is_active" required>
                         <option value="">Select Status</option>
@@ -431,12 +424,11 @@
 
 @section('scripts')
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://kit.fontawesome.com/your-kit.js"></script>
-
 <script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     $(document).ready(function() {
-        loadSchemes(); // call on page load
+        loadSchemes();
     });
 
     function openModal() {
@@ -454,7 +446,6 @@
     const formMethod = document.getElementById('formMethod');
     const schemeId = document.getElementById('schemeId');
     const titleInput = document.getElementById('title');
-    const creditHrsInput = document.getElementById('credit_hrs');
     const isActiveSelect = document.getElementById('is_active');
     const descriptionTextarea = document.getElementById('description');
 
@@ -489,19 +480,13 @@
         clearValidation();
 
         const title = titleInput.value.trim();
-        const creditHrs = creditHrsInput.value.trim();
         const isActive = isActiveSelect.value;
 
         if (!title) {
             showFieldError('title', 'Title is required');
             isValid = false;
-        }
-
-        if (!creditHrs) {
-            showFieldError('credit_hrs', 'Credit hours are required');
-            isValid = false;
-        } else if (creditHrs < 1 || creditHrs > 140) {
-            showFieldError('credit_hrs', 'Credit hours must be between 1 and 140');
+        } else if (title.length > 10) {
+            showFieldError('title', 'Title must be less than 10 characters');
             isValid = false;
         }
 
@@ -529,14 +514,11 @@
         clearValidation();
     }
 
-    // Open modal on add button click
     addBtn.addEventListener('click', openModal);
 
-    // Close modal on close button click
     closeModalBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
-    // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
             closeModal();
@@ -551,7 +533,6 @@
         let row = `
             <tr id="scheme-row-${scheme.id}">
                 <td>${scheme.title}</td>
-                <td>${scheme.credit_hrs}</td>
                 <td>${scheme.description ?? ''}</td>
                 <td>${status}</td>
                 <td>
@@ -597,10 +578,8 @@
                 modalTitle.textContent = "Edit Scheme of Study";
                 schemeId.value = scheme.id;
                 titleInput.value = scheme.title;
-                creditHrsInput.value = scheme.credit_hrs;
                 isActiveSelect.value = scheme.is_active;
-                descriptionTextarea.value = scheme.description || '';
-                clearValidation();
+                descriptionTextarea.value = scheme.description ?? '';
                 modal.style.display = 'flex';
             } else {
                 Swal.fire('Error', data.message || 'Could not fetch scheme details', 'error');
@@ -670,7 +649,6 @@
         const formData = new FormData();
         formData.append('_token', csrfToken);
         formData.append('title', titleInput.value.trim());
-        formData.append('credit_hrs', creditHrsInput.value);
         formData.append('is_active', isActiveSelect.value);
         formData.append('description', descriptionTextarea.value);
 

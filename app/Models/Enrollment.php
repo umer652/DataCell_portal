@@ -17,7 +17,7 @@ class Enrollment extends Model
         'student_id',
         'session_id',
         'program_id',
-        'offered_course_id',
+        'offered_courses_id',
         'section',
         'semester',
         'enrollment_date',
@@ -50,17 +50,7 @@ class Enrollment extends Model
 
     public function offeredCourse()
     {
-        return $this->belongsTo(OfferedCourse::class, 'offered_course_id');
+        return $this->belongsTo(OfferedCourse::class, 'offered_courses_id');
     }
-    public function course()
-    {
-        return $this->hasOneThrough(
-            Course::class,
-            OfferedCourse::class,
-            'id',           // Foreign key on offered_courses table
-            'id',           // Foreign key on courses table
-            'offered_course_id', // Local key on enrollments
-            'course_id'     // Local key on offered_courses
-        );
-    }
+   
 }

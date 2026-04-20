@@ -24,7 +24,6 @@
         body {
             display: flex;
             background: #f4f7f9;
-            overflow-x: hidden;
         }
 
         /* ================= HAMBURGER ================= */
@@ -32,18 +31,25 @@
             position: fixed;
             top: 10px;
             left: 260px;
+
             height: 60px;
             width: 50px;
+
             font-size: 20px;
             color: #fff;
+
             cursor: pointer;
             z-index: 1001;
+
             background: #0f1b5c;
             border-radius: 10px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             transition: left 0.3s ease;
+
             line-height: 1;
         }
 
@@ -60,7 +66,7 @@
             display: none;
         }
 
-        /* ================= SIDEBAR - NO SCROLLBAR ================= */
+        /* ================= SIDEBAR ================= */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -70,34 +76,9 @@
             left: -250px;
             transition: 0.3s ease;
             padding: 20px 0;
+            overflow-y: auto;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            
-            /* Remove scrollbar - Hide scrollbar completely */
-            overflow-y: hidden !important;
-            overflow-x: hidden !important;
-            scrollbar-width: none !important; /* Firefox */
-            -ms-overflow-style: none !important; /* IE/Edge */
-        }
-        
-        /* Hide scrollbar for Chrome/Safari/Edge */
-        .sidebar::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            background: transparent !important;
-        }
-        
-        /* Sidebar inner content - handle scrolling without showing scrollbar */
-        .sidebar-inner {
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
-        }
-        
-        .sidebar-inner::-webkit-scrollbar {
-            display: none; /* Chrome/Safari/Edge */
         }
 
         .sidebar.active {
@@ -134,7 +115,6 @@
 
         .sidebar ul {
             list-style: none;
-            padding-bottom: 20px;
         }
 
         .sidebar ul li {
@@ -186,12 +166,15 @@
             height: 60px;
             background: #0f1b5c;
             border-radius: 10px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 20px;
             color: #fff;
             z-index: 999;
+
             transition: left 0.3s ease;
         }
 
@@ -253,12 +236,15 @@
             left: var(--sidebar-width);
             right: 20px;
             bottom: 20px;
+
             background: white;
             border-radius: 12px;
             padding: 20px;
+
             display: flex;
             flex-direction: column;
             overflow: hidden;
+
             transition: left 0.3s ease;
         }
 

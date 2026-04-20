@@ -25,6 +25,35 @@ body.sidebar-collapsed .main-container {
     width: calc(100% - 120px);
 }
 
+/* Small back button styles */
+.top-back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0f1b5c;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.top-back-btn:hover {
+    background: #1a2a7a;
+    transform: translateY(-1px);
+    color: #fff;
+}
+
+.top-back-btn i {
+    font-size: 11px;
+}
+
 .no-grades-container {
     display: flex;
     justify-content: center;
@@ -59,24 +88,9 @@ body.sidebar-collapsed .main-container {
     margin-bottom: 25px;
 }
 
-.back-btn {
-    background: #0f1b5c;
-    color: #fff;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.back-btn:hover {
-    background: #1a2a7a;
-    transform: translateY(-2px);
-    color: #fff;
+/* Keep the original back button for consistency if needed, but we'll hide it */
+.message-box .back-btn {
+    display: none;
 }
 
 .student-info-card {
@@ -103,12 +117,24 @@ body.sidebar-collapsed .main-container {
         margin: 20px;
         padding: 30px;
     }
+    
+    .top-back-btn {
+        top: 12px;
+        left: 12px;
+        padding: 5px 10px;
+        font-size: 12px;
+    }
 }
 </style>
 @endsection
 
 @section('content')
 <div class="main-container">
+    <!-- Small back button at top left -->
+    <a href="{{ route('transcripts.index') }}" class="top-back-btn">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
     <div class="no-grades-container">
         <div class="message-box">
             <i class="fas fa-chalkboard-teacher"></i>
@@ -123,10 +149,6 @@ body.sidebar-collapsed .main-container {
             
             <p>Grades have not been entered for this student yet.<br>
             Please check back after grades are published.</p>
-            
-            <a href="{{ route('transcripts.index') }}" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Back to Students List
-            </a>
         </div>
     </div>
 </div>

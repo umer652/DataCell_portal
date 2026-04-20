@@ -360,7 +360,7 @@ tbody td:last-child {
                     <td>
                         <strong>{{ $student->roll_no }}</strong>
                         <br>
-                        <small class="text-muted">ID: {{ $student->id }}</small>
+                        {{-- <small class="text-muted">ID: {{ $student->id }}</small> --}}
                     </td>
                     <td>{{ $student->name }}</td>
                     <td>{{ $student->father_name }}</td>

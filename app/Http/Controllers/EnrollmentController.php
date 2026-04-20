@@ -184,8 +184,6 @@ public function index(Request $request)
         }
     }
 
-    // UPDATE
-    // UPDATE - For single course update
 // UPDATE - Allow multiple courses
 public function update(Request $request, $id)
 {

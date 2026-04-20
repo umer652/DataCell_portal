@@ -11,6 +11,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CoursePrerequisiteController;
 use App\Http\Controllers\TranscriptController;
 use App\Http\Controllers\ResultController;
+use App\Http\Controllers\PromotionController;
 
 // ==================== EXISTING ROUTES ====================
 // (Keep all your existing routes here)
@@ -30,6 +31,9 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/sos', [SchemeOfStudyController::class, 'index'])->name('scheme_of_study');
 Route::post('/sos-create', [SchemeOfStudyController::class, 'store'])->name('scheme.store');
 Route::get('/schemes-list', [SchemeOfStudyController::class, 'getSchemes'])->name('scheme.list');
+Route::get('/sos-edit/{id}', [SchemeOfStudyController::class, 'edit'])->name('scheme.edit');
+Route::put('/sos-update/{id}', [SchemeOfStudyController::class, 'update'])->name('scheme.update');
+Route::delete('/sos-delete/{id}', [SchemeOfStudyController::class, 'destroy'])->name('scheme.destroy');
 
 // student controller
 Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');
@@ -56,6 +60,9 @@ Route::prefix('enrollments')->group(function () {
     Route::put('/{id}', [EnrollmentController::class, 'update'])->name('enrollments.update');
     Route::delete('/{id}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
 });
+Route::post('/promote-students', [EnrollmentController::class, 'promoteStudents']);
+Route::get('/enrollments/{id}', [EnrollmentController::class, 'show']);
+Route::get('/class-result-summary', [EnrollmentController::class, 'classResultSummary']);
 
 // Helper route for getting offered courses
 Route::get('/get-offered-courses', [EnrollmentController::class, 'getOfferedCourses'])->name('enrollment.getOfferedCourses');
@@ -73,6 +80,9 @@ Route::prefix('allocations')->group(function () {
 
 // Result Controller
 Route::resource('results', ResultController::class);
+Route::get('/students/promote', [ResultController::class, 'promoteStudents'])
+    ->name('students.promote');
+Route::post('/results/upload', [ResultController::class, 'uploadResult'])->name('results.upload');
 
 // Helper routes
 Route::get('/get-courses/{program_id}', [AllocationController::class, 'getCoursesByProgram']);

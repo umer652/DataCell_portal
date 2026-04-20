@@ -14,7 +14,6 @@ class SchemeOfStudy extends Model
     protected $fillable = [
         'title',
         'description',
-        'credit_hrs',
         'is_active',
     ];
 

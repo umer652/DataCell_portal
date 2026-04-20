@@ -11,6 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 
     <style>
         * {
@@ -331,7 +332,18 @@
     </div>
 
     <script>
-        const hamburger = document.getElementById('hamburger');
+        const content = document.getElementById('main-content');
+        window.hamburger = document.getElementById('hamburger');
+
+        if (window.hamburger) {
+            window.hamburger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+                localStorage.setItem('sidebarOpen', true);
+                setLayout(true);
+            });
+        }
+
         const sidebar = document.getElementById('sidebar');
 
         function setLayout(isOpen) {
@@ -380,23 +392,6 @@
             }
         }
 
-        // Function to extract and execute scripts from HTML
-        function executeScripts(html, container) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-
-            const scripts = tempDiv.querySelectorAll('script');
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement('script');
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
-                } else {
-                    newScript.textContent = oldScript.textContent;
-                }
-                document.body.appendChild(newScript);
-            });
-        }
-
         // Handle AJAX navigation
         document.addEventListener('click', function(e) {
             const link = e.target.closest('.ajax-link');
@@ -406,13 +401,10 @@
                 const route = link.getAttribute('data-route');
                 setActiveSidebar(route);
 
-                // Show loading state
-                const content = document.getElementById('main-content');
-                content.style.opacity = '0.5';
-
-                // Add loading spinner or text if desired
-                const originalContent = content.innerHTML;
-                content.style.pointerEvents = 'none';
+                if (content) {
+                    content.style.opacity = '0.5';
+                    content.style.pointerEvents = 'none';
+                }
 
                 fetch(link.href, {
                         headers: {
@@ -432,29 +424,6 @@
 
                         // Update browser history
                         window.history.pushState({}, '', link.href);
-
-                        // Extract and execute scripts from the loaded HTML
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = html;
-                        const scripts = tempDiv.querySelectorAll('script');
-
-                        // Execute each script
-                        scripts.forEach(oldScript => {
-                            const newScript = document.createElement('script');
-                            if (oldScript.src) {
-                                newScript.src = oldScript.src;
-                                newScript.async = false;
-                            } else {
-                                newScript.textContent = oldScript.textContent;
-                            }
-                            document.body.appendChild(newScript);
-                            // Remove it after execution to keep DOM clean
-                            setTimeout(() => {
-                                if (newScript.parentNode) {
-                                    newScript.parentNode.removeChild(newScript);
-                                }
-                            }, 100);
-                        });
 
                         // Re-initialize modules based on the loaded page
                         setTimeout(() => {
@@ -517,29 +486,10 @@
                 })
                 .then(res => res.text())
                 .then(html => {
-                    const content = document.getElementById('main-content');
-                    content.innerHTML = html;
 
                     // Extract and execute scripts
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
-                    const scripts = tempDiv.querySelectorAll('script');
-
-                    scripts.forEach(oldScript => {
-                        const newScript = document.createElement('script');
-                        if (oldScript.src) {
-                            newScript.src = oldScript.src;
-                            newScript.async = false;
-                        } else {
-                            newScript.textContent = oldScript.textContent;
-                        }
-                        document.body.appendChild(newScript);
-                        setTimeout(() => {
-                            if (newScript.parentNode) {
-                                newScript.parentNode.removeChild(newScript);
-                            }
-                        }, 100);
-                    });
 
                     // Update active sidebar based on path
                     let route = '';

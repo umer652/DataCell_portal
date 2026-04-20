@@ -6,6 +6,7 @@
 
 <div class="main-container">
 
+
     <!-- TOP BAR -->
     <div class="top-bar flex items-center justify-between mb-6">
 
@@ -40,7 +41,7 @@
                 <tr class="border-b hover:bg-gray-50">
                     <td class="p-3">{{ $std->name }}</td>
                     <td class="p-3">{{ $std->roll_no }}</td>
-                    <td class="p-3">
+                    <td class="p-3 flex gap-2">
                         <a href="{{ route('results.show', $std->id) }}"
                             class="bg-[#0f1b53] text-white px-4 py-2 rounded ajax-link" data-title="Student Result">
                             View Result
